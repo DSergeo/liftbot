@@ -1,0 +1,238 @@
+{% extends "layout.html" %}
+
+{% block title %}Замовники{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/custom.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h4 class="text-white mb-1">
+                        <i class="fas fa-user-friends me-2"></i>Замовники
+                    </h4>
+                    <p class="text-muted mb-0">Управління клієнтською базою</p>
+                </div>
+                <div class="d-flex gap-2">
+                    <span class="badge bg-info fs-6">{{ customers|length }} замовників</span>
+                </div>
+            </div>
+
+            <!-- Statistics Cards -->
+            <div class="row mb-4">
+                <div class="col-md-3 mb-3">
+                    <div class="card bg-dark border-0 shadow">
+                        <div class="card-body text-center">
+                            <i class="fas fa-users fa-2x text-primary mb-2"></i>
+                            <h5 class="text-white">{{ customers|length }}</h5>
+                            <p class="text-muted mb-0">Всього замовників</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <div class="card bg-dark border-0 shadow">
+                        <div class="card-body text-center">
+                            <i class="fas fa-phone fa-2x text-success mb-2"></i>
+                            <h5 class="text-white">{{ customers.values()|sum(attribute='requests_count') }}</h5>
+                            <p class="text-muted mb-0">Всього заявок</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <div class="card bg-dark border-0 shadow">
+                        <div class="card-body text-center">
+                            <i class="fas fa-map-marker-alt fa-2x text-warning mb-2"></i>
+                            <h5 class="text-white">{{ customers.values()|sum(attribute='addresses')|length }}</h5>
+                            <p class="text-muted mb-0">Адрес обслуговування</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <div class="card bg-dark border-0 shadow">
+                        <div class="card-body text-center">
+                            <i class="fas fa-star fa-2x text-info mb-2"></i>
+                            <h5 class="text-white">4.6</h5>
+                            <p class="text-muted mb-0">Середній рейтинг</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filters -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <div class="row align-items-end">
+                        <div class="col-md-4">
+                            <label class="form-label text-white">Пошук</label>
+                            <input type="text" class="form-control" id="searchCustomers" placeholder="Пошук за ім'ям або телефоном...">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label text-white">Кількість заявок</label>
+                            <select class="form-select" id="filterRequests">
+                                <option value="">Всі замовники</option>
+                                <option value="1">1 заявка</option>
+                                <option value="2-5">2-5 заявок</option>
+                                <option value="6+">6+ заявок</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label text-white">Період останньої заявки</label>
+                            <select class="form-select" id="filterPeriod">
+                                <option value="">Весь час</option>
+                                <option value="today">Сьогодні</option>
+                                <option value="week">Цей тиждень</option>
+                                <option value="month">Цей місяць</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <button class="btn btn-outline-secondary w-100" onclick="clearFilters()">
+                                <i class="fas fa-times me-2"></i>Очистити
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Customers Table -->
+            <div class="card bg-dark border-0">
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-dark table-hover mb-0">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th class="ps-4">Замовник</th>
+                                    <th>Телефон</th>
+                                    <th>Адреси</th>
+                                    <th>Кількість заявок</th>
+                                    <th>Остання заявка</th>
+                                    <th class="text-center">Дії</th>
+                                </tr>
+                            </thead>
+                            <tbody id="customersTableBody">
+                                {% for phone, customer in customers.items() %}
+                                <tr data-customer-phone="{{ phone }}">
+                                    <td class="ps-4">
+                                        <div class="d-flex align-items-center">
+                                            <div class="rounded-circle bg-primary d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px;">
+                                                <i class="fas fa-user text-white"></i>
+                                            </div>
+                                            <div>
+                                                <div class="text-white fw-medium">{{ customer.name }}</div>
+                                                <div class="text-muted small">ID: {{ phone[-4:] }}</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="text-muted">
+                                        <i class="fas fa-phone me-1"></i>{{ customer.phone }}
+                                    </td>
+                                    <td>
+                                        <div class="text-muted">
+                                            {% for address in customer.addresses[:2] %}
+                                                <div class="small">{{ address }}</div>
+                                            {% endfor %}
+                                            {% if customer.addresses|length > 2 %}
+                                                <div class="small text-info">+{{ customer.addresses|length - 2 }} ще</div>
+                                            {% endif %}
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="badge {% if customer.requests_count >= 6 %}bg-success{% elif customer.requests_count >= 2 %}bg-warning{% else %}bg-secondary{% endif %}">
+                                            {{ customer.requests_count }}
+                                        </span>
+                                    </td>
+                                    <td class="text-muted">
+                                        {% if customer.last_request %}
+                                            {{ customer.last_request[:10] }}
+                                        {% else %}
+                                            -
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="btn-group" role="group">
+                                            <button class="btn btn-sm btn-outline-primary" onclick="viewCustomer('{{ phone }}')" title="Переглянути профіль">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-outline-info" onclick="viewRequests('{{ phone }}')" title="Переглянути заявки">
+                                                <i class="fas fa-list"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-outline-success" onclick="contactCustomer('{{ phone }}')" title="Зв'язатися">
+                                                <i class="fas fa-phone"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('searchCustomers');
+    const filterRequests = document.getElementById('filterRequests');
+    const filterPeriod = document.getElementById('filterPeriod');
+    
+    function filterCustomers() {
+        const search = searchInput.value.toLowerCase();
+        const requestsFilter = filterRequests.value;
+        const periodFilter = filterPeriod.value;
+        
+        const rows = document.querySelectorAll('#customersTableBody tr');
+        
+        rows.forEach(row => {
+            let show = true;
+            
+            const customerName = row.querySelector('.fw-medium').textContent.toLowerCase();
+            const customerPhone = row.querySelector('[data-customer-phone]').dataset.customerPhone;
+            const requestsCount = parseInt(row.querySelector('.badge').textContent);
+            
+            // Search filter
+            if (search && !customerName.includes(search) && !customerPhone.includes(search)) {
+                show = false;
+            }
+            
+            // Requests count filter
+            if (requestsFilter) {
+                if (requestsFilter === '1' && requestsCount !== 1) show = false;
+                if (requestsFilter === '2-5' && (requestsCount < 2 || requestsCount > 5)) show = false;
+                if (requestsFilter === '6+' && requestsCount < 6) show = false;
+            }
+            
+            row.style.display = show ? '' : 'none';
+        });
+    }
+    
+    searchInput.addEventListener('input', filterCustomers);
+    filterRequests.addEventListener('change', filterCustomers);
+    filterPeriod.addEventListener('change', filterCustomers);
+    
+    window.clearFilters = function() {
+        searchInput.value = '';
+        filterRequests.value = '';
+        filterPeriod.value = '';
+        filterCustomers();
+    };
+    
+    window.viewCustomer = function(phone) {
+        alert('Перегляд профілю замовника: ' + phone);
+    };
+    
+    window.viewRequests = function(phone) {
+        window.location.href = '/?customer=' + phone;
+    };
+    
+    window.contactCustomer = function(phone) {
+        window.open('tel:' + phone);
+    };
+});
+</script>
+{% endblock %}

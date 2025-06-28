@@ -1,0 +1,12 @@
+[2025-06-08 11:40:46 +0000] [30905] [INFO] Starting gunicorn 23.0.0
+[2025-06-08 11:40:46 +0000] [30905] [ERROR] Connection in use: ('0.0.0.0', 5100)
+[2025-06-08 11:40:46 +0000] [30905] [ERROR] connection to ('0.0.0.0', 5100) failed: [Errno 98] Address already in use
+[2025-06-08 11:40:47 +0000] [30905] [ERROR] Connection in use: ('0.0.0.0', 5100)
+[2025-06-08 11:40:47 +0000] [30905] [ERROR] connection to ('0.0.0.0', 5100) failed: [Errno 98] Address already in use
+[2025-06-08 11:40:48 +0000] [30905] [ERROR] Connection in use: ('0.0.0.0', 5100)
+[2025-06-08 11:40:48 +0000] [30905] [ERROR] connection to ('0.0.0.0', 5100) failed: [Errno 98] Address already in use
+[2025-06-08 11:40:49 +0000] [30905] [ERROR] Connection in use: ('0.0.0.0', 5100)
+[2025-06-08 11:40:49 +0000] [30905] [ERROR] connection to ('0.0.0.0', 5100) failed: [Errno 98] Address already in use
+[2025-06-08 11:40:50 +0000] [30905] [ERROR] Connection in use: ('0.0.0.0', 5100)
+[2025-06-08 11:40:50 +0000] [30905] [ERROR] connection to ('0.0.0.0', 5100) failed: [Errno 98] Address already in use
+[2025-06-08 11:40:51 +0000] [30905] [ERROR] Can't connect to ('0.0.0.0', 5100)

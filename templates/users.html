@@ -1,0 +1,391 @@
+{% extends "layout.html" %}
+
+{% block title %}Користувачі{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h2 class="text-white mb-1">
+                        <i class="fas fa-users me-2"></i>Користувачі
+                    </h2>
+                    <p class="text-muted mb-0">Управління зареєстрованими користувачами системи</p>
+                </div>
+                <div class="d-flex gap-2">
+                    <button class="btn btn-outline-primary" onclick="refreshUsers()">
+                        <i class="fas fa-sync-alt me-2"></i>Оновити
+                    </button>
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addUserModal">
+                        <i class="fas fa-user-plus me-2"></i>Додати користувача
+                    </button>
+                </div>
+            </div>
+
+            <!-- Stats Cards -->
+            <div class="row mb-4">
+                <div class="col-md-3">
+                    <div class="card bg-primary text-white">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h6 class="card-title">Всього користувачів</h6>
+                                    <h3 class="mb-0" id="totalUsers">{{ users|length }}</h3>
+                                </div>
+                                <i class="fas fa-users fa-2x opacity-50"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card bg-success text-white">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h6 class="card-title">Активні</h6>
+                                    <h3 class="mb-0" id="activeUsers">{{ active_users }}</h3>
+                                </div>
+                                <i class="fas fa-user-check fa-2x opacity-50"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card bg-warning text-white">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h6 class="card-title">Адміністратори</h6>
+                                    <h3 class="mb-0" id="adminUsers">{{ admin_users }}</h3>
+                                </div>
+                                <i class="fas fa-user-shield fa-2x opacity-50"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card bg-info text-white">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h6 class="card-title">Нові за тиждень</h6>
+                                    <h3 class="mb-0" id="newUsers">{{ new_users_week }}</h3>
+                                </div>
+                                <i class="fas fa-user-plus fa-2x opacity-50"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filters -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <div class="row align-items-end">
+                        <div class="col-md-3">
+                            <label class="form-label text-white">Пошук</label>
+                            <input type="text" class="form-control" id="searchUsers" placeholder="Пошук за ім'ям або email...">
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label text-white">Роль</label>
+                            <select class="form-select" id="filterRole">
+                                <option value="">Всі ролі</option>
+                                <option value="admin">Адміністратор</option>
+                                <option value="operator">Оператор</option>
+                                <option value="technician">Технік</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label text-white">Статус</label>
+                            <select class="form-select" id="filterStatus">
+                                <option value="">Всі статуси</option>
+                                <option value="active">Активний</option>
+                                <option value="inactive">Неактивний</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label text-white">Період реєстрації</label>
+                            <select class="form-select" id="filterPeriod">
+                                <option value="">Весь час</option>
+                                <option value="today">Сьогодні</option>
+                                <option value="week">Цей тиждень</option>
+                                <option value="month">Цей місяць</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <button class="btn btn-outline-secondary w-100" onclick="clearFilters()">
+                                <i class="fas fa-times me-2"></i>Очистити
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Users Table -->
+            <div class="card">
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-dark table-hover mb-0">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th class="ps-4">Користувач</th>
+                                    <th>Роль</th>
+                                    <th>Відділ</th>
+                                    <th>Телефон</th>
+                                    <th>Дата реєстрації</th>
+                                    <th>Статус</th>
+                                    <th class="text-center">Дії</th>
+                                </tr>
+                            </thead>
+                            <tbody id="usersTableBody">
+                                {% for email, user in users.items() %}
+                                <tr data-user-email="{{ email }}">
+                                    <td class="ps-4">
+                                        <div class="d-flex align-items-center">
+                                            <img src="{% if user.get('avatar') %}/static/{{ user.avatar }}{% else %}https://i.pravatar.cc/40?u={{ email }}{% endif %}" class="rounded-circle me-3" width="40" height="40" style="object-fit: cover;">
+                                            <div>
+                                                <div class="text-white fw-medium">{{ user.get('first_name', '') }} {{ user.get('last_name', '') }}</div>
+                                                <div class="text-muted small">{{ email }}</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="badge {% if user.get('role') == 'admin' %}bg-danger{% elif user.get('role') == 'operator' %}bg-primary{% else %}bg-success{% endif %}">
+                                            {% if user.get('role') == 'admin' %}
+                                                <i class="fas fa-user-shield me-1"></i>Адміністратор
+                                            {% elif user.get('role') == 'operator' %}
+                                                <i class="fas fa-headset me-1"></i>Оператор
+                                            {% else %}
+                                                <i class="fas fa-tools me-1"></i>Технік
+                                            {% endif %}
+                                        </span>
+                                    </td>
+                                    <td class="text-muted">{{ user.get('department', '-') }}</td>
+                                    <td class="text-muted">{{ user.get('phone', '-') }}</td>
+                                    <td class="text-muted">
+                                        {% if user.get('created_at') %}
+                                            {{ user.created_at[:10] }}
+                                        {% else %}
+                                            -
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if user.get('profile_completed', False) %}
+                                            <span class="badge bg-success"><i class="fas fa-check me-1"></i>Активний</span>
+                                        {% else %}
+                                            <span class="badge bg-warning"><i class="fas fa-clock me-1"></i>Неактивний</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="btn-group" role="group">
+                                            <button class="btn btn-sm btn-outline-primary" onclick="editUser('{{ email }}')" title="Редагувати">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-outline-info" onclick="viewUser('{{ email }}')" title="Переглянути">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                            {% if user.get('profile_completed', False) %}
+                                                <button class="btn btn-sm btn-outline-warning" onclick="toggleUserStatus('{{ email }}', false)" title="Деактивувати">
+                                                    <i class="fas fa-user-times"></i>
+                                                </button>
+                                            {% else %}
+                                                <button class="btn btn-sm btn-outline-success" onclick="toggleUserStatus('{{ email }}', true)" title="Активувати">
+                                                    <i class="fas fa-user-check"></i>
+                                                </button>
+                                            {% endif %}
+                                            <button class="btn btn-sm btn-outline-danger" onclick="deleteUser('{{ email }}')" title="Видалити">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add User Modal -->
+<div class="modal fade" id="addUserModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content bg-dark">
+            <div class="modal-header">
+                <h5 class="modal-title text-white">
+                    <i class="fas fa-user-plus me-2"></i>Додати нового користувача
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="addUserForm">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label text-white">Ім'я</label>
+                            <input type="text" class="form-control" name="first_name" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label text-white">Прізвище</label>
+                            <input type="text" class="form-control" name="last_name" required>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label text-white">Email</label>
+                        <input type="email" class="form-control" name="email" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label text-white">Телефон</label>
+                        <input type="tel" class="form-control" name="phone" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label text-white">Роль</label>
+                        <select class="form-select" name="role" required>
+                            <option value="">Оберіть роль</option>
+                            <option value="operator">Оператор</option>
+                            <option value="technician">Технік</option>
+                            <option value="admin">Адміністратор</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label text-white">Відділ/Організація</label>
+                        <input type="text" class="form-control" name="department">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label text-white">Тимчасовий пароль</label>
+                        <input type="password" class="form-control" name="password" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Скасувати</button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save me-2"></i>Створити користувача
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+function refreshUsers() {
+    window.location.reload();
+}
+
+function clearFilters() {
+    document.getElementById('searchUsers').value = '';
+    document.getElementById('filterRole').value = '';
+    document.getElementById('filterStatus').value = '';
+    document.getElementById('filterPeriod').value = '';
+    filterUsers();
+}
+
+function filterUsers() {
+    const search = document.getElementById('searchUsers').value.toLowerCase();
+    const role = document.getElementById('filterRole').value;
+    const status = document.getElementById('filterStatus').value;
+    const period = document.getElementById('filterPeriod').value;
+    
+    const rows = document.querySelectorAll('#usersTableBody tr');
+    
+    rows.forEach(row => {
+        const email = row.dataset.userEmail;
+        const userName = row.querySelector('td:first-child .text-white').textContent.toLowerCase();
+        const userRole = row.querySelector('.badge').textContent.toLowerCase();
+        const userStatus = row.querySelector('td:nth-child(6) .badge').textContent.toLowerCase();
+        
+        let show = true;
+        
+        if (search && !userName.includes(search) && !email.toLowerCase().includes(search)) {
+            show = false;
+        }
+        
+        if (role && !userRole.includes(role)) {
+            show = false;
+        }
+        
+        if (status === 'active' && !userStatus.includes('активний')) {
+            show = false;
+        } else if (status === 'inactive' && !userStatus.includes('неактивний')) {
+            show = false;
+        }
+        
+        row.style.display = show ? '' : 'none';
+    });
+}
+
+function editUser(email) {
+    // Redirect to user edit page or open edit modal
+    window.location.href = `/users/${email}/edit`;
+}
+
+function viewUser(email) {
+    // Redirect to user profile page
+    window.location.href = `/users/${email}/profile`;
+}
+
+function toggleUserStatus(email, activate) {
+    const action = activate ? 'активувати' : 'деактивувати';
+    if (confirm(`Ви впевнені, що хочете ${action} користувача ${email}?`)) {
+        fetch(`/users/${email}/toggle-status`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ activate: activate })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                location.reload();
+            } else {
+                alert('Помилка при зміні статусу користувача');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Помилка при зміні статусу користувача');
+        });
+    }
+}
+
+function deleteUser(email) {
+    if (confirm(`Ви впевнені, що хочете видалити користувача ${email}? Цю дію неможливо скасувати.`)) {
+        fetch(`/users/${email}/delete`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                location.reload();
+            } else {
+                alert('Помилка при видаленні користувача');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Помилка при видаленні користувача');
+        });
+    }
+}
+
+// Event listeners
+document.getElementById('searchUsers').addEventListener('input', filterUsers);
+document.getElementById('filterRole').addEventListener('change', filterUsers);
+document.getElementById('filterStatus').addEventListener('change', filterUsers);
+document.getElementById('filterPeriod').addEventListener('change', filterUsers);
+
+document.getElementById('addUserForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    // Implement add user functionality
+    alert('Функція додавання користувача буде реалізована');
+    const modal = bootstrap.Modal.getInstance(document.getElementById('addUserModal'));
+    modal.hide();
+});
+</script>
+{% endblock %}

@@ -1,0 +1,555 @@
+{% extends "layout.html" %}
+
+{% block title %}Реєстр актів виконаних робіт{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/custom.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h4 class="text-white mb-1">
+                        <i class="fas fa-book me-2"></i>Реєстр актів виконаних робіт
+                    </h4>
+                    <p class="text-muted mb-0">Формування реєстру за період для друку</p>
+                </div>
+                <div class="d-flex gap-2">
+                    <button class="btn btn-outline-secondary" onclick="exportToExcel()">
+                        <i class="fas fa-file-excel me-2"></i>Excel
+                    </button>
+                    <button class="btn btn-outline-secondary" onclick="printRegistry()">
+                        <i class="fas fa-print me-2"></i>Друк реєстру
+                    </button>
+                    <button class="btn btn-primary" onclick="generateRegistry()">
+                        <i class="fas fa-file-alt me-2"></i>Сформувати реєстр
+                    </button>
+                </div>
+            </div>
+
+            <!-- Period Selection -->
+            <div class="card bg-dark border-0 mb-4">
+                <div class="card-header bg-transparent border-bottom">
+                    <h5 class="text-white mb-0">
+                        <i class="fas fa-calendar me-2"></i>Вибір періоду
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row align-items-end">
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label text-white">Період</label>
+                            <select class="form-select" id="periodType" onchange="toggleCustomDates()">
+                                <option value="current_month" selected>Поточний місяць</option>
+                                <option value="last_month">Минулий місяць</option>
+                                <option value="current_quarter">Поточний квартал</option>
+                                <option value="last_quarter">Минулий квартал</option>
+                                <option value="current_year">Поточний рік</option>
+                                <option value="custom">Довільний період</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2 mb-3" id="dateFromGroup" style="display: none;">
+                            <label class="form-label text-white">Дата з</label>
+                            <input type="date" class="form-control" id="dateFrom" value="2025-06-01">
+                        </div>
+                        <div class="col-md-2 mb-3" id="dateToGroup" style="display: none;">
+                            <label class="form-label text-white">Дата по</label>
+                            <input type="date" class="form-control" id="dateTo" value="2025-06-30">
+                        </div>
+                        <div class="col-md-2 mb-3">
+                            <label class="form-label text-white">Статус</label>
+                            <select class="form-select" id="filterStatus">
+                                <option value="">Всі статуси</option>
+                                <option value="completed" selected>Виконані</option>
+                                <option value="in_progress">В процесі</option>
+                                <option value="signed">Підписані</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label text-white">Замовник</label>
+                            <select class="form-select" id="filterClient">
+                                <option value="">Всі замовники</option>
+                                <option value="zhek_central">ЖЕК 'Центральний'</option>
+                                <option value="osbb_sun">ОСББ 'Сонячний'</option>
+                                <option value="office_center">ТОВ 'Офіс-Центр'</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="d-flex align-items-center justify-content-between">
+                                <div class="text-info">
+                                    <i class="fas fa-info-circle me-2"></i>
+                                    Обраний період: <span id="selectedPeriod">Червень 2025</span>
+                                </div>
+                                <button class="btn btn-outline-primary" onclick="applyFilters()">
+                                    <i class="fas fa-filter me-2"></i>Застосувати фільтри
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Statistics for Period -->
+            <div class="row mb-4">
+                <div class="col-md-3 mb-3">
+                    <div class="card bg-dark border-0">
+                        <div class="card-body text-center">
+                            <i class="fas fa-file-signature fa-2x text-success mb-2"></i>
+                            <h5 class="text-white">12</h5>
+                            <p class="text-muted mb-0">Актів за період</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <div class="card bg-dark border-0">
+                        <div class="card-body text-center">
+                            <i class="fas fa-clock fa-2x text-info mb-2"></i>
+                            <h5 class="text-white">86.5</h5>
+                            <p class="text-muted mb-0">Годин робіт</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <div class="card bg-dark border-0">
+                        <div class="card-body text-center">
+                            <i class="fas fa-money-bill-wave fa-2x text-warning mb-2"></i>
+                            <h5 class="text-white">185 400 ₴</h5>
+                            <p class="text-muted mb-0">Загальна вартість</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <div class="card bg-dark border-0">
+                        <div class="card-body text-center">
+                            <i class="fas fa-check-circle fa-2x text-primary mb-2"></i>
+                            <h5 class="text-white">92%</h5>
+                            <p class="text-muted mb-0">Підписані акти</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Work Reports Table -->
+            <div class="card bg-dark border-0">
+                <div class="card-header bg-transparent border-bottom d-flex justify-content-between align-items-center">
+                    <h5 class="text-white mb-0">
+                        <i class="fas fa-list me-2"></i>Акти виконаних робіт за обраний період
+                    </h5>
+                    <div class="d-flex align-items-center">
+                        <span class="text-muted me-3">Знайдено: <span id="reportsCount">12</span> актів</span>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="selectForRegistry" checked>
+                            <label class="form-check-label text-white" for="selectForRegistry">
+                                Включити в реєстр
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-dark table-hover mb-0" id="reportsTable">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>
+                                        <input type="checkbox" class="form-check-input" id="selectAllReports" checked>
+                                    </th>
+                                    <th>№ акту</th>
+                                    <th>Дата</th>
+                                    <th>Замовник</th>
+                                    <th>Виконавець</th>
+                                    <th>Годин</th>
+                                    <th>Сума</th>
+                                    <th>Статус</th>
+                                    <th class="text-center">Дії</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr data-report-id="1">
+                                    <td>
+                                        <input type="checkbox" class="form-check-input report-select" checked>
+                                    </td>
+                                    <td>АКТ-2025-001</td>
+                                    <td>05.06.2025</td>
+                                    <td>ЖЕК 'Центральний'</td>
+                                    <td>Петров І.А.</td>
+                                    <td>8.5</td>
+                                    <td>18 100 ₴</td>
+                                    <td><span class="badge bg-success">Підписано</span></td>
+                                    <td class="text-center">
+                                        <div class="btn-group" role="group">
+                                            <button class="btn btn-sm btn-outline-primary" onclick="viewReport(1)" title="Переглянути">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-outline-info" onclick="downloadReport(1)" title="Завантажити">
+                                                <i class="fas fa-download"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr data-report-id="2">
+                                    <td>
+                                        <input type="checkbox" class="form-check-input report-select" checked>
+                                    </td>
+                                    <td>АКТ-2025-002</td>
+                                    <td>08.06.2025</td>
+                                    <td>ОСББ 'Сонячний'</td>
+                                    <td>Сидоров В.П.</td>
+                                    <td>6.0</td>
+                                    <td>12 500 ₴</td>
+                                    <td><span class="badge bg-success">Підписано</span></td>
+                                    <td class="text-center">
+                                        <div class="btn-group" role="group">
+                                            <button class="btn btn-sm btn-outline-primary" onclick="viewReport(2)" title="Переглянути">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-outline-info" onclick="downloadReport(2)" title="Завантажити">
+                                                <i class="fas fa-download"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr data-report-id="3">
+                                    <td>
+                                        <input type="checkbox" class="form-check-input report-select" checked>
+                                    </td>
+                                    <td>АКТ-2025-003</td>
+                                    <td>12.06.2025</td>
+                                    <td>ТОВ 'Офіс-Центр'</td>
+                                    <td>Іванов С.М.</td>
+                                    <td>4.5</td>
+                                    <td>9 800 ₴</td>
+                                    <td><span class="badge bg-warning">В процесі</span></td>
+                                    <td class="text-center">
+                                        <div class="btn-group" role="group">
+                                            <button class="btn btn-sm btn-outline-primary" onclick="viewReport(3)" title="Переглянути">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-outline-info" onclick="downloadReport(3)" title="Завантажити">
+                                                <i class="fas fa-download"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr data-report-id="4">
+                                    <td>
+                                        <input type="checkbox" class="form-check-input report-select" checked>
+                                    </td>
+                                    <td>АКТ-2025-004</td>
+                                    <td>15.06.2025</td>
+                                    <td>ЖЕК 'Центральний'</td>
+                                    <td>Петров І.А.</td>
+                                    <td>12.0</td>
+                                    <td>28 400 ₴</td>
+                                    <td><span class="badge bg-success">Підписано</span></td>
+                                    <td class="text-center">
+                                        <div class="btn-group" role="group">
+                                            <button class="btn btn-sm btn-outline-primary" onclick="viewReport(4)" title="Переглянути">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-outline-info" onclick="downloadReport(4)" title="Завантажити">
+                                                <i class="fas fa-download"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="card-footer bg-transparent border-top">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="text-muted">
+                            Обрано <span id="selectedCount">4</span> з <span id="totalCount">4</span> актів
+                        </div>
+                        <div class="d-flex gap-2">
+                            <button class="btn btn-outline-warning" onclick="selectAll()">
+                                <i class="fas fa-check-square me-2"></i>Обрати всі
+                            </button>
+                            <button class="btn btn-outline-secondary" onclick="deselectAll()">
+                                <i class="fas fa-square me-2"></i>Зняти всі
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Registry Preview -->
+            <div class="card bg-dark border-0 mt-4" id="registryPreview" style="display: none;">
+                <div class="card-header bg-transparent border-bottom">
+                    <h5 class="text-white mb-0">
+                        <i class="fas fa-file-alt me-2"></i>Попередній перегляд реєстру
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="registry-header text-center mb-4">
+                        <h4 class="text-white">РЕЄСТР АКТІВ ВИКОНАНИХ РОБІТ</h4>
+                        <p class="text-muted mb-0">за період з <span id="registryPeriodFrom">01.06.2025</span> по <span id="registryPeriodTo">30.06.2025</span></p>
+                        <p class="text-muted">ТОВ "Ліфт Сервіс"</p>
+                    </div>
+                    
+                    <div class="table-responsive">
+                        <table class="table table-dark table-bordered" id="registryTable">
+                            <thead>
+                                <tr>
+                                    <th>№ п/п</th>
+                                    <th>Номер акту</th>
+                                    <th>Дата складання</th>
+                                    <th>Замовник</th>
+                                    <th>Виконавець</th>
+                                    <th>Кількість годин</th>
+                                    <th>Сума, грн</th>
+                                    <th>Примітки</th>
+                                </tr>
+                            </thead>
+                            <tbody id="registryTableBody">
+                                <!-- Registry rows will be populated here -->
+                            </tbody>
+                            <tfoot>
+                                <tr class="table-info">
+                                    <td colspan="5" class="text-end"><strong>РАЗОМ:</strong></td>
+                                    <td><strong id="totalHours">0</strong></td>
+                                    <td><strong id="totalAmount">0 ₴</strong></td>
+                                    <td></td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                    
+                    <div class="registry-footer mt-4">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p class="text-white mb-1">Директор _________________ /Іваненко О.В./</p>
+                                <p class="text-white mb-1">Головний бухгалтер _______ /Петренко Н.І./</p>
+                            </div>
+                            <div class="col-md-6 text-end">
+                                <p class="text-muted mb-1">Дата складання: <span id="registryDate"></span></p>
+                                <p class="text-muted">М.П.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const selectAllCheckbox = document.getElementById('selectAllReports');
+    const periodType = document.getElementById('periodType');
+    
+    // Initialize
+    updateSelectedCount();
+    updateSelectedPeriod();
+    
+    // Select all functionality
+    selectAllCheckbox.addEventListener('change', function() {
+        const checkboxes = document.querySelectorAll('.report-select');
+        checkboxes.forEach(checkbox => {
+            checkbox.checked = this.checked;
+        });
+        updateSelectedCount();
+    });
+    
+    // Individual checkbox change
+    document.querySelectorAll('.report-select').forEach(checkbox => {
+        checkbox.addEventListener('change', updateSelectedCount);
+    });
+    
+    // Period type change
+    periodType.addEventListener('change', function() {
+        toggleCustomDates();
+        updateSelectedPeriod();
+    });
+    
+    function updateSelectedCount() {
+        const selected = document.querySelectorAll('.report-select:checked').length;
+        const total = document.querySelectorAll('.report-select').length;
+        document.getElementById('selectedCount').textContent = selected;
+        document.getElementById('totalCount').textContent = total;
+        
+        // Update select all checkbox state
+        const selectAllCheckbox = document.getElementById('selectAllReports');
+        selectAllCheckbox.checked = selected === total;
+        selectAllCheckbox.indeterminate = selected > 0 && selected < total;
+    }
+    
+    function updateSelectedPeriod() {
+        const periodType = document.getElementById('periodType').value;
+        const selectedPeriodElement = document.getElementById('selectedPeriod');
+        
+        const periods = {
+            'current_month': 'Червень 2025',
+            'last_month': 'Травень 2025',
+            'current_quarter': 'II квартал 2025',
+            'last_quarter': 'I квартал 2025',
+            'current_year': '2025 рік',
+            'custom': 'Довільний період'
+        };
+        
+        selectedPeriodElement.textContent = periods[periodType] || 'Невизначено';
+    }
+    
+    // Global functions
+    window.toggleCustomDates = function() {
+        const periodType = document.getElementById('periodType').value;
+        const dateFromGroup = document.getElementById('dateFromGroup');
+        const dateToGroup = document.getElementById('dateToGroup');
+        
+        if (periodType === 'custom') {
+            dateFromGroup.style.display = 'block';
+            dateToGroup.style.display = 'block';
+        } else {
+            dateFromGroup.style.display = 'none';
+            dateToGroup.style.display = 'none';
+        }
+    };
+    
+    window.applyFilters = function() {
+        // Apply filtering logic here
+        alert('Фільтри застосовані');
+        updateSelectedCount();
+    };
+    
+    window.generateRegistry = function() {
+        const selectedReports = document.querySelectorAll('.report-select:checked');
+        
+        if (selectedReports.length === 0) {
+            alert('Оберіть принаймні один акт для включення в реєстр');
+            return;
+        }
+        
+        populateRegistryPreview(selectedReports);
+        document.getElementById('registryPreview').style.display = 'block';
+        document.getElementById('registryPreview').scrollIntoView({ behavior: 'smooth' });
+    };
+    
+    function populateRegistryPreview(selectedReports) {
+        const tbody = document.getElementById('registryTableBody');
+        tbody.innerHTML = '';
+        
+        let totalHours = 0;
+        let totalAmount = 0;
+        
+        selectedReports.forEach((checkbox, index) => {
+            const row = checkbox.closest('tr');
+            const actNumber = row.children[1].textContent;
+            const date = row.children[2].textContent;
+            const client = row.children[3].textContent;
+            const executor = row.children[4].textContent;
+            const hours = parseFloat(row.children[5].textContent);
+            const amount = parseFloat(row.children[6].textContent.replace(/[^\d.-]/g, ''));
+            const status = row.children[7].textContent.trim();
+            
+            totalHours += hours;
+            totalAmount += amount;
+            
+            const newRow = document.createElement('tr');
+            newRow.innerHTML = `
+                <td>${index + 1}</td>
+                <td>${actNumber}</td>
+                <td>${date}</td>
+                <td>${client}</td>
+                <td>${executor}</td>
+                <td>${hours}</td>
+                <td>${new Intl.NumberFormat('uk-UA').format(amount)}</td>
+                <td>${status === 'Підписано' ? 'Виконано' : 'В роботі'}</td>
+            `;
+            tbody.appendChild(newRow);
+        });
+        
+        document.getElementById('totalHours').textContent = totalHours.toFixed(1);
+        document.getElementById('totalAmount').textContent = new Intl.NumberFormat('uk-UA').format(totalAmount) + ' ₴';
+        document.getElementById('registryDate').textContent = new Date().toLocaleDateString('uk-UA');
+    }
+    
+    window.selectAll = function() {
+        document.querySelectorAll('.report-select').forEach(checkbox => {
+            checkbox.checked = true;
+        });
+        updateSelectedCount();
+    };
+    
+    window.deselectAll = function() {
+        document.querySelectorAll('.report-select').forEach(checkbox => {
+            checkbox.checked = false;
+        });
+        updateSelectedCount();
+    };
+    
+    window.viewReport = function(id) {
+        window.location.href = '/documents/work-report?id=' + id;
+    };
+    
+    window.downloadReport = function(id) {
+        alert('Завантаження акту ' + id);
+    };
+    
+    window.exportToExcel = function() {
+        alert('Експорт реєстру в Excel');
+    };
+    
+    window.printRegistry = function() {
+        const registryPreview = document.getElementById('registryPreview');
+        if (registryPreview.style.display === 'none') {
+            alert('Спочатку сформуйте реєстр');
+            return;
+        }
+        
+        const printContent = registryPreview.innerHTML;
+        const originalContent = document.body.innerHTML;
+        
+        document.body.innerHTML = printContent;
+        window.print();
+        document.body.innerHTML = originalContent;
+        location.reload();
+    };
+});
+</script>
+
+<style media="print">
+@media print {
+    .card-header, .btn, .form-control, .form-select, .form-check, .card-footer {
+        display: none !important;
+    }
+    
+    .card {
+        border: none !important;
+        background: white !important;
+    }
+    
+    .table-dark {
+        background: white !important;
+        color: black !important;
+    }
+    
+    .table-dark th, .table-dark td {
+        background: white !important;
+        color: black !important;
+        border-color: black !important;
+    }
+    
+    .text-white {
+        color: black !important;
+    }
+    
+    .text-muted {
+        color: #666 !important;
+    }
+    
+    .registry-header h4 {
+        color: black !important;
+        font-size: 18px;
+        margin-bottom: 10px;
+    }
+    
+    .registry-footer {
+        margin-top: 30px;
+    }
+}
+</style>
+{% endblock %}

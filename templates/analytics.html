@@ -1,0 +1,522 @@
+{% extends "layout.html" %}
+
+{% block title %}Аналітика - Панель керування{% endblock %}
+
+{% block head %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+.analytics-card {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    transition: all 0.3s ease;
+}
+
+.analytics-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+}
+
+.stat-value {
+    font-size: 2.5rem;
+    font-weight: 700;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.chart-container {
+    position: relative;
+    height: 400px;
+    padding: 20px;
+}
+
+.metric-card {
+    background: linear-gradient(135deg, var(--bs-primary), var(--bs-info));
+    border: none;
+    border-radius: 20px;
+    padding: 25px;
+    color: white;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.metric-card.success {
+    background: linear-gradient(135deg, #28a745, #20c997);
+}
+
+.metric-card.warning {
+    background: linear-gradient(135deg, #ffc107, #fd7e14);
+}
+
+.metric-card.danger {
+    background: linear-gradient(135deg, #dc3545, #e83e8c);
+}
+
+.activity-timeline {
+    max-height: 500px;
+    overflow-y: auto;
+}
+
+.timeline-item {
+    border-left: 3px solid var(--bs-primary);
+    padding-left: 20px;
+    margin-bottom: 20px;
+    position: relative;
+}
+
+.timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -8px;
+    top: 8px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--bs-primary);
+}
+
+.filter-buttons .btn {
+    border-radius: 25px;
+    margin: 5px;
+    font-weight: 500;
+}
+
+.refresh-btn {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--bs-primary), var(--bs-info));
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    z-index: 1000;
+    transition: all 0.3s ease;
+}
+
+.refresh-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+.pulse {
+    animation: pulse 2s infinite;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Заголовок страницы -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="text-white mb-1">
+                <i class="fas fa-chart-bar me-3"></i>Аналітика
+            </h1>
+            <p class="text-muted mb-0">Детальна статистика та звіти по заявкам</p>
+        </div>
+        <div class="filter-buttons">
+            <button class="btn btn-outline-light active" data-period="7">7 днів</button>
+            <button class="btn btn-outline-light" data-period="30">30 днів</button>
+            <button class="btn btn-outline-light" data-period="all">Весь час</button>
+        </div>
+    </div>
+
+    <!-- Ключевые метрики -->
+    <div class="row mb-4">
+        <div class="col-lg-3 col-md-6 mb-3">
+            <div class="metric-card">
+                <i class="fas fa-clipboard-list fa-2x mb-3"></i>
+                <div class="stat-value" id="totalRequests">0</div>
+                <p class="mb-0">Всього заявок</p>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6 mb-3">
+            <div class="metric-card success">
+                <i class="fas fa-check-circle fa-2x mb-3"></i>
+                <div class="stat-value" id="completedRequests">0</div>
+                <p class="mb-0">Виконано</p>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6 mb-3">
+            <div class="metric-card warning">
+                <i class="fas fa-clock fa-2x mb-3"></i>
+                <div class="stat-value" id="pendingRequests">0</div>
+                <p class="mb-0">Очікують</p>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6 mb-3">
+            <div class="metric-card danger">
+                <i class="fas fa-exclamation-triangle fa-2x mb-3"></i>
+                <div class="stat-value" id="errorRequests">0</div>
+                <p class="mb-0">Проблемні</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Графики -->
+    <div class="row mb-4">
+        <!-- Статистика по статусам (Pie Chart) -->
+        <div class="col-lg-6 mb-4">
+            <div class="analytics-card p-4">
+                <h4 class="text-white mb-4">
+                    <i class="fas fa-chart-pie me-2"></i>Розподіл по статусам
+                </h4>
+                <div class="chart-container">
+                    <canvas id="statusChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Статистика по районам (Bar Chart) -->
+        <div class="col-lg-6 mb-4">
+            <div class="analytics-card p-4">
+                <h4 class="text-white mb-4">
+                    <i class="fas fa-map-marker-alt me-2"></i>Заявки по районах
+                </h4>
+                <div class="chart-container">
+                    <canvas id="districtChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <!-- Динамика по дням (Line Chart) -->
+        <div class="col-lg-8 mb-4">
+            <div class="analytics-card p-4">
+                <h4 class="text-white mb-4">
+                    <i class="fas fa-chart-line me-2"></i>Динаміка заявок (останні 7 днів)
+                </h4>
+                <div class="chart-container">
+                    <canvas id="dailyChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Активность по часам (Bar Chart) -->
+        <div class="col-lg-4 mb-4">
+            <div class="analytics-card p-4">
+                <h4 class="text-white mb-4">
+                    <i class="fas fa-clock me-2"></i>Активність по годинах
+                </h4>
+                <div class="chart-container">
+                    <canvas id="hourlyChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Последние действия -->
+    <div class="row">
+        <div class="col-12">
+            <div class="analytics-card p-4">
+                <h4 class="text-white mb-4">
+                    <i class="fas fa-history me-2"></i>Остання активність
+                </h4>
+                <div class="activity-timeline" id="activityTimeline">
+                    <!-- Динамически заполняется -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Кнопка обновления -->
+<button class="refresh-btn" id="refreshData" title="Оновити дані">
+    <i class="fas fa-sync-alt"></i>
+</button>
+{% endblock %}
+
+{% block scripts %}
+<script>
+let charts = {};
+let analyticsData = {};
+
+// Инициализация
+document.addEventListener('DOMContentLoaded', function() {
+    loadAnalyticsData();
+    setupEventListeners();
+    
+    // Автообновление каждые 30 секунд
+    setInterval(loadAnalyticsData, 30000);
+});
+
+function setupEventListeners() {
+    // Кнопка обновления
+    document.getElementById('refreshData').addEventListener('click', function() {
+        this.classList.add('pulse');
+        loadAnalyticsData();
+        setTimeout(() => this.classList.remove('pulse'), 1000);
+    });
+
+    // Фильтры по периодам
+    document.querySelectorAll('.filter-buttons .btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            document.querySelectorAll('.filter-buttons .btn').forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            // Здесь можно добавить логику фильтрации
+        });
+    });
+}
+
+async function loadAnalyticsData() {
+    try {
+        const response = await fetch('/analytics/data');
+        analyticsData = await response.json();
+        
+        updateMetrics();
+        updateCharts();
+        updateActivityTimeline();
+    } catch (error) {
+        console.error('Ошибка загрузки данных аналитики:', error);
+    }
+}
+
+// Функция для обновления графиков (вызывается из dashboard.js)
+window.updateAnalyticsCharts = function() {
+    console.log('🔄 Обновляем графики аналитики из-за новых заявок');
+    loadAnalyticsData();
+};
+
+// Слушаем события новых заявок
+window.addEventListener('newRequestAdded', function(event) {
+    console.log('📊 Получено событие новой заявки, обновляем аналитику');
+    loadAnalyticsData();
+});
+
+function updateMetrics() {
+    const { status_stats, total_requests } = analyticsData;
+    
+    document.getElementById('totalRequests').textContent = total_requests || 0;
+    document.getElementById('completedRequests').textContent = status_stats?.done || 0;
+    document.getElementById('pendingRequests').textContent = status_stats?.pending || 0;
+    document.getElementById('errorRequests').textContent = status_stats?.error || 0;
+}
+
+function updateCharts() {
+    createStatusChart();
+    createDistrictChart();
+    createDailyChart();
+    createHourlyChart();
+}
+
+function createStatusChart() {
+    const ctx = document.getElementById('statusChart').getContext('2d');
+    
+    if (charts.status) charts.status.destroy();
+    
+    const { status_stats } = analyticsData;
+    
+    charts.status = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: ['Виконано', 'Очікують', 'Проблемні'],
+            datasets: [{
+                data: [
+                    status_stats?.done || 0,
+                    status_stats?.pending || 0,
+                    status_stats?.error || 0
+                ],
+                backgroundColor: [
+                    '#28a745',
+                    '#ffc107',
+                    '#dc3545'
+                ],
+                borderWidth: 3,
+                borderColor: '#1a1a1a'
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: { color: 'white', font: { size: 14 } }
+                }
+            }
+        }
+    });
+}
+
+function createDistrictChart() {
+    const ctx = document.getElementById('districtChart').getContext('2d');
+    
+    if (charts.district) charts.district.destroy();
+    
+    const { district_stats } = analyticsData;
+    const labels = Object.keys(district_stats || {});
+    const data = Object.values(district_stats || {});
+    
+    charts.district = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Кількість заявок',
+                data: data,
+                backgroundColor: 'rgba(13, 110, 253, 0.8)',
+                borderColor: '#0d6efd',
+                borderWidth: 2,
+                borderRadius: 8
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: { color: 'white' },
+                    grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                },
+                x: {
+                    ticks: { color: 'white' },
+                    grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                }
+            }
+        }
+    });
+}
+
+function createDailyChart() {
+    const ctx = document.getElementById('dailyChart').getContext('2d');
+    
+    if (charts.daily) charts.daily.destroy();
+    
+    const { daily_stats } = analyticsData;
+    const labels = daily_stats?.map(d => d.date) || [];
+    const data = daily_stats?.map(d => d.count) || [];
+    
+    charts.daily = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Заявки по днях',
+                data: data,
+                borderColor: '#20c997',
+                backgroundColor: 'rgba(32, 201, 151, 0.1)',
+                borderWidth: 3,
+                fill: true,
+                tension: 0.4,
+                pointBackgroundColor: '#20c997',
+                pointBorderColor: '#ffffff',
+                pointBorderWidth: 2,
+                pointRadius: 6
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    labels: { color: 'white' }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: { color: 'white' },
+                    grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                },
+                x: {
+                    ticks: { color: 'white' },
+                    grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                }
+            }
+        }
+    });
+}
+
+function createHourlyChart() {
+    const ctx = document.getElementById('hourlyChart').getContext('2d');
+    
+    if (charts.hourly) charts.hourly.destroy();
+    
+    const { hourly_stats } = analyticsData;
+    const labels = hourly_stats?.map(h => h.hour) || [];
+    const data = hourly_stats?.map(h => h.count) || [];
+    
+    charts.hourly = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Заявки',
+                data: data,
+                backgroundColor: 'rgba(255, 193, 7, 0.8)',
+                borderColor: '#ffc107',
+                borderWidth: 1,
+                borderRadius: 4
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: { 
+                        color: 'white',
+                        stepSize: 1
+                    },
+                    grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                },
+                x: {
+                    ticks: { 
+                        color: 'white',
+                        maxRotation: 45
+                    },
+                    grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                }
+            }
+        }
+    });
+}
+
+function updateActivityTimeline() {
+    // Здесь можно добавить отображение последних действий
+    const timeline = document.getElementById('activityTimeline');
+    timeline.innerHTML = `
+        <div class="timeline-item">
+            <div class="d-flex justify-content-between">
+                <h6 class="text-white mb-1">Заявка оброблена</h6>
+                <small class="text-muted">5 хв тому</small>
+            </div>
+            <p class="text-muted mb-0">вул. Лазурна, 30 - проблему вирішено</p>
+        </div>
+        <div class="timeline-item">
+            <div class="d-flex justify-content-between">
+                <h6 class="text-white mb-1">Нова заявка</h6>
+                <small class="text-muted">15 хв тому</small>
+            </div>
+            <p class="text-muted mb-0">вул. Океанівська, 40 - ліфт не працює</p>
+        </div>
+        <div class="timeline-item">
+            <div class="d-flex justify-content-between">
+                <h6 class="text-white mb-1">Оновлення системи</h6>
+                <small class="text-muted">1 год тому</small>
+            </div>
+            <p class="text-muted mb-0">Виконано резервне копіювання бази даних</p>
+        </div>
+    `;
+}
+</script>
+{% endblock %}

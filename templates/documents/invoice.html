@@ -1,0 +1,303 @@
+{% extends "layout.html" %}
+
+{% block title %}Рахунок-фактура{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/custom.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h4 class="text-white mb-1">
+                        <i class="fas fa-file-invoice me-2"></i>Рахунок-фактура
+                    </h4>
+                    <p class="text-muted mb-0">Створення та управління рахунками</p>
+                </div>
+                <div class="d-flex gap-2">
+                    <button class="btn btn-outline-secondary">
+                        <i class="fas fa-search me-2"></i>Пошук
+                    </button>
+                    <button class="btn btn-primary">
+                        <i class="fas fa-plus me-2"></i>Новий рахунок
+                    </button>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-8">
+                    <!-- Invoice Details -->
+                    <div class="card bg-dark border-0 mb-4">
+                        <div class="card-header bg-transparent border-bottom">
+                            <h5 class="text-white mb-0">
+                                <i class="fas fa-receipt me-2"></i>Деталі рахунку
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label text-white">Номер рахунку</label>
+                                    <input type="text" class="form-control" value="2025-INV-001" placeholder="Введіть номер">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label text-white">Дата виставлення</label>
+                                    <input type="date" class="form-control" value="2025-06-13">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label text-white">Термін оплати</label>
+                                    <input type="date" class="form-control" value="2025-06-28">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label text-white">Договір</label>
+                                    <select class="form-select">
+                                        <option value="2025-001" selected>2025-001 (ЖЕК 'Центральний')</option>
+                                        <option value="2025-002">2025-002 (ОСББ 'Сонячний')</option>
+                                        <option value="2025-003">2025-003 (ТОВ 'Офіс-Центр')</option>
+                                    </select>
+                                </div>
+                                <div class="col-12 mb-3">
+                                    <label class="form-label text-white">Замовник</label>
+                                    <input type="text" class="form-control" value="ЖЕК 'Центральний'" readonly>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label text-white">ЄДРПОУ</label>
+                                    <input type="text" class="form-control" value="87654321" readonly>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label text-white">Платник ПДВ</label>
+                                    <select class="form-select">
+                                        <option value="yes" selected>Так</option>
+                                        <option value="no">Ні</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Services -->
+                    <div class="card bg-dark border-0 mb-4">
+                        <div class="card-header bg-transparent border-bottom d-flex justify-content-between align-items-center">
+                            <h5 class="text-white mb-0">
+                                <i class="fas fa-list me-2"></i>Послуги та роботи
+                            </h5>
+                            <button class="btn btn-sm btn-outline-primary">
+                                <i class="fas fa-plus me-1"></i>Додати послугу
+                            </button>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-dark table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>№</th>
+                                            <th>Назва послуги</th>
+                                            <th>Кількість</th>
+                                            <th>Од. виміру</th>
+                                            <th>Ціна</th>
+                                            <th>Сума</th>
+                                            <th>Дії</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>1</td>
+                                            <td>Технічне обслуговування ліфтів</td>
+                                            <td>8</td>
+                                            <td>шт</td>
+                                            <td>1 562.50 ₴</td>
+                                            <td>12 500.00 ₴</td>
+                                            <td>
+                                                <button class="btn btn-sm btn-outline-warning me-1">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                                <button class="btn btn-sm btn-outline-danger">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>2</td>
+                                            <td>Аварійний виклик (понаднормово)</td>
+                                            <td>2</td>
+                                            <td>год</td>
+                                            <td>800.00 ₴</td>
+                                            <td>1 600.00 ₴</td>
+                                            <td>
+                                                <button class="btn btn-sm btn-outline-warning me-1">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                                <button class="btn btn-sm btn-outline-danger">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>3</td>
+                                            <td>Заміна тросу ліфта №2</td>
+                                            <td>1</td>
+                                            <td>компл</td>
+                                            <td>8 500.00 ₴</td>
+                                            <td>8 500.00 ₴</td>
+                                            <td>
+                                                <button class="btn btn-sm btn-outline-warning me-1">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                                <button class="btn btn-sm btn-outline-danger">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Payment Details -->
+                    <div class="card bg-dark border-0 mb-4">
+                        <div class="card-header bg-transparent border-bottom">
+                            <h5 class="text-white mb-0">
+                                <i class="fas fa-credit-card me-2"></i>Умови оплати
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label text-white">Форма оплати</label>
+                                    <select class="form-select">
+                                        <option value="bank" selected>Безготівковий розрахунок</option>
+                                        <option value="cash">Готівка</option>
+                                        <option value="card">Банківська картка</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label text-white">Валюта</label>
+                                    <select class="form-select">
+                                        <option value="UAH" selected>Українська гривня (₴)</option>
+                                        <option value="USD">Долар США ($)</option>
+                                        <option value="EUR">Євро (€)</option>
+                                    </select>
+                                </div>
+                                <div class="col-12 mb-3">
+                                    <label class="form-label text-white">Призначення платежу</label>
+                                    <textarea class="form-control" rows="2" placeholder="Опис призначення платежу...">Оплата за технічне обслуговування ліфтів згідно договору 2025-001 за червень 2025 року</textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4">
+                    <!-- Invoice Summary -->
+                    <div class="card bg-dark border-0 mb-4">
+                        <div class="card-header bg-transparent border-bottom">
+                            <h5 class="text-white mb-0">
+                                <i class="fas fa-calculator me-2"></i>Підсумок
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between mb-2">
+                                <span class="text-muted">Сума без ПДВ:</span>
+                                <span class="text-white">18 750.00 ₴</span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span class="text-muted">ПДВ (20%):</span>
+                                <span class="text-white">3 750.00 ₴</span>
+                            </div>
+                            <hr class="text-muted">
+                            <div class="d-flex justify-content-between mb-3">
+                                <span class="text-white fw-bold">Всього до сплати:</span>
+                                <span class="text-success fw-bold fs-5">22 500.00 ₴</span>
+                            </div>
+                            <div class="text-center">
+                                <small class="text-muted">Двадцять дві тисячі п'ятсот гривень 00 копійок</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Status -->
+                    <div class="card bg-dark border-0 mb-4">
+                        <div class="card-header bg-transparent border-bottom">
+                            <h5 class="text-white mb-0">
+                                <i class="fas fa-info-circle me-2"></i>Статус рахунку
+                            </h5>
+                        </div>
+                        <div class="card-body text-center">
+                            <span class="badge bg-warning fs-6 mb-2">Очікує оплати</span>
+                            <p class="text-muted mb-3">Термін оплати: 28.06.2025</p>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span class="text-muted">Залишилось днів:</span>
+                                <span class="text-warning fw-bold">15</span>
+                            </div>
+                            <div class="progress mb-2">
+                                <div class="progress-bar bg-warning" style="width: 50%"></div>
+                            </div>
+                            <small class="text-muted">Пройшло 50% терміну</small>
+                        </div>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="card bg-dark border-0 mb-4">
+                        <div class="card-header bg-transparent border-bottom">
+                            <h5 class="text-white mb-0">
+                                <i class="fas fa-tools me-2"></i>Дії
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="d-grid gap-2">
+                                <button class="btn btn-primary">
+                                    <i class="fas fa-save me-2"></i>Зберегти рахунок
+                                </button>
+                                <button class="btn btn-outline-success">
+                                    <i class="fas fa-paper-plane me-2"></i>Відправити клієнту
+                                </button>
+                                <button class="btn btn-outline-info">
+                                    <i class="fas fa-download me-2"></i>Завантажити PDF
+                                </button>
+                                <button class="btn btn-outline-secondary">
+                                    <i class="fas fa-print me-2"></i>Друк
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Invoices -->
+                    <div class="card bg-dark border-0">
+                        <div class="card-header bg-transparent border-bottom">
+                            <h5 class="text-white mb-0">
+                                <i class="fas fa-history me-2"></i>Останні рахунки
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <div>
+                                    <div class="text-white small">2025-INV-002</div>
+                                    <div class="text-muted smaller">12.06.2025</div>
+                                </div>
+                                <span class="badge bg-success">Оплачено</span>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <div>
+                                    <div class="text-white small">2025-INV-003</div>
+                                    <div class="text-muted smaller">10.06.2025</div>
+                                </div>
+                                <span class="badge bg-warning">Очікує</span>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <div class="text-white small">2025-INV-004</div>
+                                    <div class="text-muted smaller">08.06.2025</div>
+                                </div>
+                                <span class="badge bg-danger">Прострочено</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

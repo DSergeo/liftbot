@@ -1,0 +1,321 @@
+{% extends "layout.html" %}
+
+{% block title %}Налаштування компанії{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/custom.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h4 class="text-white mb-1">
+                        <i class="fas fa-building me-2"></i>Налаштування компанії
+                    </h4>
+                    <p class="text-muted mb-0">Управління реквізитами поточної компанії</p>
+                </div>
+            </div>
+
+            <!-- Current Company Status -->
+            <div class="card bg-dark border-0 mb-4">
+                <div class="card-header bg-transparent border-bottom">
+                    <h5 class="text-white mb-0">
+                        <i class="fas fa-info-circle me-2"></i>Поточна компанія
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <h4 class="text-white mb-2">{{ company.get('name', 'Не обрано') }}</h4>
+                            <p class="text-muted mb-2">{{ company.get('services', '') }}</p>
+                            <div class="d-flex align-items-center">
+                                {% if company.get('vat_status') %}
+                                    <span class="badge bg-warning text-dark me-2">
+                                        <i class="fas fa-percent me-1"></i>З ПДВ 20%
+                                    </span>
+                                    <small class="text-warning">Документи з нарахуванням ПДВ</small>
+                                {% else %}
+                                    <span class="badge bg-info me-2">
+                                        <i class="fas fa-calculator me-1"></i>Без ПДВ
+                                    </span>
+                                    <small class="text-info">Документи без нарахування ПДВ</small>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col-md-4 text-end">
+                            <a href="{{ url_for('select_company') }}" class="btn btn-outline-secondary">
+                                <i class="fas fa-exchange-alt me-2"></i>Змінити компанію
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <form method="POST">
+                <!-- Basic Information -->
+                <div class="card bg-dark border-0 mb-4">
+                    <div class="card-header bg-transparent border-bottom">
+                        <h5 class="text-white mb-0">
+                            <i class="fas fa-building me-2"></i>Основна інформація
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label text-white">Повна назва компанії</label>
+                                <input type="text" name="company_name" class="form-control" value="{{ company.get('name', '') }}" placeholder="ТОВ 'Назва компанії'" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label text-white">ЄДРПОУ</label>
+                                <input type="text" name="tax_number" class="form-control" value="{{ company.get('tax_number', '') }}" placeholder="12345678" required>
+                            </div>
+                            {% if company.get('vat_status') %}
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label text-white">Номер платника ПДВ</label>
+                                <input type="text" name="vat_number" class="form-control" value="{{ company.get('vat_number', '') }}" placeholder="123456789">
+                                <small class="text-muted">Для компаній з ПДВ</small>
+                            </div>
+                            {% endif %}
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label text-white">Спеціалізація</label>
+                                <input type="text" class="form-control bg-secondary" value="{{ company.get('services', '') }}" readonly>
+                                <small class="text-muted">Визначається типом компанії</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contact Information -->
+                <div class="card bg-dark border-0 mb-4">
+                    <div class="card-header bg-transparent border-bottom">
+                        <h5 class="text-white mb-0">
+                            <i class="fas fa-address-card me-2"></i>Контактна інформація
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label text-white">Телефон</label>
+                                <input type="tel" name="phone" class="form-control" value="{{ company.get('phone', '') }}" placeholder="+380671234567" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label text-white">Email</label>
+                                <input type="email" name="email" class="form-control" value="{{ company.get('email', '') }}" placeholder="info@company.ua" required>
+                            </div>
+                            <div class="col-12 mb-3">
+                                <label class="form-label text-white">Юридична адреса</label>
+                                <input type="text" name="address" class="form-control" value="{{ company.get('address', '') }}" placeholder="м. Місто, вул. Вулиця, буд. 1" required>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Banking Information -->
+                <div class="card bg-dark border-0 mb-4">
+                    <div class="card-header bg-transparent border-bottom">
+                        <h5 class="text-white mb-0">
+                            <i class="fas fa-university me-2"></i>Банківські реквізити
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-8 mb-3">
+                                <label class="form-label text-white">Розрахунковий рахунок</label>
+                                <input type="text" name="bank_account" class="form-control" value="{{ company.get('bank_account', '') }}" placeholder="UA123456789012345678901234567" required>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label text-white">МФО</label>
+                                <input type="text" name="mfo" class="form-control" value="{{ company.get('mfo', '') }}" placeholder="305299" required>
+                            </div>
+                            <div class="col-12 mb-3">
+                                <label class="form-label text-white">Назва банку</label>
+                                <input type="text" name="bank_name" class="form-control" value="{{ company.get('bank_name', '') }}" placeholder="АТ КБ 'ПРИВАТБАНК'" required>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Management -->
+                <div class="card bg-dark border-0 mb-4">
+                    <div class="card-header bg-transparent border-bottom">
+                        <h5 class="text-white mb-0">
+                            <i class="fas fa-users-cog me-2"></i>Керівництво
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label text-white">Директор</label>
+                                <input type="text" name="director" class="form-control" value="{{ company.get('director', '') }}" placeholder="Прізвище Ім'я По батькові" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label text-white">Головний бухгалтер</label>
+                                <input type="text" name="accountant" class="form-control" value="{{ company.get('accountant', '') }}" placeholder="Прізвище Ім'я По батькові" required>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- VAT Information for VAT companies -->
+                {% if company.get('vat_status') %}
+                <div class="card bg-dark border-warning mb-4">
+                    <div class="card-header bg-transparent border-bottom">
+                        <h5 class="text-white mb-0">
+                            <i class="fas fa-percent me-2"></i>Налаштування ПДВ
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="alert alert-warning" role="alert">
+                            <i class="fas fa-info-circle me-2"></i>
+                            <strong>Увага!</strong> Ця компанія є платником ПДВ. Всі документи будуть містити ПДВ 20%.
+                            <br>Переконайтесь, що номер платника ПДВ введено правильно.
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="bg-warning bg-opacity-10 p-3 rounded">
+                                    <h6 class="text-warning mb-2">Особливості документообігу:</h6>
+                                    <ul class="text-white small mb-0">
+                                        <li>Рахунки з ПДВ 20%</li>
+                                        <li>Податкові накладні</li>
+                                        <li>Розширені форми актів</li>
+                                        <li>Обов'язкова реєстрація ПДВ</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="col-md-8">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label class="form-label text-white">Ставка ПДВ</label>
+                                        <input type="text" class="form-control bg-secondary" value="20%" readonly>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label text-white">Тип документів</label>
+                                        <input type="text" class="form-control bg-secondary" value="З ПДВ" readonly>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% else %}
+                <div class="card bg-dark border-info mb-4">
+                    <div class="card-header bg-transparent border-bottom">
+                        <h5 class="text-white mb-0">
+                            <i class="fas fa-calculator me-2"></i>Налаштування без ПДВ
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="alert alert-info" role="alert">
+                            <i class="fas fa-info-circle me-2"></i>
+                            <strong>Інформація:</strong> Ця компанія не є платником ПДВ. Всі документи без нарахування ПДВ.
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="bg-info bg-opacity-10 p-3 rounded">
+                                    <h6 class="text-info mb-2">Особливості документообігу:</h6>
+                                    <ul class="text-white small mb-0">
+                                        <li>Рахунки без ПДВ</li>
+                                        <li>Спрощені форми документів</li>
+                                        <li>Стандартні акти робіт</li>
+                                        <li>Без податкових накладних</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="col-md-8">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label class="form-label text-white">Ставка ПДВ</label>
+                                        <input type="text" class="form-control bg-secondary" value="0% (не застосовується)" readonly>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label text-white">Тип документів</label>
+                                        <input type="text" class="form-control bg-secondary" value="Без ПДВ" readonly>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Action Buttons -->
+                <div class="d-flex justify-content-between">
+                    <a href="{{ url_for('settings_localization') }}" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left me-2"></i>Назад
+                    </a>
+                    <div>
+                        <button type="button" class="btn btn-outline-warning me-2" onclick="resetForm()">
+                            <i class="fas fa-undo me-2"></i>Скинути
+                        </button>
+                        <button type="submit" class="btn btn-success">
+                            <i class="fas fa-save me-2"></i>Зберегти налаштування
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+function resetForm() {
+    if (confirm('Скинути всі зміни? Незбережені дані будуть втрачені.')) {
+        document.querySelector('form').reset();
+    }
+}
+
+// Form validation
+document.querySelector('form').addEventListener('submit', function(e) {
+    const requiredFields = this.querySelectorAll('input[required]');
+    let hasErrors = false;
+    
+    requiredFields.forEach(field => {
+        if (!field.value.trim()) {
+            field.classList.add('is-invalid');
+            hasErrors = true;
+        } else {
+            field.classList.remove('is-invalid');
+        }
+    });
+    
+    if (hasErrors) {
+        e.preventDefault();
+        alert('Будь ласка, заповніть всі обов\'язкові поля.');
+    }
+});
+
+// Real-time validation
+document.querySelectorAll('input[required]').forEach(field => {
+    field.addEventListener('blur', function() {
+        if (!this.value.trim()) {
+            this.classList.add('is-invalid');
+        } else {
+            this.classList.remove('is-invalid');
+        }
+    });
+});
+</script>
+
+<style>
+.is-invalid {
+    border-color: #dc3545 !important;
+    box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25) !important;
+}
+
+.alert {
+    border: none;
+    border-radius: 0.5rem;
+}
+
+.card.border-warning {
+    border-color: #ffc107 !important;
+}
+
+.card.border-info {
+    border-color: #0dcaf0 !important;
+}
+</style>
+{% endblock %}

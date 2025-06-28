@@ -1,0 +1,683 @@
+{% extends "layout.html" %}
+
+{% block title %}Контакти{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Заголовок з кнопкою створення -->
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <h1 class="h2">
+            <i class="fas fa-address-book me-2"></i>Контакти
+        </h1>
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createContactModal">
+            <i class="fas fa-plus me-2"></i>Створити контакт
+        </button>
+    </div>
+
+    <!-- Поле пошуку -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="input-group">
+                <span class="input-group-text">
+                    <i class="fas fa-search"></i>
+                </span>
+                <input type="text" class="form-control" id="searchInput" placeholder="Пошук контактів за ім'ям, телефоном або email...">
+                <button class="btn btn-outline-secondary" type="button" id="clearSearch">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <select class="form-select" id="typeFilter">
+                <option value="">Всі типи</option>
+                <option value="customer">Клієнт</option>
+                <option value="supplier">Постачальник</option>
+                <option value="partner">Партнер</option>
+                <option value="other">Інше</option>
+            </select>
+        </div>
+        <div class="col-md-3">
+            <select class="form-select" id="statusFilter">
+                <option value="">Всі статуси</option>
+                <option value="active">Активний</option>
+                <option value="inactive">Неактивний</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Статистика -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card bg-primary text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h4 class="mb-0" id="totalContacts">0</h4>
+                            <small>Всього контактів</small>
+                        </div>
+                        <div class="align-self-center">
+                            <i class="fas fa-users fa-2x opacity-75"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-success text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h4 class="mb-0" id="activeContacts">0</h4>
+                            <small>Активних</small>
+                        </div>
+                        <div class="align-self-center">
+                            <i class="fas fa-check-circle fa-2x opacity-75"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-info text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h4 class="mb-0" id="customerContacts">0</h4>
+                            <small>Клієнтів</small>
+                        </div>
+                        <div class="align-self-center">
+                            <i class="fas fa-handshake fa-2x opacity-75"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-warning text-dark">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h4 class="mb-0" id="recentContacts">0</h4>
+                            <small>Нових за місяць</small>
+                        </div>
+                        <div class="align-self-center">
+                            <i class="fas fa-calendar-plus fa-2x opacity-75"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Список контактів -->
+    <div class="card">
+        <div class="card-header bg-transparent">
+            <h5 class="mb-0">Список контактів</h5>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0" id="contactsTable">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Ім'я</th>
+                            <th>Компанія</th>
+                            <th>Телефон</th>
+                            <th>Email</th>
+                            <th>Тип</th>
+                            <th>Статус</th>
+                            <th>Дії</th>
+                        </tr>
+                    </thead>
+                    <tbody id="contactsTableBody">
+                        <!-- Контакти будуть загружені динамічно -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Повідомлення при відсутності контактів -->
+    <div class="text-center py-5" id="noContactsMessage" style="display: none;">
+        <i class="fas fa-address-book fa-3x text-muted mb-3"></i>
+        <h4 class="text-muted">Контактів не знайдено</h4>
+        <p class="text-muted">Створіть перший контакт або змініть параметри пошуку</p>
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createContactModal">
+            <i class="fas fa-plus me-2"></i>Створити контакт
+        </button>
+    </div>
+</div>
+
+<!-- Модальне вікно створення/редагування контакту -->
+<div class="modal fade" id="createContactModal" tabindex="-1" aria-labelledby="createContactModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="createContactModalLabel">
+                    <i class="fas fa-user-plus me-2"></i>Створити контакт
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрити"></button>
+            </div>
+            <form id="contactForm">
+                <div class="modal-body">
+                    <div class="row">
+                        <!-- Основна інформація -->
+                        <div class="col-md-6">
+                            <h6 class="text-primary mb-3">
+                                <i class="fas fa-user me-2"></i>Основна інформація
+                            </h6>
+                            
+                            <div class="mb-3">
+                                <label for="firstName" class="form-label">Ім'я <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="firstName" name="firstName" required>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="lastName" class="form-label">Прізвище</label>
+                                <input type="text" class="form-control" id="lastName" name="lastName">
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="middleName" class="form-label">По батькові</label>
+                                <input type="text" class="form-control" id="middleName" name="middleName">
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="position" class="form-label">Посада</label>
+                                <input type="text" class="form-control" id="position" name="position">
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="department" class="form-label">Відділ</label>
+                                <input type="text" class="form-control" id="department" name="department">
+                            </div>
+                        </div>
+                        
+                        <!-- Контактна інформація -->
+                        <div class="col-md-6">
+                            <h6 class="text-primary mb-3">
+                                <i class="fas fa-phone me-2"></i>Контактна інформація
+                            </h6>
+                            
+                            <div class="mb-3">
+                                <label for="phone" class="form-label">Телефон</label>
+                                <input type="tel" class="form-control" id="phone" name="phone" placeholder="+380">
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="mobile" class="form-label">Мобільний</label>
+                                <input type="tel" class="form-control" id="mobile" name="mobile" placeholder="+380">
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="email" class="form-label">Email</label>
+                                <input type="email" class="form-control" id="email" name="email">
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="website" class="form-label">Веб-сайт</label>
+                                <input type="url" class="form-control" id="website" name="website" placeholder="https://">
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="skype" class="form-label">Skype</label>
+                                <input type="text" class="form-control" id="skype" name="skype">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <!-- Інформація про компанію -->
+                        <div class="col-md-6">
+                            <h6 class="text-primary mb-3">
+                                <i class="fas fa-building me-2"></i>Інформація про компанію
+                            </h6>
+                            
+                            <div class="mb-3">
+                                <label for="company" class="form-label">Компанія</label>
+                                <input type="text" class="form-control" id="company" name="company">
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="industry" class="form-label">Галузь</label>
+                                <select class="form-select" id="industry" name="industry">
+                                    <option value="">Оберіть галузь</option>
+                                    <option value="construction">Будівництво</option>
+                                    <option value="real-estate">Нерухомість</option>
+                                    <option value="utilities">Комунальні послуги</option>
+                                    <option value="maintenance">Обслуговування</option>
+                                    <option value="manufacturing">Виробництво</option>
+                                    <option value="services">Послуги</option>
+                                    <option value="other">Інше</option>
+                                </select>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="contactType" class="form-label">Тип контакту</label>
+                                <select class="form-select" id="contactType" name="contactType">
+                                    <option value="customer">Клієнт</option>
+                                    <option value="supplier">Постачальник</option>
+                                    <option value="partner">Партнер</option>
+                                    <option value="other">Інше</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <!-- Адреса та додаткова інформація -->
+                        <div class="col-md-6">
+                            <h6 class="text-primary mb-3">
+                                <i class="fas fa-map-marker-alt me-2"></i>Адреса
+                            </h6>
+                            
+                            <div class="mb-3">
+                                <label for="city" class="form-label">Місто</label>
+                                <input type="text" class="form-control" id="city" name="city">
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="street" class="form-label">Вулиця</label>
+                                <input type="text" class="form-control" id="street" name="street">
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="postalCode" class="form-label">Поштовий індекс</label>
+                                <input type="text" class="form-control" id="postalCode" name="postalCode">
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="status" class="form-label">Статус</label>
+                                <select class="form-select" id="status" name="status">
+                                    <option value="active">Активний</option>
+                                    <option value="inactive">Неактивний</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Додаткова інформація -->
+                    <div class="row">
+                        <div class="col-12">
+                            <h6 class="text-primary mb-3">
+                                <i class="fas fa-sticky-note me-2"></i>Додаткова інформація
+                            </h6>
+                            
+                            <div class="mb-3">
+                                <label for="description" class="form-label">Опис</label>
+                                <textarea class="form-control" id="description" name="description" rows="3" placeholder="Додаткові відомості про контакт..."></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="fas fa-times me-2"></i>Скасувати
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save me-2"></i>Зберегти контакт
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Модальне вікно перегляду контакту -->
+<div class="modal fade" id="viewContactModal" tabindex="-1" aria-labelledby="viewContactModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="viewContactModalLabel">
+                    <i class="fas fa-user me-2"></i>Деталі контакту
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрити"></button>
+            </div>
+            <div class="modal-body" id="contactDetails">
+                <!-- Деталі контакту будуть загружені динамічно -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-2"></i>Закрити
+                </button>
+                <button type="button" class="btn btn-primary" id="editContactBtn">
+                    <i class="fas fa-edit me-2"></i>Редагувати
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    let contacts = [];
+    let editingContactId = null;
+
+    // Елементи DOM
+    const searchInput = document.getElementById('searchInput');
+    const typeFilter = document.getElementById('typeFilter');
+    const statusFilter = document.getElementById('statusFilter');
+    const clearSearchBtn = document.getElementById('clearSearch');
+    const contactForm = document.getElementById('contactForm');
+    const contactsTableBody = document.getElementById('contactsTableBody');
+    const noContactsMessage = document.getElementById('noContactsMessage');
+    const createContactModal = new bootstrap.Modal(document.getElementById('createContactModal'));
+    const viewContactModal = new bootstrap.Modal(document.getElementById('viewContactModal'));
+
+    // Завантаження контактів
+    function loadContacts() {
+        fetch('/api/contacts')
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    contacts = data.contacts;
+                } else {
+                    // Використовуємо тестові дані якщо API недоступне
+                    contacts = [
+                        {
+                            id: 1,
+                            firstName: 'Олександр',
+                            lastName: 'Петренко',
+                            middleName: 'Іванович',
+                            company: 'ТОВ "Ліфт-Сервіс"',
+                            phone: '+380671234567',
+                            email: 'petenko@lift-service.ua',
+                            position: 'Директор',
+                            contactType: 'customer',
+                            status: 'active',
+                            city: 'Миколаїв',
+                            createdAt: '2024-12-01'
+                        },
+                        {
+                            id: 2,
+                            firstName: 'Марія',
+                            lastName: 'Іваненко',
+                            middleName: 'Петрівна',
+                            company: 'ОСББ "Сонячний"',
+                            phone: '+380509876543',
+                            email: 'ivanenko@osbb-sun.ua',
+                            position: 'Голова ОСББ',
+                            contactType: 'customer',
+                            status: 'active',
+                            city: 'Миколаїв',
+                            createdAt: '2024-11-15'
+                        }
+                    ];
+                }
+                filterAndDisplayContacts();
+                updateStatistics();
+            })
+            .catch(error => {
+                console.error('Error loading contacts:', error);
+                // Використовуємо тестові дані у випадку помилки
+                contacts = [];
+                filterAndDisplayContacts();
+                updateStatistics();
+            });
+    }
+
+    // Фільтрація та відображення контактів
+    function filterAndDisplayContacts() {
+        const searchTerm = searchInput.value.toLowerCase();
+        const selectedType = typeFilter.value;
+        const selectedStatus = statusFilter.value;
+
+        const filteredContacts = contacts.filter(contact => {
+            const matchesSearch = 
+                contact.firstName.toLowerCase().includes(searchTerm) ||
+                (contact.lastName && contact.lastName.toLowerCase().includes(searchTerm)) ||
+                (contact.company && contact.company.toLowerCase().includes(searchTerm)) ||
+                (contact.phone && contact.phone.includes(searchTerm)) ||
+                (contact.email && contact.email.toLowerCase().includes(searchTerm));
+            
+            const matchesType = !selectedType || contact.contactType === selectedType;
+            const matchesStatus = !selectedStatus || contact.status === selectedStatus;
+
+            return matchesSearch && matchesType && matchesStatus;
+        });
+
+        displayContacts(filteredContacts);
+    }
+
+    // Відображення контактів у таблиці
+    function displayContacts(contactsToShow) {
+        contactsTableBody.innerHTML = '';
+        
+        if (contactsToShow.length === 0) {
+            document.querySelector('.table-responsive').style.display = 'none';
+            noContactsMessage.style.display = 'block';
+            return;
+        }
+
+        document.querySelector('.table-responsive').style.display = 'block';
+        noContactsMessage.style.display = 'none';
+
+        contactsToShow.forEach(contact => {
+            const row = createContactRow(contact);
+            contactsTableBody.appendChild(row);
+        });
+    }
+
+    // Створення рядка таблиці для контакту
+    function createContactRow(contact) {
+        const row = document.createElement('tr');
+        const fullName = `${contact.firstName} ${contact.lastName || ''}`.trim();
+        const typeLabels = {
+            'customer': 'Клієнт',
+            'supplier': 'Постачальник',
+            'partner': 'Партнер',
+            'other': 'Інше'
+        };
+        const statusLabels = {
+            'active': '<span class="badge bg-success">Активний</span>',
+            'inactive': '<span class="badge bg-secondary">Неактивний</span>'
+        };
+
+        row.innerHTML = `
+            <td>
+                <div class="d-flex align-items-center">
+                    <div class="avatar-circle me-2">${contact.firstName.charAt(0)}</div>
+                    <div>
+                        <div class="fw-bold">${fullName}</div>
+                        ${contact.position ? `<small class="text-muted">${contact.position}</small>` : ''}
+                    </div>
+                </div>
+            </td>
+            <td>${contact.company || '-'}</td>
+            <td>${contact.phone || '-'}</td>
+            <td>${contact.email || '-'}</td>
+            <td>${typeLabels[contact.contactType] || contact.contactType}</td>
+            <td>${statusLabels[contact.status] || contact.status}</td>
+            <td>
+                <div class="btn-group btn-group-sm">
+                    <button class="btn btn-outline-primary" onclick="viewContact(${contact.id})" title="Переглянути">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                    <button class="btn btn-outline-secondary" onclick="editContact(${contact.id})" title="Редагувати">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="btn btn-outline-danger" onclick="deleteContact(${contact.id})" title="Видалити">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            </td>
+        `;
+        
+        return row;
+    }
+
+    // Оновлення статистики
+    function updateStatistics() {
+        document.getElementById('totalContacts').textContent = contacts.length;
+        document.getElementById('activeContacts').textContent = contacts.filter(c => c.status === 'active').length;
+        document.getElementById('customerContacts').textContent = contacts.filter(c => c.contactType === 'customer').length;
+        
+        const currentMonth = new Date();
+        currentMonth.setMonth(currentMonth.getMonth() - 1);
+        const recentCount = contacts.filter(c => new Date(c.createdAt) > currentMonth).length;
+        document.getElementById('recentContacts').textContent = recentCount;
+    }
+
+    // Обробники подій
+    searchInput.addEventListener('input', filterAndDisplayContacts);
+    typeFilter.addEventListener('change', filterAndDisplayContacts);
+    statusFilter.addEventListener('change', filterAndDisplayContacts);
+    clearSearchBtn.addEventListener('click', function() {
+        searchInput.value = '';
+        typeFilter.value = '';
+        statusFilter.value = '';
+        filterAndDisplayContacts();
+    });
+
+    // Обробка форми створення/редагування контакту
+    contactForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const formData = new FormData(contactForm);
+        const contactData = Object.fromEntries(formData.entries());
+        
+        const method = editingContactId ? 'PUT' : 'POST';
+        const url = editingContactId ? `/api/contacts/${editingContactId}` : '/api/contacts';
+        
+        fetch(url, {
+            method: method,
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(contactData)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                loadContacts(); // Перезавантажуємо список
+                createContactModal.hide();
+                contactForm.reset();
+                editingContactId = null;
+            } else {
+                alert('Помилка при збереженні контакту: ' + (data.error || 'Невідома помилка'));
+            }
+        })
+        .catch(error => {
+            console.error('Error saving contact:', error);
+            alert('Помилка при збереженні контакту');
+        });
+    });
+
+    // Глобальні функції для кнопок
+    window.viewContact = function(id) {
+        const contact = contacts.find(c => c.id === id);
+        if (!contact) return;
+        
+        const detailsHtml = `
+            <div class="row">
+                <div class="col-md-6">
+                    <h6 class="text-primary">Основна інформація</h6>
+                    <p><strong>Ім'я:</strong> ${contact.firstName} ${contact.lastName || ''}</p>
+                    ${contact.middleName ? `<p><strong>По батькові:</strong> ${contact.middleName}</p>` : ''}
+                    ${contact.position ? `<p><strong>Посада:</strong> ${contact.position}</p>` : ''}
+                    ${contact.company ? `<p><strong>Компанія:</strong> ${contact.company}</p>` : ''}
+                </div>
+                <div class="col-md-6">
+                    <h6 class="text-primary">Контактна інформація</h6>
+                    ${contact.phone ? `<p><strong>Телефон:</strong> ${contact.phone}</p>` : ''}
+                    ${contact.email ? `<p><strong>Email:</strong> ${contact.email}</p>` : ''}
+                    ${contact.website ? `<p><strong>Веб-сайт:</strong> ${contact.website}</p>` : ''}
+                </div>
+            </div>
+        `;
+        
+        document.getElementById('contactDetails').innerHTML = detailsHtml;
+        document.getElementById('editContactBtn').onclick = () => editContact(id);
+        viewContactModal.show();
+    };
+
+    window.editContact = function(id) {
+        const contact = contacts.find(c => c.id === id);
+        if (!contact) return;
+        
+        editingContactId = id;
+        
+        // Заповнення форми даними контакту
+        Object.keys(contact).forEach(key => {
+            const input = document.getElementById(key);
+            if (input) {
+                input.value = contact[key] || '';
+            }
+        });
+        
+        document.getElementById('createContactModalLabel').innerHTML = '<i class="fas fa-edit me-2"></i>Редагувати контакт';
+        viewContactModal.hide();
+        createContactModal.show();
+    };
+
+    window.deleteContact = function(id) {
+        if (confirm('Ви впевнені, що хочете видалити цей контакт?')) {
+            fetch(`/api/contacts/${id}`, {
+                method: 'DELETE'
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    loadContacts();
+                } else {
+                    alert('Помилка при видаленні контакту');
+                }
+            })
+            .catch(error => {
+                console.error('Error deleting contact:', error);
+                alert('Помилка при видаленні контакту');
+            });
+        }
+    };
+
+    // Скидання форми при закритті модального вікна
+    document.getElementById('createContactModal').addEventListener('hidden.bs.modal', function() {
+        contactForm.reset();
+        editingContactId = null;
+        document.getElementById('createContactModalLabel').innerHTML = '<i class="fas fa-user-plus me-2"></i>Створити контакт';
+    });
+
+    // Завантаження контактів при завантаженні сторінки
+    loadContacts();
+});
+</script>
+
+<style>
+.avatar-circle {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: linear-gradient(45deg, #007bff, #0056b3);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 16px;
+    flex-shrink: 0;
+}
+
+.table th {
+    border-top: none;
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.btn-group-sm > .btn {
+    padding: 0.25rem 0.4rem;
+}
+
+@media (max-width: 768px) {
+    .table-responsive {
+        font-size: 0.875rem;
+    }
+    
+    .btn-group {
+        flex-direction: column;
+    }
+    
+    .btn-group > .btn {
+        margin-bottom: 2px;
+    }
+}
+</style>
+{% endblock %}

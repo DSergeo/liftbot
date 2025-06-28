@@ -1,0 +1,654 @@
+{% extends "layout.html" %}
+
+{% block title %}Реєстр договорів{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/custom.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h4 class="text-white mb-1">
+                        <i class="fas fa-book me-2"></i>Реєстр договорів
+                    </h4>
+                    <p class="text-muted mb-0">Управління списком договорів</p>
+                </div>
+                <div class="d-flex gap-2">
+                    <button class="btn btn-outline-secondary" onclick="exportToExcel()">
+                        <i class="fas fa-file-excel me-2"></i>Excel
+                    </button>
+                    <button class="btn btn-outline-secondary" onclick="printRegistry()">
+                        <i class="fas fa-print me-2"></i>Друк
+                    </button>
+                    <button class="btn btn-primary" onclick="addNewContract()">
+                        <i class="fas fa-plus me-2"></i>Додати договір
+                    </button>
+                    <button class="btn btn-outline-danger" onclick="deleteSelectedContracts()">
+                        <i class="fas fa-trash me-2"></i>Видалити вибрані
+                    </button>
+                </div>
+            </div>
+
+            <!-- Filters -->
+            <div class="card bg-dark border-0 mb-4">
+                <div class="card-body">
+                    <div class="row align-items-end">
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label text-white">Пошук</label>
+                            <input type="text" class="form-control" id="searchContracts" placeholder="Номер, назва замовника...">
+                        </div>
+                        <div class="col-md-2 mb-3">
+                            <label class="form-label text-white">Статус</label>
+                            <select class="form-select" id="filterStatus">
+                                <option value="">Всі статуси</option>
+                                <option value="active">Активні</option>
+                                <option value="заканчивается">Закінчуються</option>
+                                <option value="terminated">Розірвані</option>
+                                <option value="draft">Чернетки</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2 mb-3">
+                            <label class="form-label text-white">Рік</label>
+                            <select class="form-select" id="filterYear">
+                                <option value="">Всі роки</option>
+                                <option value="2025" selected>2025</option>
+                                <option value="2024">2024</option>
+                                <option value="2023">2023</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label text-white">Діапазон сум</label>
+                            <div class="input-group">
+                                <input type="number" class="form-control" placeholder="Від" id="sumFrom">
+                                <input type="number" class="form-control" placeholder="До" id="sumTo">
+                            </div>
+                        </div>
+                        <div class="col-md-2 mb-3">
+                            <button class="btn btn-outline-secondary w-100" onclick="clearFilters()">
+                                <i class="fas fa-times me-2"></i>Очистити
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Statistics Cards -->
+            <div class="row mb-4">
+                <div class="col-md-3 mb-3">
+                    <div class="card bg-dark border-0">
+                        <div class="card-body text-center">
+                            <i class="fas fa-file-contract fa-2x text-success mb-2"></i>
+                            <h5 class="text-white">{{ stats.active_contracts if stats else 0 }}</h5>
+                            <p class="text-muted mb-0">Активних договорів</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <div class="card bg-dark border-0">
+                        <div class="card-body text-center">
+                            <i class="fas fa-calendar-times fa-2x text-warning mb-2"></i>
+                            <h5 class="text-white">{{ stats.ending_contracts if stats else 0 }}</h5>
+                            <p class="text-muted mb-0">Закінчуються</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <div class="card bg-dark border-0">
+                        <div class="card-body text-center">
+                            <i class="fas fa-money-bill-wave fa-2x text-info mb-2"></i>
+                            <h5 class="text-white">{{ "{:,.2f}".format(stats.total_value).replace(".", ",") if stats else "0,00" }} ₴</h5>
+                            <p class="text-muted mb-0">Загальна вартість</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <div class="card bg-dark border-0">
+                        <div class="card-body text-center">
+                            <i class="fas fa-building fa-2x text-primary mb-2"></i>
+                            <h5 class="text-white">{{ stats.unique_customers if stats else 0 }}</h5>
+                            <p class="text-muted mb-0">Замовників</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contracts Table -->
+            <div class="card bg-dark border-0">
+                <div class="card-header bg-transparent border-bottom d-flex justify-content-between align-items-center">
+                    <h5 class="text-white mb-0">
+                        <i class="fas fa-list me-2"></i>Список договорів
+                    </h5>
+                    <div class="d-flex align-items-center">
+                        <span class="text-muted me-3">Знайдено: <span id="contractsCount">{{ contracts|length }}</span> договорів</span>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="editMode">
+                            <label class="form-check-label text-white" for="editMode">
+                                Режим редагування
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-dark table-hover mb-0" id="contractsTable">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>
+                                        <input type="checkbox" class="form-check-input" id="selectAll">
+                                    </th>
+                                    <th>№ договору</th>
+                                    <th>Замовник</th>
+                                    <th>Дата укладення</th>
+                                    <th>Термін дії</th>
+                                    <th>Вартість/міс</th>
+                                    <th>Статус</th>
+                                    <th class="text-center">Дії</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for contract in contracts %}
+                                <tr data-contract-id="{{ contract.id }}" class="contract-row" style="cursor:pointer;">
+                                    <td>
+                                        <input type="checkbox" class="form-check-input contract-select">
+                                    </td>
+                                    <td>
+                                        <span class="contract-number" data-field="number">{{ contract.number or 'Не вказано' }}</span>
+                                        <input type="text" class="form-control d-none contract-edit" data-field="number" value="{{ contract.number or '' }}">
+                                    </td>
+                                    <td>
+                                        <span class="contract-customer" data-field="customer">{{ contract.customer or 'Не вказано' }}</span>
+                                        <input type="text" class="form-control d-none contract-edit" data-field="customer" value="{{ contract.customer or '' }}">
+                                    </td>
+                                    <td>
+                                        <span class="contract-date" data-field="date">
+                                            {% if contract.date %}
+                                                {{ contract.date.split('-')[2] }}.{{ contract.date.split('-')[1] }}.{{ contract.date.split('-')[0] }}
+                                            {% else %}
+                                                Не вказано
+                                            {% endif %}
+                                        </span>
+                                        <input type="date" class="form-control d-none contract-edit contract-start-date" value="{{ contract.date or '' }}">
+                                    </td>
+                                    <td>
+                                        <span class="contract-period" data-field="period">
+                                            {% if contract.end_date %}
+                                                до {{ contract.end_date.split('-')[2] }}.{{ contract.end_date.split('-')[1] }}.{{ contract.end_date.split('-')[0] }}
+                                            {% elif contract.date %}
+                                                {% set year = contract.date.split('-')[0] | int + 1 %}
+                                                до {{ contract.date.split('-')[2] }}.{{ contract.date.split('-')[1] }}.{{ year }}
+                                            {% else %}
+                                                Не вказано
+                                            {% endif %}
+                                        </span>
+                                        <input type="date" class="form-control d-none contract-edit contract-end-date" value="{{ contract.end_date or '' }}">
+                                    </td>
+                                    <td>
+                                        <span class="contract-cost" data-field="cost">
+                                            {% if contract.monthly_cost %}
+                                                {{ "{:,.2f}".format(contract.monthly_cost).replace(".", ",") }} ₴
+                                            {% else %}
+                                                0,00 ₴
+                                            {% endif %}
+                                        </span>
+                                        <input type="number" class="form-control d-none contract-edit" data-field="monthly_cost" value="{{ contract.monthly_cost or 0 }}">
+                                        <!-- Скрытые поля для дополнительных данных -->
+                                        <input type="hidden" class="contract-edit" data-field="contact_person" value="{{ contract.contact_person or '' }}">
+                                        <input type="hidden" class="contract-edit" data-field="phone" value="{{ contract.phone or '' }}">
+                                        <input type="hidden" class="contract-edit" data-field="email" value="{{ contract.email or '' }}">
+                                        <input type="hidden" class="contract-edit" data-field="total_lifts" value="{{ contract.total_lifts or 0 }}">
+                                    </td>
+                                    <td>
+                                        {% if contract.status == 'active' %}
+                                            <span class="badge bg-success">Активний</span>
+                                        {% elif contract.status == 'заканчивается' %}
+                                            <span class="badge bg-warning">Закінчується</span>
+                                        {% elif contract.status == 'terminated' %}
+                                            <span class="badge bg-danger">Розірваний</span>
+                                        {% else %}
+                                            <span class="badge bg-secondary">{{ contract.status or 'Невідомо' }}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="btn-group contract-actions" role="group">
+                                            <button class="btn btn-sm btn-outline-primary" onclick="window.location.href='/documents/contract/{{ contract.id }}'" title="Переглянути">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-outline-warning" onclick="editContract('{{ contract.id }}')" title="Редагувати">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                        </div>
+                                        <div class="btn-group contract-edit-actions d-none" role="group">
+                                            <button class="btn btn-sm btn-success" onclick="saveContract('{{ contract.id }}')" title="Зберегти">
+                                                <i class="fas fa-save"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-secondary" onclick="cancelEdit('{{ contract.id }}')" title="Скасувати">
+                                                <i class="fas fa-times"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Модальное окно для информации о договоре -->
+            <div class="modal fade" id="contractInfoModal" tabindex="-1" aria-labelledby="contractInfoModalLabel" aria-hidden="true">
+              <div class="modal-dialog modal-lg modal-dialog-centered">
+                <div class="modal-content bg-dark text-white">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="contractInfoModalLabel">Інформація про договір</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body">
+                    <div id="contractInfoContent">
+                      <!-- Сюди буде підставлятись інформація -->
+                    </div>
+                    <div id="contractStatusWidget" class="mt-4"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const editModeToggle = document.getElementById('editMode');
+    const searchInput = document.getElementById('searchContracts');
+    const selectAllCheckbox = document.getElementById('selectAll');
+    const filterStatus = document.getElementById('filterStatus');
+    const filterYear = document.getElementById('filterYear');
+    const sumFrom = document.getElementById('sumFrom');
+    const sumTo = document.getElementById('sumTo');
+
+    function filterContracts() {
+        const searchTerm = searchInput.value.toLowerCase();
+        const statusVal = filterStatus.value;
+        const yearVal = filterYear.value;
+        const sumFromVal = parseFloat(sumFrom.value) || null;
+        const sumToVal = parseFloat(sumTo.value) || null;
+        const rows = document.querySelectorAll('#contractsTable tbody tr');
+        let visibleCount = 0;
+        rows.forEach(row => {
+            const number = row.querySelector('.contract-number')?.textContent.toLowerCase() || '';
+            const customer = row.querySelector('.contract-customer')?.textContent.toLowerCase() || '';
+            const date = row.querySelector('.contract-date')?.textContent.toLowerCase() || '';
+            const costStr = row.querySelector('.contract-cost')?.textContent.replace(/[^\d,.]/g, '').replace(',', '.') || '';
+            const cost = parseFloat(costStr) || 0;
+            const status = row.querySelector('.badge')?.textContent.toLowerCase() || '';
+            const period = row.querySelector('.contract-period')?.textContent || '';
+            let yearMatch = true;
+            if (yearVal) {
+                yearMatch = date.includes(yearVal) || period.includes(yearVal);
+            }
+            let statusMatch = true;
+            if (statusVal) {
+                // Маппинг значений фильтра на украинские статусы
+                let statusMap = {
+                    'active': ['активний'],
+                    'заканчивается': ['закінчується'],
+                    'terminated': ['розірваний'],
+                    'draft': ['чернетки', 'чернетка']
+                };
+                let allowed = statusMap[statusVal] || [statusVal];
+                statusMatch = allowed.some(s => status.includes(s));
+            }
+            let sumMatch = true;
+            if (sumFromVal !== null && cost < sumFromVal) sumMatch = false;
+            if (sumToVal !== null && cost > sumToVal) sumMatch = false;
+            let textMatch = (
+                number.includes(searchTerm) ||
+                customer.includes(searchTerm) ||
+                date.includes(searchTerm) ||
+                status.includes(searchTerm) ||
+                costStr.includes(searchTerm)
+            );
+            if (textMatch && statusMatch && yearMatch && sumMatch) {
+                row.style.display = '';
+                visibleCount++;
+            } else {
+                row.style.display = 'none';
+            }
+        });
+        document.getElementById('contractsCount').textContent = visibleCount;
+    }
+
+    searchInput.addEventListener('input', filterContracts);
+    filterStatus.addEventListener('change', filterContracts);
+    filterYear.addEventListener('change', filterContracts);
+    sumFrom.addEventListener('input', filterContracts);
+    sumTo.addEventListener('input', filterContracts);
+
+    // Edit mode toggle
+    editModeToggle.addEventListener('change', function() {
+        const isEditMode = this.checked;
+        const rows = document.querySelectorAll('#contractsTable tbody tr');
+        
+        rows.forEach(row => {
+            const spans = row.querySelectorAll('span[data-field]');
+            const inputs = row.querySelectorAll('.contract-edit');
+            const normalActions = row.querySelector('.contract-actions');
+            const editActions = row.querySelector('.contract-edit-actions');
+            
+            if (isEditMode) {
+                spans.forEach(span => span.classList.add('d-none'));
+                inputs.forEach(input => input.classList.remove('d-none'));
+                normalActions.classList.add('d-none');
+                editActions.classList.remove('d-none');
+            } else {
+                spans.forEach(span => span.classList.remove('d-none'));
+                inputs.forEach(input => input.classList.add('d-none'));
+                normalActions.classList.remove('d-none');
+                editActions.classList.add('d-none');
+            }
+        });
+    });
+    
+    // Select all functionality
+    selectAllCheckbox.addEventListener('change', function() {
+        const checkboxes = document.querySelectorAll('.contract-select');
+        checkboxes.forEach(checkbox => {
+            checkbox.checked = this.checked;
+        });
+    });
+    
+    // Модальное окно для договора
+    const contractRows = document.querySelectorAll('.contract-row');
+    contractRows.forEach(row => {
+        row.addEventListener('click', function(e) {
+            if (e.target.closest('input,button')) return;
+            const number = row.querySelector('.contract-number')?.textContent.trim();
+            const customer = row.querySelector('.contract-customer')?.textContent.trim();
+            const date = row.querySelector('.contract-date')?.textContent.trim();
+            const period = row.querySelector('.contract-period')?.textContent.trim();
+            const cost = row.querySelector('.contract-cost')?.textContent.trim();
+            const status = row.querySelector('.badge')?.textContent.trim();
+            const startDate = row.querySelector('.contract-start-date')?.value;
+            const endDate = row.querySelector('.contract-end-date')?.value;
+            // --- Информация ---
+            let html = `<div class='row'>`;
+            html += `<div class='col-md-6'><b>Номер договору:</b> ${number || ''}</div>`;
+            html += `<div class='col-md-6'><b>Замовник:</b> ${customer || ''}</div>`;
+            html += `</div><div class='row mt-2'>`;
+            html += `<div class='col-md-6'><b>Дата укладення:</b> ${date || ''}</div>`;
+            html += `<div class='col-md-6'><b>Термін дії:</b> ${period || ''}</div>`;
+            html += `</div><div class='row mt-2'>`;
+            html += `<div class='col-md-6'><b>Вартість/міс:</b> ${cost || ''}</div>`;
+            html += `<div class='col-md-6'><b>Статус:</b> ${status || ''}</div>`;
+            html += `</div>`;
+            document.getElementById('contractInfoContent').innerHTML = html;
+            // --- Виджет статуса ---
+            let widget = '';
+            if (startDate && endDate) {
+                const start = new Date(startDate);
+                const end = new Date(endDate);
+                const today = new Date();
+                const total = Math.max(1, Math.round((end - start) / (1000*60*60*24)));
+                const left = Math.max(0, Math.ceil((end - today) / (1000*60*60*24)));
+                const done = Math.min(100, Math.round(100 * (total - left) / total));
+                let barClass = 'bg-success';
+                let badge = '<span class="badge bg-success">Активний</span>';
+                if (left <= 0) {
+                    barClass = 'bg-secondary';
+                    badge = '<span class="badge bg-secondary">Неактивний</span>';
+                } else if (left <= 45) {
+                    barClass = 'bg-warning text-dark';
+                    badge = '<span class="badge bg-warning text-dark">Закінчується</span>';
+                }
+                widget += `<div class='mb-2><b>Залишилося днів:</b> <span class='text-info'>${left}</span></div>`;
+                widget += `<div class="progress mb-2" style="height: 16px; background:#222;">
+                    <div class="progress-bar ${barClass}" role="progressbar" style="width: 0%; transition:width 1s; font-weight:bold;" id="modalProgressBar">${done}%</div>
+                </div>`;
+                widget += `<div class='mb-2'><small class='text-muted'>${done}% терміну виконано</small></div>`;
+                widget += badge;
+                setTimeout(()=>{
+                  document.getElementById('modalProgressBar').style.width = done + '%';
+                }, 100);
+            }
+            document.getElementById('contractStatusWidget').innerHTML = widget;
+            const modal = new bootstrap.Modal(document.getElementById('contractInfoModal'));
+            modal.show();
+        });
+    });
+    
+    // Global functions
+    window.viewContract = function(id) {
+        window.location.href = '/documents/contract?id=' + id;
+    };
+    
+    window.editContract = function(id) {
+        const row = document.querySelector(`tr[data-contract-id="${id}"]`);
+        const spans = row.querySelectorAll('span[data-field]');
+        const inputs = row.querySelectorAll('.contract-edit');
+        const normalActions = row.querySelector('.contract-actions');
+        const editActions = row.querySelector('.contract-edit-actions');
+        
+        spans.forEach(span => span.classList.add('d-none'));
+        inputs.forEach(input => input.classList.remove('d-none'));
+        normalActions.classList.add('d-none');
+        editActions.classList.remove('d-none');
+    };
+    
+    window.saveContract = function(id) {
+        const row = document.querySelector(`tr[data-contract-id="${id}"]`);
+        
+        // Собираем все данные из полей ввода
+        const contractData = {
+            number: row.querySelector('.contract-edit[data-field="number"]')?.value || '',
+            customer: row.querySelector('.contract-edit[data-field="customer"]')?.value || '',
+            date: row.querySelector('.contract-start-date')?.value || '',
+            end_date: row.querySelector('.contract-end-date')?.value || '',
+            contact_person: row.querySelector('.contract-edit[data-field="contact_person"]')?.value || '',
+            phone: row.querySelector('.contract-edit[data-field="phone"]')?.value || '',
+            email: row.querySelector('.contract-edit[data-field="email"]')?.value || '',
+            total_lifts: parseInt(row.querySelector('.contract-edit[data-field="total_lifts"]')?.value || '0'),
+            monthly_cost: parseFloat(row.querySelector('.contract-edit[data-field="monthly_cost"]')?.value || '0')
+        };
+        
+        // Отправляем данные на сервер
+        fetch(`/contracts/${id}/update`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(contractData)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Обновляем отображение в таблице
+                updateContractDisplay(row, contractData, data);
+                cancelEdit(id);
+                alert('Договір збережено!');
+            } else {
+                alert('Помилка при збереженні: ' + (data.error || 'Невідома помилка'));
+            }
+        })
+        .catch(error => {
+            console.error('Error saving contract:', error);
+            alert('Помилка при збереженні договору');
+        });
+    };
+    
+    // Функция для обновления отображения данных в таблице
+    function updateContractDisplay(row, contractData, serverData) {
+        // Обновляем номер договора
+        const numberSpan = row.querySelector('.contract-number');
+        if (numberSpan) numberSpan.textContent = contractData.number;
+        
+        // Обновляем клиента
+        const customerSpan = row.querySelector('.contract-customer');
+        if (customerSpan) customerSpan.textContent = contractData.customer;
+        
+        // Обновляем дату укладення
+        const dateSpan = row.querySelector('.contract-date');
+        if (dateSpan && contractData.date) {
+            const parts = contractData.date.split('-');
+            dateSpan.textContent = `${parts[2]}.${parts[1]}.${parts[0]}`;
+        }
+        
+        // Обновляем дату закінчення
+        const periodSpan = row.querySelector('.contract-period');
+        const endDate = serverData.end_date || contractData.end_date;
+        if (periodSpan && endDate) {
+            const parts = endDate.split('-');
+            periodSpan.textContent = `до ${parts[2]}.${parts[1]}.${parts[0]}`;
+        }
+        
+        // Обновляем стоимость
+        const costSpan = row.querySelector('.contract-cost');
+        if (costSpan) {
+            costSpan.textContent = new Intl.NumberFormat('uk-UA').format(contractData.monthly_cost) + ' ₴';
+        }
+        
+        // Обновляем статус
+        const statusCell = row.cells[6];
+        const statusBadge = statusCell.querySelector('.badge');
+        if (statusBadge && serverData.status) {
+            statusBadge.className = 'badge';
+            if (serverData.status === 'active') {
+                statusBadge.classList.add('bg-success');
+                statusBadge.textContent = 'Активний';
+            } else if (serverData.status === 'заканчивается') {
+                statusBadge.classList.add('bg-warning');
+                statusBadge.textContent = 'Закінчується';
+            } else if (serverData.status === 'terminated') {
+                statusBadge.classList.add('bg-danger');
+                statusBadge.textContent = 'Розірваний';
+            }
+        }
+        
+        // Обновляем поле даты окончания в случае автопролонгации
+        if (serverData.end_date && serverData.end_date !== contractData.end_date) {
+            const endDateInput = row.querySelector('.contract-end-date');
+            if (endDateInput) {
+                endDateInput.value = serverData.end_date;
+            }
+        }
+    }
+    
+    window.cancelEdit = function(id) {
+        const row = document.querySelector(`tr[data-contract-id="${id}"]`);
+        const spans = row.querySelectorAll('span[data-field]');
+        const inputs = row.querySelectorAll('.contract-edit');
+        const normalActions = row.querySelector('.contract-actions');
+        const editActions = row.querySelector('.contract-edit-actions');
+        
+        spans.forEach(span => span.classList.remove('d-none'));
+        inputs.forEach(input => input.classList.add('d-none'));
+        normalActions.classList.remove('d-none');
+        editActions.classList.add('d-none');
+    };
+    
+    window.duplicateContract = function(id) {
+        alert('Дублювання договору ' + id);
+    };
+    
+    window.addNewContract = function() {
+        window.location.href = '/documents/contract';
+    };
+    
+    window.exportToExcel = function() {
+        alert('Експорт в Excel');
+    };
+    
+    window.printRegistry = function() {
+        window.print();
+    };
+    
+    window.clearFilters = function() {
+        document.getElementById('searchContracts').value = '';
+        document.getElementById('filterStatus').value = '';
+        document.getElementById('filterYear').value = '';
+        document.getElementById('sumFrom').value = '';
+        document.getElementById('sumTo').value = '';
+        
+        // Reset table display
+        const rows = document.querySelectorAll('#contractsTable tbody tr');
+        rows.forEach(row => row.style.display = '');
+        document.getElementById('contractsCount').textContent = rows.length;
+    };
+});
+</script>
+
+<style media="print">
+@media print {
+    .card-header, .btn, .form-control, .form-select, .form-check {
+        display: none !important;
+    }
+    
+    .card {
+        border: none !important;
+        background: white !important;
+    }
+    
+    .table-dark {
+        background: white !important;
+        color: black !important;
+    }
+    
+    .table-dark th, .table-dark td {
+        background: white !important;
+        color: black !important;
+        border-color: black !important;
+    }
+}
+</style>
+
+<script>
+function deleteSelectedContracts() {
+    var selected = document.querySelectorAll('.contract-select:checked');
+    if (selected.length === 0) {
+        alert('Виберіть договори для видалення');
+        return;
+    }
+    
+    if (!confirm('Ви впевнені, що хочете видалити вибрані договори?')) {
+        return;
+    }
+    
+    var contractIds = [];
+    selected.forEach(function(checkbox) {
+        var row = checkbox.closest('tr');
+        var contractId = row.getAttribute('data-contract-id');
+        if (contractId) {
+            contractIds.push(contractId);
+        }
+    });
+    
+    // Отправить запрос на удаление
+    fetch('/contracts/delete', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({contract_ids: contractIds})
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('Договори успішно видалено!');
+            location.reload();
+        } else {
+            alert('Помилка при видаленні: ' + data.error);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Помилка при видаленні договорів');
+    });
+}
+
+function addNewContract() {
+    window.location.href = '/documents/contract';
+}
+</script>
+{% endblock %}

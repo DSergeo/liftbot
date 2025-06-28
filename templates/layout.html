@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="uk" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Панель керування{% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/custom.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/themes.css') }}">
+
+    {% block head %}{% endblock %}
+</head>
+<body>
+
+<!-- ...existing code... -->
+<div class="d-flex" id="wrapper">
+    <div class="glass-panel" id="sidebar-wrapper">
+        <div class="sidebar-heading text-white px-3 py-4">
+            <i class="fas fa-cogs me-2"></i> <span class="sidebar-text-main">ЕЛЕСТЕК V1.0</span>
+            {% if session.get('company_name') %}
+            <div class="mt-3 p-2 bg-dark rounded">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div>
+                        <small class="text-muted">Компанія:</small>
+                        <div class="text-white fw-bold small">{{ session.get('company_name') }}</div>
+                        <small class="text-{% if session.get('company_vat_status') %}warning{% else %}info{% endif %}">
+                            {% if session.get('company_vat_status') %}З ПДВ{% else %}Без ПДВ{% endif %}
+                        </small>
+                    </div>
+                    <a href="{{ url_for('select_company') }}" class="btn btn-sm btn-outline-secondary" title="Змінити компанію">
+                        <i class="fas fa-exchange-alt"></i>
+                    </a>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+        <div class="list-group list-group-flush px-2">
+            <h6 class="text-muted mt-3 mb-2 px-3 sidebar-section-title">Основне</h6>
+            <a href="/" class="list-group-item list-group-item-action bg-transparent text-white sidebar-link" data-page="/">
+                <i class="fas fa-home me-2"></i> <span class="sidebar-item-text">Головна</span>
+            </a>
+            <a href="/analytics" class="list-group-item list-group-item-action bg-transparent text-white sidebar-link" data-page="/analytics">
+                <i class="fas fa-chart-bar me-2"></i> <span class="sidebar-item-text">Аналітика</span>
+            </a>
+            <a href="/counterparty" class="list-group-item list-group-item-action bg-transparent text-white sidebar-link" data-page="/counterparty">
+                <i class="fas fa-briefcase me-2"></i> <span class="sidebar-item-text">Контрагент</span>
+            </a>
+            <a href="/contacts" class="list-group-item list-group-item-action bg-transparent text-white sidebar-link" data-page="/contacts">
+                <i class="fas fa-address-book me-2"></i> <span class="sidebar-item-text">Контакти</span>
+            </a>
+            <a href="#" class="list-group-item list-group-item-action bg-transparent text-white" data-bs-toggle="collapse" data-bs-target="#documentsSubmenu" aria-expanded="false">
+                <i class="fas fa-file-alt me-2"></i> <span class="sidebar-item-text">Документи</span>
+                <i class="fas fa-chevron-down ms-auto"></i>
+            </a>
+            <div class="collapse" id="documentsSubmenu">
+                <div class="ps-4">
+                    <a href="/documents/contract" class="list-group-item list-group-item-action bg-transparent text-white border-0 py-2">
+                        <i class="fas fa-file-contract me-2"></i> <span class="sidebar-item-text">Договір</span>
+                    </a>
+                    <a href="/documents/invoice" class="list-group-item list-group-item-action bg-transparent text-white border-0 py-2">
+                        <i class="fas fa-file-invoice me-2"></i> <span class="sidebar-item-text">Рахунок-фактура</span>
+                    </a>
+                    <a href="/documents/work-report" class="list-group-item list-group-item-action bg-transparent text-white border-0 py-2">
+                        <i class="fas fa-file-signature me-2"></i> <span class="sidebar-item-text">Акт виконаних робіт</span>
+                    </a>
+                </div>
+            </div>
+            <a href="#" class="list-group-item list-group-item-action bg-transparent text-white" data-bs-toggle="collapse" data-bs-target="#registriesSubmenu" aria-expanded="false">
+                <i class="fas fa-book me-2"></i> <span class="sidebar-item-text">Реєстри</span>
+                <i class="fas fa-chevron-down ms-auto"></i>
+            </a>
+            <div class="collapse" id="registriesSubmenu">
+                <div class="ps-4">
+                    <a href="/registries/contracts" class="list-group-item list-group-item-action bg-transparent text-white border-0 py-2">
+                        <i class="fas fa-file-contract me-2"></i> <span class="sidebar-item-text">Договори</span>
+                    </a>
+                    <a href="/registries/work-reports" class="list-group-item list-group-item-action bg-transparent text-white border-0 py-2">
+                        <i class="fas fa-file-signature me-2"></i> <span class="sidebar-item-text">Акти виконаних робіт</span>
+                    </a>
+                </div>
+            </div>
+            <a href="#" class="list-group-item list-group-item-action bg-transparent text-white" data-bs-toggle="collapse" data-bs-target="#usersSubmenu" aria-expanded="false">
+                <i class="fas fa-users me-2"></i> <span class="sidebar-item-text">Користувачі</span>
+                <i class="fas fa-chevron-down ms-auto"></i>
+            </a>
+            <div class="collapse" id="usersSubmenu">
+                <div class="ps-4">
+                    <a href="/users" class="list-group-item list-group-item-action bg-transparent text-white border-0 py-2">
+                        <i class="fas fa-user-tie me-2"></i> <span class="sidebar-item-text">Співробітники</span>
+                    </a>
+                    <a href="/customers" class="list-group-item list-group-item-action bg-transparent text-white border-0 py-2">
+                        <i class="fas fa-user-friends me-2"></i> <span class="sidebar-item-text">Замовники</span>
+                    </a>
+                </div>
+            </div>
+            <a href="#" class="list-group-item list-group-item-action bg-transparent text-white" data-bs-toggle="collapse" data-bs-target="#settingsSubmenu" aria-expanded="false">
+                <i class="fas fa-cog me-2"></i> <span class="sidebar-item-text">Налаштування</span>
+                <i class="fas fa-chevron-down ms-auto"></i>
+            </a>
+            <div class="collapse" id="settingsSubmenu">
+                <div class="ps-4">
+                    <a href="/settings/company" class="list-group-item list-group-item-action bg-transparent text-white border-0 py-2">
+                        <i class="fas fa-building me-2"></i> <span class="sidebar-item-text">Профіль компанії</span>
+                    </a>
+                    <a href="/settings/localization" class="list-group-item list-group-item-action bg-transparent text-white border-0 py-2">
+                        <i class="fas fa-globe me-2"></i> <span class="sidebar-item-text">Локалізація</span>
+                    </a>
+                    <a href="/settings/theme" class="list-group-item list-group-item-action bg-transparent text-white border-0 py-2">
+                        <i class="fas fa-palette me-2"></i> <span class="sidebar-item-text">Налаштування теми</span>
+                    </a>
+                    <a href="/settings/logo" class="list-group-item list-group-item-action bg-transparent text-white border-0 py-2">
+                        <i class="fas fa-image me-2"></i> <span class="sidebar-item-text">Додати логотип до рахунку</span>
+                    </a>
+                </div>
+            </div>
+            <h6 class="text-muted mt-3 mb-2 px-3 sidebar-section-title">Додатково</h6>
+            <a href="#" class="list-group-item list-group-item-action bg-transparent text-white">
+                <i class="fas fa-file-alt me-2"></i> <span class="sidebar-item-text">Журнали</span>
+            </a>
+            <a href="/export" class="list-group-item list-group-item-action bg-transparent text-white">
+                <i class="fas fa-download me-2"></i> <span class="sidebar-item-text">Експорт</span>
+            </a>
+            <a href="#" id="settingsToggle" class="list-group-item list-group-item-action bg-transparent text-white" data-bs-toggle="collapse" data-bs-target="#settingsCollapse" aria-expanded="false">
+                <i class="fas fa-cog me-2"></i> <span class="sidebar-item-text">Telegram</span>
+                <i class="fas fa-chevron-down ms-auto"></i>
+            </a>
+        </div>
+        
+        <!-- Settings Panel -->
+        <div class="collapse" id="settingsCollapse">
+          <div class="settings-panel p-3 m-2 rounded">
+            <h6 class="text-muted mb-3">🔐 Дозвіл на дії в Telegram-групах</h6>
+            <div class="form-check form-switch mb-2">
+              <input class="form-check-input toggle-switch" type="checkbox" id="toggle-участок1-sidebar" data-section="участок№1">
+              <label class="form-check-label text-white" for="toggle-участок1-sidebar">Участок №1</label>
+            </div>
+            <div class="form-check form-switch">
+              <input class="form-check-input toggle-switch" type="checkbox" id="toggle-участок2-sidebar" data-section="участок№2">
+              <label class="form-check-label text-white" for="toggle-участок2-sidebar">Участок №2</label>
+            </div>
+          </div>
+        </div>
+    </div>
+<!-- ...existing code... -->
+
+    <div id="page-content-wrapper" class="w-100">
+        <!-- Fixed Header -->
+        <nav class="navbar navbar-expand-lg glass-panel navbar-dark px-4 fixed-header">
+            <div class="top-info-panel d-none d-lg-flex align-items-center justify-content-center gap-4 rounded-pill shadow-sm px-4 py-1">
+                <span><i class="fas fa-calendar-alt me-2"></i><span id="top-date">Loading...</span></span>
+                <span><i class="fas fa-clock me-2"></i><span id="top-time">00:00:00</span></span>
+                <span><i class="fas fa-cloud-sun me-2"></i>Київ: --°</span>
+            </div>
+            <div class="container-fluid">
+                <div class="d-flex justify-content-between align-items-center w-100">
+                    <div class="d-flex align-items-center">
+                        <button class="btn btn-link text-white me-3 d-lg-none" id="sidebarToggleMobile">
+                            <i class="fas fa-bars fa-lg"></i>
+                        </button>
+                        <button class="btn btn-link text-white me-3 d-none d-lg-block" id="sidebarToggleDesktop">
+                            <i class="fas fa-bars fa-lg"></i>
+                        </button>
+                        <span class="navbar-brand mb-0 h1 d-none d-md-block"><i class="fas fa-clock me-2"></i> <span id="current-time"></span></span>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <div class="dropdown">
+                            <a class="text-white dropdown-toggle d-flex align-items-center" href="#" role="button" data-bs-toggle="dropdown">
+                                <img src="{% if session.get('user_avatar') %}{{ session.get('user_avatar') }}{% else %}https://via.placeholder.com/30x30/6c757d/ffffff?text={{ session.get('user_name', 'U')[0] }}{% endif %}" class="rounded-circle me-2" style="width: 30px; height: 30px; object-fit: cover;"> 
+                                <span class="d-none d-sm-inline">{{ session.get('user_name', 'Користувач') }}</span>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li><a class="dropdown-item" href="/account"><i class="fas fa-user me-2"></i>Профіль</a></li>
+                                <li><a class="dropdown-item" href="#" data-bs-toggle="collapse" data-bs-target="#settingsCollapse"><i class="fas fa-cog me-2"></i>Налаштування</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="/logout"><i class="fas fa-sign-out-alt me-2"></i>Вийти</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Scrollable Main Content -->
+        <div class="main-content">
+            {% block content %}{% endblock %}
+        </div>
+    </div>
+</div>
+<!-- ...existing code... -->
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+// Поточний час у верхній панелі
+function updateTopBarDateTime() {
+    const formatter = new Intl.DateTimeFormat('uk-UA', {
+        timeZone: 'Europe/Kyiv',
+        hour12: false,
+        weekday: 'short',
+        day: '2-digit',
+        month: 'long',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit'
+    });
+
+    const parts = formatter.formatToParts(new Date());
+    let dateStr = '', timeStr = '';
+    for (const part of parts) {
+        if (['weekday', 'day', 'month', 'year'].includes(part.type)) dateStr += part.value + ' ';
+        if (['hour', 'minute', 'second'].includes(part.type)) timeStr += part.value + (part.type === 'second' ? '' : ':');
+    }
+
+    document.getElementById('top-date').textContent = dateStr.trim();
+    document.getElementById('top-time').textContent = timeStr;
+}
+setInterval(updateTopBarDateTime, 1000);
+updateTopBarDateTime();
+
+// Погода з OpenWeatherMap
+fetch("https://api.openweathermap.org/data/2.5/weather?q=Kyiv&appid=aca5d46ec3cdc6136925998712e739d6&units=metric&lang=ua")
+    .then(response => response.json())
+    .then(data => {
+        const temperature = Math.round(data.main.temp);
+        const windSpeed = Math.round(data.wind.speed);
+        const weatherEl = document.querySelector('.top-info-panel span:nth-child(3)');
+        if (weatherEl) weatherEl.innerHTML = `<i class="fas fa-cloud-sun me-2"></i>Київ: ${temperature}°C, вітер ${windSpeed} км/год`;
+    })
+    .catch(err => console.error("Помилка погоди:", err));
+</script>
+
+<script>
+document.querySelectorAll('.theme-option').forEach(el => {
+    el.addEventListener('click', () => {
+        const bgClass = el.getAttribute('data-bg');
+        document.body.className = ''; // Очистити всі теми
+        document.body.classList.add(bgClass); // Додати нову тему
+        localStorage.setItem('selectedTheme', bgClass);
+    });
+});
+
+// Завантаження збереженої теми
+document.addEventListener('DOMContentLoaded', () => {
+    const savedTheme = localStorage.getItem('selectedTheme');
+    if (savedTheme) {
+        document.body.classList.add(savedTheme);
+    }
+    
+    // Активний стан навігації
+    const currentPath = window.location.pathname;
+    document.querySelectorAll('.sidebar-link').forEach(link => {
+        link.classList.remove('active');
+        if (link.getAttribute('data-page') === currentPath) {
+            link.classList.add('active');
+        }
+    });
+    
+    // Sidebar toggle functionality
+    const sidebarWrapper = document.getElementById('sidebar-wrapper');
+    const pageContentWrapper = document.getElementById('page-content-wrapper');
+    const toggleMobile = document.getElementById('sidebarToggleMobile');
+    const toggleDesktop = document.getElementById('sidebarToggleDesktop');
+    
+    // Mobile sidebar toggle
+    if (toggleMobile) {
+        toggleMobile.addEventListener('click', function() {
+            sidebarWrapper.classList.toggle('show');
+        });
+    }
+    
+    // Desktop sidebar toggle
+    if (toggleDesktop) {
+        toggleDesktop.addEventListener('click', function() {
+            sidebarWrapper.classList.toggle('sidebar-collapsed');
+            pageContentWrapper.classList.toggle('sidebar-collapsed');
+            
+            // Save sidebar state
+            const isCollapsed = sidebarWrapper.classList.contains('sidebar-collapsed');
+            localStorage.setItem('sidebarCollapsed', isCollapsed);
+        });
+    }
+    
+    // Restore sidebar state
+    const savedSidebarState = localStorage.getItem('sidebarCollapsed');
+    if (savedSidebarState === 'true') {
+        sidebarWrapper.classList.add('sidebar-collapsed');
+        pageContentWrapper.classList.add('sidebar-collapsed');
+    }
+});
+</script>
+
+
+{% block scripts %}{% endblock %}
+
+</body>
+</html>

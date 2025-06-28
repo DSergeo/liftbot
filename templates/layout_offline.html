@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="uk" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Панель керування{% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Локальні CSS файли для роботи без інтернету -->
+    <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/fontawesome.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/bootstrap-icons.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/custom.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/themes.css') }}">
+
+    {% block head %}{% endblock %}
+</head>
+<body>
+
+<div class="d-flex" id="wrapper">
+    <div class="glass-panel" id="sidebar-wrapper">
+        <div class="sidebar-heading text-white px-3 py-4">
+            <i class="fas fa-cogs me-2"></i> <span class="sidebar-text-main">ЕЛЕСТЕК V1.0</span>
+            {% if session.get('company_name') %}
+            <div class="mt-3 p-2 bg-dark rounded">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div>
+                        <small class="text-muted">Компанія:</small>
+                        <div class="text-white fw-bold small">{{ session.get('company_name') }}</div>
+                        <small class="text-{% if session.get('company_vat_status') %}warning{% else %}info{% endif %}">
+                            {% if session.get('company_vat_status') %}З ПДВ{% else %}Без ПДВ{% endif %}
+                        </small>
+                    </div>
+                    <a href="{{ url_for('select_company') }}" class="btn btn-outline-light btn-sm">
+                        <i class="fas fa-exchange-alt"></i>
+                    </a>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+        
+        <div class="list-group list-group-flush">
+            <a href="{{ url_for('index') }}" class="list-group-item list-group-item-action glass-item">
+                <i class="fas fa-home sidebar-icon"></i>
+                <span class="sidebar-text">Головна</span>
+            </a>
+            <a href="{{ url_for('analytics') }}" class="list-group-item list-group-item-action glass-item">
+                <i class="fas fa-chart-line sidebar-icon"></i>
+                <span class="sidebar-text">Аналітика</span>
+            </a>
+            <a href="{{ url_for('account') }}" class="list-group-item list-group-item-action glass-item">
+                <i class="fas fa-user sidebar-icon"></i>
+                <span class="sidebar-text">Акаунт</span>
+            </a>
+            <a href="{{ url_for('users') }}" class="list-group-item list-group-item-action glass-item">
+                <i class="fas fa-users sidebar-icon"></i>
+                <span class="sidebar-text">Користувачі</span>
+            </a>
+            <a href="{{ url_for('customers') }}" class="list-group-item list-group-item-action glass-item">
+                <i class="fas fa-building sidebar-icon"></i>
+                <span class="sidebar-text">Замовники</span>
+            </a>
+            
+            <!-- Реєстри -->
+            <div class="list-group-item glass-item">
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-folder-open sidebar-icon"></i>
+                    <span class="sidebar-text flex-grow-1">Реєстри</span>
+                    <button class="btn btn-sm btn-link text-white p-0" data-bs-toggle="collapse" data-bs-target="#registriesMenu">
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                </div>
+                <div class="collapse show mt-2" id="registriesMenu">
+                    <a href="{{ url_for('registries_contracts') }}" class="d-block text-decoration-none text-white-50 ps-4 py-1 small">
+                        <i class="fas fa-file-contract me-2"></i>Договори
+                    </a>
+                    <a href="{{ url_for('registries_work_reports') }}" class="d-block text-decoration-none text-white-50 ps-4 py-1 small">
+                        <i class="fas fa-clipboard-list me-2"></i>Звіти про роботи
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Документи -->
+            <div class="list-group-item glass-item">
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-file-alt sidebar-icon"></i>
+                    <span class="sidebar-text flex-grow-1">Документи</span>
+                    <button class="btn btn-sm btn-link text-white p-0" data-bs-toggle="collapse" data-bs-target="#documentsMenu">
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                </div>
+                <div class="collapse show mt-2" id="documentsMenu">
+                    <a href="{{ url_for('documents_contract') }}" class="d-block text-decoration-none text-white-50 ps-4 py-1 small">
+                        <i class="fas fa-handshake me-2"></i>Договір
+                    </a>
+                    <a href="{{ url_for('documents_invoice') }}" class="d-block text-decoration-none text-white-50 ps-4 py-1 small">
+                        <i class="fas fa-file-invoice me-2"></i>Рахунок-фактура
+                    </a>
+                    <a href="{{ url_for('documents_work_report') }}" class="d-block text-decoration-none text-white-50 ps-4 py-1 small">
+                        <i class="fas fa-tools me-2"></i>Звіт про роботи
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Налаштування -->
+            <div class="list-group-item glass-item">
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-cog sidebar-icon"></i>
+                    <span class="sidebar-text flex-grow-1">Налаштування</span>
+                    <button class="btn btn-sm btn-link text-white p-0" data-bs-toggle="collapse" data-bs-target="#settingsMenu">
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                </div>
+                <div class="collapse show mt-2" id="settingsMenu">
+                    <a href="{{ url_for('settings_company') }}" class="d-block text-decoration-none text-white-50 ps-4 py-1 small">
+                        <i class="fas fa-building me-2"></i>Компанія
+                    </a>
+                    <a href="{{ url_for('settings_localization') }}" class="d-block text-decoration-none text-white-50 ps-4 py-1 small">
+                        <i class="fas fa-language me-2"></i>Локалізація
+                    </a>
+                    <a href="{{ url_for('settings_theme') }}" class="d-block text-decoration-none text-white-50 ps-4 py-1 small">
+                        <i class="fas fa-palette me-2"></i>Тема
+                    </a>
+                    <a href="{{ url_for('settings_logo') }}" class="d-block text-decoration-none text-white-50 ps-4 py-1 small">
+                        <i class="fas fa-image me-2"></i>Логотип
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="mt-auto p-3">
+            <div class="d-flex align-items-center justify-content-between">
+                <div class="d-flex align-items-center">
+                    <div class="rounded-circle bg-primary d-flex align-items-center justify-content-center" style="width: 32px; height: 32px;">
+                        <i class="fas fa-user text-white"></i>
+                    </div>
+                    <div class="ms-2">
+                        <div class="text-white small fw-bold">{{ session.get('user_email', 'Гість') }}</div>
+                        <div class="text-white-50 small">Адміністратор</div>
+                    </div>
+                </div>
+                <a href="{{ url_for('logout') }}" class="btn btn-outline-light btn-sm">
+                    <i class="fas fa-sign-out-alt"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div id="page-content-wrapper" class="flex-fill">
+        <nav class="glass-panel navbar navbar-expand-lg navbar-dark border-bottom mb-4">
+            <div class="container-fluid">
+                <button class="btn btn-primary" id="sidebarToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+                
+                <div class="navbar-nav ms-auto">
+                    <div class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle text-white" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-bell"></i>
+                            <span class="badge bg-danger rounded-pill">3</span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="#">Нова заявка №1234</a></li>
+                            <li><a class="dropdown-item" href="#">Термінова заявка №1235</a></li>
+                            <li><a class="dropdown-item" href="#">Звіт готовий</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <div class="container-fluid">
+            {% block content %}{% endblock %}
+        </div>
+    </div>
+</div>
+
+<!-- Локальні JS файли -->
+<script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/chart.min.js') }}"></script>
+
+<script>
+document.getElementById('sidebarToggle').addEventListener('click', function() {
+    document.getElementById('wrapper').classList.toggle('toggled');
+});
+</script>
+
+{% block scripts %}{% endblock %}
+</body>
+</html>

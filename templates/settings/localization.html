@@ -1,0 +1,207 @@
+{% extends "layout.html" %}
+
+{% block title %}Локалізація{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/custom.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h4 class="text-white mb-1">
+                        <i class="fas fa-globe me-2"></i>Локалізація
+                    </h4>
+                    <p class="text-muted mb-0">Налаштування мови та регіональних параметрів</p>
+                </div>
+                <button class="btn btn-primary">
+                    <i class="fas fa-save me-2"></i>Зберегти зміни
+                </button>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-8">
+                    <!-- Language Settings -->
+                    <div class="card bg-dark border-0 mb-4">
+                        <div class="card-header bg-transparent border-bottom">
+                            <h5 class="text-white mb-0">
+                                <i class="fas fa-language me-2"></i>Мовні налаштування
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label text-white">Основна мова інтерфейсу</label>
+                                    <select class="form-select">
+                                        <option value="uk" selected>Українська</option>
+                                        <option value="ru">Русский</option>
+                                        <option value="en">English</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label text-white">Мова повідомлень клієнтам</label>
+                                    <select class="form-select">
+                                        <option value="uk" selected>Українська</option>
+                                        <option value="ru">Русский</option>
+                                        <option value="en">English</option>
+                                    </select>
+                                </div>
+                                <div class="col-12">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="autoDetectLanguage">
+                                        <label class="form-check-label text-white" for="autoDetectLanguage">
+                                            Автоматично визначати мову користувача
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Regional Settings -->
+                    <div class="card bg-dark border-0 mb-4">
+                        <div class="card-header bg-transparent border-bottom">
+                            <h5 class="text-white mb-0">
+                                <i class="fas fa-map-marker-alt me-2"></i>Регіональні налаштування
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label text-white">Часовий пояс</label>
+                                    <select class="form-select">
+                                        <option value="Europe/Kiev" selected>Київ (UTC+2/+3)</option>
+                                        <option value="Europe/London">Лондон (UTC+0/+1)</option>
+                                        <option value="Europe/Moscow">Москва (UTC+3)</option>
+                                        <option value="America/New_York">Нью-Йорк (UTC-5/-4)</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label text-white">Валюта</label>
+                                    <select class="form-select">
+                                        <option value="UAH" selected>₴ Українська гривня (UAH)</option>
+                                        <option value="USD">$ Долар США (USD)</option>
+                                        <option value="EUR">€ Євро (EUR)</option>
+                                        <option value="RUB">₽ Російський рубль (RUB)</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label text-white">Формат дати</label>
+                                    <select class="form-select">
+                                        <option value="dd.mm.yyyy" selected>дд.мм.рррр</option>
+                                        <option value="mm/dd/yyyy">мм/дд/рррр</option>
+                                        <option value="yyyy-mm-dd">рррр-мм-дд</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label text-white">Формат часу</label>
+                                    <select class="form-select">
+                                        <option value="24" selected>24-годинний (15:30)</option>
+                                        <option value="12">12-годинний (3:30 PM)</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Notification Settings -->
+                    <div class="card bg-dark border-0 mb-4">
+                        <div class="card-header bg-transparent border-bottom">
+                            <h5 class="text-white mb-0">
+                                <i class="fas fa-bell me-2"></i>Налаштування сповіщень
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-12 mb-3">
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" id="translateNotifications" checked>
+                                        <label class="form-check-label text-white" for="translateNotifications">
+                                            Автоматично перекладати повідомлення
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-12 mb-3">
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" id="usePhonetics" checked>
+                                        <label class="form-check-label text-white" for="usePhonetics">
+                                            Використовувати фонетичну транскрипцію
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label text-white">Мова голосових повідомлень</label>
+                                    <select class="form-select">
+                                        <option value="uk-UA" selected>Українська (жінка)</option>
+                                        <option value="uk-UA-male">Українська (чоловік)</option>
+                                        <option value="ru-RU">Російська (жінка)</option>
+                                        <option value="en-US">English (female)</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4">
+                    <!-- Preview -->
+                    <div class="card bg-dark border-0 mb-4">
+                        <div class="card-header bg-transparent border-bottom">
+                            <h5 class="text-white mb-0">
+                                <i class="fas fa-eye me-2"></i>Попередній перегляд
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="border rounded p-3 mb-3">
+                                <h6 class="text-white">Приклад повідомлення:</h6>
+                                <div class="text-muted small mb-2">13.06.2025, 14:30</div>
+                                <p class="text-white mb-0">Заявка №681 створена. Адреса: вул. Лазурна, 30. Проблема: "Ліфт не працює".</p>
+                            </div>
+                            <div class="border rounded p-3">
+                                <h6 class="text-white">Форматування чисел:</h6>
+                                <div class="d-flex justify-content-between mb-1">
+                                    <span class="text-muted">Вартість:</span>
+                                    <span class="text-white">1 250,00 ₴</span>
+                                </div>
+                                <div class="d-flex justify-content-between">
+                                    <span class="text-muted">Відсоток:</span>
+                                    <span class="text-white">95,5%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Available Languages -->
+                    <div class="card bg-dark border-0">
+                        <div class="card-header bg-transparent border-bottom">
+                            <h5 class="text-white mb-0">
+                                <i class="fas fa-list me-2"></i>Доступні мови
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="d-flex align-items-center mb-3">
+                                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='15'%3E%3Crect width='20' height='7.5' fill='%230057B8'/%3E%3Crect y='7.5' width='20' height='7.5' fill='%23FFD700'/%3E%3C/svg%3E" class="me-2" alt="UA">
+                                <span class="text-white">Українська</span>
+                                <span class="badge bg-success ms-auto">Активна</span>
+                            </div>
+                            <div class="d-flex align-items-center mb-3">
+                                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='15'%3E%3Crect width='20' height='5' fill='white'/%3E%3Crect y='5' width='20' height='5' fill='%230039A6'/%3E%3Crect y='10' width='20' height='5' fill='%23D52B1E'/%3E%3C/svg%3E" class="me-2" alt="RU">
+                                <span class="text-white">Русский</span>
+                                <span class="badge bg-secondary ms-auto">Доступна</span>
+                            </div>
+                            <div class="d-flex align-items-center">
+                                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='15'%3E%3Crect width='20' height='15' fill='%23012169'/%3E%3Cpath d='M0,0 L20,15 M20,0 L0,15' stroke='white' stroke-width='1'/%3E%3Cpath d='M0,0 L20,15 M20,0 L0,15' stroke='%23C8102E' stroke-width='0.6'/%3E%3C/svg%3E" class="me-2" alt="EN">
+                                <span class="text-white">English</span>
+                                <span class="badge bg-secondary ms-auto">Доступна</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

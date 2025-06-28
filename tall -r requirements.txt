@@ -1,0 +1,159 @@
+июн 19 10:37:01 liftbotweb systemd[1]: Started liftbot-bot.service - LiftBot Telegram Bot.
+июн 19 10:37:01 liftbotweb python3[1714550]: Traceback (most recent call last):
+июн 19 10:37:01 liftbotweb python3[1714550]:   File "/home/sergey-d/liftbot/run_bot.py", line 1, in <module>
+июн 19 10:37:01 liftbotweb python3[1714550]:     from app.bot import bot
+июн 19 10:37:01 liftbotweb python3[1714550]:   File "/home/sergey-d/liftbot/app/__init__.py", line 1, in <module>
+июн 19 10:37:01 liftbotweb python3[1714550]:     from flask import Flask
+июн 19 10:37:01 liftbotweb python3[1714550]: ModuleNotFoundError: No module named 'flask'
+июн 19 10:37:01 liftbotweb systemd[1]: [0;1;39m[0;1;31m[0;1;39mliftbot-bot.service: Main process exited, code=exited, status=1/FAILURE[0m
+июн 19 10:37:01 liftbotweb systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mliftbot-bot.service: Failed with result 'exit-code'.[0m
+июн 19 10:37:02 liftbotweb systemd[1]: liftbot-bot.service: Scheduled restart job, restart counter is at 1.
+июн 19 10:37:02 liftbotweb systemd[1]: Started liftbot-bot.service - LiftBot Telegram Bot.
+июн 19 10:37:02 liftbotweb python3[1714556]: Traceback (most recent call last):
+июн 19 10:37:02 liftbotweb python3[1714556]:   File "/home/sergey-d/liftbot/run_bot.py", line 1, in <module>
+июн 19 10:37:02 liftbotweb python3[1714556]:     from app.bot import bot
+июн 19 10:37:02 liftbotweb python3[1714556]:   File "/home/sergey-d/liftbot/app/__init__.py", line 1, in <module>
+июн 19 10:37:02 liftbotweb python3[1714556]:     from flask import Flask
+июн 19 10:37:02 liftbotweb python3[1714556]: ModuleNotFoundError: No module named 'flask'
+июн 19 10:37:02 liftbotweb systemd[1]: [0;1;39m[0;1;31m[0;1;39mliftbot-bot.service: Main process exited, code=exited, status=1/FAILURE[0m
+июн 19 10:37:02 liftbotweb systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mliftbot-bot.service: Failed with result 'exit-code'.[0m
+июн 19 10:37:02 liftbotweb systemd[1]: liftbot-bot.service: Scheduled restart job, restart counter is at 2.
+июн 19 10:37:02 liftbotweb systemd[1]: Started liftbot-bot.service - LiftBot Telegram Bot.
+июн 19 10:37:02 liftbotweb python3[1714574]: Traceback (most recent call last):
+июн 19 10:37:02 liftbotweb python3[1714574]:   File "/home/sergey-d/liftbot/run_bot.py", line 1, in <module>
+июн 19 10:37:02 liftbotweb python3[1714574]:     from app.bot import bot
+июн 19 10:37:02 liftbotweb python3[1714574]:   File "/home/sergey-d/liftbot/app/__init__.py", line 1, in <module>
+июн 19 10:37:02 liftbotweb python3[1714574]:     from flask import Flask
+июн 19 10:37:02 liftbotweb python3[1714574]: ModuleNotFoundError: No module named 'flask'
+июн 19 10:37:02 liftbotweb systemd[1]: [0;1;39m[0;1;31m[0;1;39mliftbot-bot.service: Main process exited, code=exited, status=1/FAILURE[0m
+июн 19 10:37:02 liftbotweb systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mliftbot-bot.service: Failed with result 'exit-code'.[0m
+июн 19 10:37:02 liftbotweb systemd[1]: liftbot-bot.service: Scheduled restart job, restart counter is at 3.
+июн 19 10:37:02 liftbotweb systemd[1]: Started liftbot-bot.service - LiftBot Telegram Bot.
+июн 19 10:37:03 liftbotweb python3[1714577]: Traceback (most recent call last):
+июн 19 10:37:03 liftbotweb python3[1714577]:   File "/home/sergey-d/liftbot/run_bot.py", line 1, in <module>
+июн 19 10:37:03 liftbotweb python3[1714577]:     from app.bot import bot
+июн 19 10:37:03 liftbotweb python3[1714577]:   File "/home/sergey-d/liftbot/app/__init__.py", line 1, in <module>
+июн 19 10:37:03 liftbotweb python3[1714577]:     from flask import Flask
+июн 19 10:37:03 liftbotweb python3[1714577]: ModuleNotFoundError: No module named 'flask'
+июн 19 10:37:03 liftbotweb systemd[1]: [0;1;39m[0;1;31m[0;1;39mliftbot-bot.service: Main process exited, code=exited, status=1/FAILURE[0m
+июн 19 10:37:03 liftbotweb systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mliftbot-bot.service: Failed with result 'exit-code'.[0m
+июн 19 10:37:03 liftbotweb systemd[1]: liftbot-bot.service: Scheduled restart job, restart counter is at 4.
+июн 19 10:37:03 liftbotweb systemd[1]: Started liftbot-bot.service - LiftBot Telegram Bot.
+июн 19 10:37:03 liftbotweb python3[1714585]: Traceback (most recent call last):
+июн 19 10:37:03 liftbotweb python3[1714585]:   File "/home/sergey-d/liftbot/run_bot.py", line 1, in <module>
+июн 19 10:37:03 liftbotweb python3[1714585]:     from app.bot import bot
+июн 19 10:37:03 liftbotweb python3[1714585]:   File "/home/sergey-d/liftbot/app/__init__.py", line 1, in <module>
+июн 19 10:37:03 liftbotweb python3[1714585]:     from flask import Flask
+июн 19 10:37:03 liftbotweb python3[1714585]: ModuleNotFoundError: No module named 'flask'
+июн 19 10:37:03 liftbotweb systemd[1]: [0;1;39m[0;1;31m[0;1;39mliftbot-bot.service: Main process exited, code=exited, status=1/FAILURE[0m
+июн 19 10:37:03 liftbotweb systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mliftbot-bot.service: Failed with result 'exit-code'.[0m
+июн 19 10:37:03 liftbotweb systemd[1]: liftbot-bot.service: Scheduled restart job, restart counter is at 5.
+июн 19 10:37:03 liftbotweb systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mliftbot-bot.service: Start request repeated too quickly.[0m
+июн 19 10:37:03 liftbotweb systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mliftbot-bot.service: Failed with result 'exit-code'.[0m
+июн 19 10:37:03 liftbotweb systemd[1]: [0;1;31m[0;1;39m[0;1;31mFailed to start liftbot-bot.service - LiftBot Telegram Bot.[0m
+июн 19 10:51:00 liftbotweb systemd[1]: Started liftbot-bot.service - LiftBot Telegram Bot.
+июн 19 10:51:00 liftbotweb python3[1719327]: Traceback (most recent call last):
+июн 19 10:51:00 liftbotweb python3[1719327]:   File "/home/sergey-d/liftbot/run_bot.py", line 1, in <module>
+июн 19 10:51:00 liftbotweb python3[1719327]:     from app.bot import bot
+июн 19 10:51:00 liftbotweb python3[1719327]:   File "/home/sergey-d/liftbot/app/__init__.py", line 1, in <module>
+июн 19 10:51:00 liftbotweb python3[1719327]:     from flask import Flask
+июн 19 10:51:00 liftbotweb python3[1719327]: ModuleNotFoundError: No module named 'flask'
+июн 19 10:51:00 liftbotweb systemd[1]: [0;1;39m[0;1;31m[0;1;39mliftbot-bot.service: Main process exited, code=exited, status=1/FAILURE[0m
+июн 19 10:51:00 liftbotweb systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mliftbot-bot.service: Failed with result 'exit-code'.[0m
+июн 19 10:51:00 liftbotweb systemd[1]: liftbot-bot.service: Scheduled restart job, restart counter is at 1.
+июн 19 10:51:00 liftbotweb systemd[1]: Started liftbot-bot.service - LiftBot Telegram Bot.
+июн 19 10:51:01 liftbotweb python3[1719336]: Traceback (most recent call last):
+июн 19 10:51:01 liftbotweb python3[1719336]:   File "/home/sergey-d/liftbot/run_bot.py", line 1, in <module>
+июн 19 10:51:01 liftbotweb python3[1719336]:     from app.bot import bot
+июн 19 10:51:01 liftbotweb python3[1719336]:   File "/home/sergey-d/liftbot/app/__init__.py", line 1, in <module>
+июн 19 10:51:01 liftbotweb python3[1719336]:     from flask import Flask
+июн 19 10:51:01 liftbotweb python3[1719336]: ModuleNotFoundError: No module named 'flask'
+июн 19 10:51:01 liftbotweb systemd[1]: [0;1;39m[0;1;31m[0;1;39mliftbot-bot.service: Main process exited, code=exited, status=1/FAILURE[0m
+июн 19 10:51:01 liftbotweb systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mliftbot-bot.service: Failed with result 'exit-code'.[0m
+июн 19 10:51:01 liftbotweb systemd[1]: liftbot-bot.service: Scheduled restart job, restart counter is at 2.
+июн 19 10:51:01 liftbotweb systemd[1]: Started liftbot-bot.service - LiftBot Telegram Bot.
+июн 19 10:51:01 liftbotweb python3[1719341]: Traceback (most recent call last):
+июн 19 10:51:01 liftbotweb python3[1719341]:   File "/home/sergey-d/liftbot/run_bot.py", line 1, in <module>
+июн 19 10:51:01 liftbotweb python3[1719341]:     from app.bot import bot
+июн 19 10:51:01 liftbotweb python3[1719341]:   File "/home/sergey-d/liftbot/app/__init__.py", line 1, in <module>
+июн 19 10:51:01 liftbotweb python3[1719341]:     from flask import Flask
+июн 19 10:51:01 liftbotweb python3[1719341]: ModuleNotFoundError: No module named 'flask'
+июн 19 10:51:01 liftbotweb systemd[1]: [0;1;39m[0;1;31m[0;1;39mliftbot-bot.service: Main process exited, code=exited, status=1/FAILURE[0m
+июн 19 10:51:01 liftbotweb systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mliftbot-bot.service: Failed with result 'exit-code'.[0m
+июн 19 10:51:01 liftbotweb systemd[1]: liftbot-bot.service: Scheduled restart job, restart counter is at 3.
+июн 19 10:51:01 liftbotweb systemd[1]: Started liftbot-bot.service - LiftBot Telegram Bot.
+июн 19 10:51:02 liftbotweb python3[1719355]: Traceback (most recent call last):
+июн 19 10:51:02 liftbotweb python3[1719355]:   File "/home/sergey-d/liftbot/run_bot.py", line 1, in <module>
+июн 19 10:51:02 liftbotweb python3[1719355]:     from app.bot import bot
+июн 19 10:51:02 liftbotweb python3[1719355]:   File "/home/sergey-d/liftbot/app/__init__.py", line 1, in <module>
+июн 19 10:51:02 liftbotweb python3[1719355]:     from flask import Flask
+июн 19 10:51:02 liftbotweb python3[1719355]: ModuleNotFoundError: No module named 'flask'
+июн 19 10:51:02 liftbotweb systemd[1]: [0;1;39m[0;1;31m[0;1;39mliftbot-bot.service: Main process exited, code=exited, status=1/FAILURE[0m
+июн 19 10:51:02 liftbotweb systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mliftbot-bot.service: Failed with result 'exit-code'.[0m
+июн 19 10:51:02 liftbotweb systemd[1]: liftbot-bot.service: Scheduled restart job, restart counter is at 4.
+июн 19 10:51:02 liftbotweb systemd[1]: Started liftbot-bot.service - LiftBot Telegram Bot.
+июн 19 10:51:02 liftbotweb python3[1719357]: Traceback (most recent call last):
+июн 19 10:51:02 liftbotweb python3[1719357]:   File "/home/sergey-d/liftbot/run_bot.py", line 1, in <module>
+июн 19 10:51:02 liftbotweb python3[1719357]:     from app.bot import bot
+июн 19 10:51:02 liftbotweb python3[1719357]:   File "/home/sergey-d/liftbot/app/__init__.py", line 1, in <module>
+июн 19 10:51:02 liftbotweb python3[1719357]:     from flask import Flask
+июн 19 10:51:02 liftbotweb python3[1719357]: ModuleNotFoundError: No module named 'flask'
+июн 19 10:51:02 liftbotweb systemd[1]: [0;1;39m[0;1;31m[0;1;39mliftbot-bot.service: Main process exited, code=exited, status=1/FAILURE[0m
+июн 19 10:51:02 liftbotweb systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mliftbot-bot.service: Failed with result 'exit-code'.[0m
+июн 19 10:51:02 liftbotweb systemd[1]: liftbot-bot.service: Scheduled restart job, restart counter is at 5.
+июн 19 10:51:02 liftbotweb systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mliftbot-bot.service: Start request repeated too quickly.[0m
+июн 19 10:51:02 liftbotweb systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mliftbot-bot.service: Failed with result 'exit-code'.[0m
+июн 19 10:51:02 liftbotweb systemd[1]: [0;1;31m[0;1;39m[0;1;31mFailed to start liftbot-bot.service - LiftBot Telegram Bot.[0m
+июн 19 17:44:47 liftbotweb systemd[1]: Started liftbot-bot.service - LiftBot Telegram Bot.
+июн 19 17:44:48 liftbotweb python3[1782795]: Traceback (most recent call last):
+июн 19 17:44:48 liftbotweb python3[1782795]:   File "/home/sergey-d/liftbot/run_bot.py", line 1, in <module>
+июн 19 17:44:48 liftbotweb python3[1782795]:     from app.bot import bot
+июн 19 17:44:48 liftbotweb python3[1782795]:   File "/home/sergey-d/liftbot/app/__init__.py", line 1, in <module>
+июн 19 17:44:48 liftbotweb python3[1782795]:     from flask import Flask
+июн 19 17:44:48 liftbotweb python3[1782795]: ModuleNotFoundError: No module named 'flask'
+июн 19 17:44:48 liftbotweb systemd[1]: [0;1;39m[0;1;31m[0;1;39mliftbot-bot.service: Main process exited, code=exited, status=1/FAILURE[0m
+июн 19 17:44:48 liftbotweb systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mliftbot-bot.service: Failed with result 'exit-code'.[0m
+июн 19 17:44:48 liftbotweb systemd[1]: liftbot-bot.service: Scheduled restart job, restart counter is at 1.
+июн 19 17:44:48 liftbotweb systemd[1]: Started liftbot-bot.service - LiftBot Telegram Bot.
+июн 19 17:44:48 liftbotweb python3[1782801]: Traceback (most recent call last):
+июн 19 17:44:48 liftbotweb python3[1782801]:   File "/home/sergey-d/liftbot/run_bot.py", line 1, in <module>
+июн 19 17:44:48 liftbotweb python3[1782801]:     from app.bot import bot
+июн 19 17:44:48 liftbotweb python3[1782801]:   File "/home/sergey-d/liftbot/app/__init__.py", line 1, in <module>
+июн 19 17:44:48 liftbotweb python3[1782801]:     from flask import Flask
+июн 19 17:44:48 liftbotweb python3[1782801]: ModuleNotFoundError: No module named 'flask'
+июн 19 17:44:48 liftbotweb systemd[1]: [0;1;39m[0;1;31m[0;1;39mliftbot-bot.service: Main process exited, code=exited, status=1/FAILURE[0m
+июн 19 17:44:48 liftbotweb systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mliftbot-bot.service: Failed with result 'exit-code'.[0m
+июн 19 17:44:48 liftbotweb systemd[1]: liftbot-bot.service: Scheduled restart job, restart counter is at 2.
+июн 19 17:44:48 liftbotweb systemd[1]: Started liftbot-bot.service - LiftBot Telegram Bot.
+июн 19 17:44:49 liftbotweb python3[1782813]: Traceback (most recent call last):
+июн 19 17:44:49 liftbotweb python3[1782813]:   File "/home/sergey-d/liftbot/run_bot.py", line 1, in <module>
+июн 19 17:44:49 liftbotweb python3[1782813]:     from app.bot import bot
+июн 19 17:44:49 liftbotweb python3[1782813]:   File "/home/sergey-d/liftbot/app/__init__.py", line 1, in <module>
+июн 19 17:44:49 liftbotweb python3[1782813]:     from flask import Flask
+июн 19 17:44:49 liftbotweb python3[1782813]: ModuleNotFoundError: No module named 'flask'
+июн 19 17:44:49 liftbotweb systemd[1]: [0;1;39m[0;1;31m[0;1;39mliftbot-bot.service: Main process exited, code=exited, status=1/FAILURE[0m
+июн 19 17:44:49 liftbotweb systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mliftbot-bot.service: Failed with result 'exit-code'.[0m
+июн 19 17:44:49 liftbotweb systemd[1]: liftbot-bot.service: Scheduled restart job, restart counter is at 3.
+июн 19 17:44:49 liftbotweb systemd[1]: Started liftbot-bot.service - LiftBot Telegram Bot.
+июн 19 17:44:49 liftbotweb python3[1782817]: Traceback (most recent call last):
+июн 19 17:44:49 liftbotweb python3[1782817]:   File "/home/sergey-d/liftbot/run_bot.py", line 1, in <module>
+июн 19 17:44:49 liftbotweb python3[1782817]:     from app.bot import bot
+июн 19 17:44:49 liftbotweb python3[1782817]:   File "/home/sergey-d/liftbot/app/__init__.py", line 1, in <module>
+июн 19 17:44:49 liftbotweb python3[1782817]:     from flask import Flask
+июн 19 17:44:49 liftbotweb python3[1782817]: ModuleNotFoundError: No module named 'flask'
+июн 19 17:44:49 liftbotweb systemd[1]: [0;1;39m[0;1;31m[0;1;39mliftbot-bot.service: Main process exited, code=exited, status=1/FAILURE[0m
+июн 19 17:44:49 liftbotweb systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mliftbot-bot.service: Failed with result 'exit-code'.[0m
+июн 19 17:44:49 liftbotweb systemd[1]: liftbot-bot.service: Scheduled restart job, restart counter is at 4.
+июн 19 17:44:49 liftbotweb systemd[1]: Started liftbot-bot.service - LiftBot Telegram Bot.
+июн 19 17:44:50 liftbotweb python3[1782822]: Traceback (most recent call last):
+июн 19 17:44:50 liftbotweb python3[1782822]:   File "/home/sergey-d/liftbot/run_bot.py", line 1, in <module>
+июн 19 17:44:50 liftbotweb python3[1782822]:     from app.bot import bot
+июн 19 17:44:50 liftbotweb python3[1782822]:   File "/home/sergey-d/liftbot/app/__init__.py", line 1, in <module>
+июн 19 17:44:50 liftbotweb python3[1782822]:     from flask import Flask
+июн 19 17:44:50 liftbotweb python3[1782822]: ModuleNotFoundError: No module named 'flask'
+июн 19 17:44:50 liftbotweb systemd[1]: [0;1;39m[0;1;31m[0;1;39mliftbot-bot.service: Main process exited, code=exited, status=1/FAILURE[0m
+июн 19 17:44:50 liftbotweb systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mliftbot-bot.service: Failed with result 'exit-code'.[0m
+июн 19 17:44:50 liftbotweb systemd[1]: liftbot-bot.service: Scheduled restart job, restart counter is at 5.
+июн 19 17:44:50 liftbotweb systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mliftbot-bot.service: Start request repeated too quickly.[0m
+июн 19 17:44:50 liftbotweb systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mliftbot-bot.service: Failed with result 'exit-code'.[0m
+июн 19 17:44:50 liftbotweb systemd[1]: [0;1;31m[0;1;39m[0;1;31mFailed to start liftbot-bot.service - LiftBot Telegram Bot.[0m

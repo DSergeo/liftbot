@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="uk" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Налаштування профілю | LiftRequests</title>
+    <link href="https://cdn.replit.com/agent/bootstrap-agent-dark-theme.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+            padding: 2rem 0;
+        }
+        .setup-container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 1rem;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+        }
+        .setup-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .setup-header h2 {
+            color: #fff;
+            margin-bottom: 0.5rem;
+        }
+        .setup-header p {
+            color: #adb5bd;
+            margin: 0;
+        }
+        .progress-bar {
+            background: rgba(255, 255, 255, 0.1);
+            height: 4px;
+            border-radius: 2px;
+            margin-bottom: 2rem;
+        }
+        .progress-fill {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 100%;
+            border-radius: 2px;
+            width: 100%;
+            transition: width 0.3s ease;
+        }
+        .form-control {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #fff;
+            padding: 0.75rem;
+        }
+        .form-control:focus {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+            color: #fff;
+        }
+        .form-control::placeholder {
+            color: #adb5bd;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            padding: 0.75rem 1.5rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+        .avatar-upload {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .avatar-preview {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            margin: 0 auto 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px dashed rgba(255, 255, 255, 0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .avatar-preview:hover {
+            border-color: #667eea;
+            background: rgba(102, 126, 234, 0.1);
+        }
+        .avatar-preview img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        .role-selection {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        .role-card {
+            padding: 1.5rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 0.75rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .role-card:hover {
+            border-color: #667eea;
+            background: rgba(102, 126, 234, 0.1);
+        }
+        .role-card.selected {
+            border-color: #667eea;
+            background: rgba(102, 126, 234, 0.2);
+        }
+        .role-card i {
+            font-size: 2rem;
+            color: #667eea;
+            margin-bottom: 0.5rem;
+        }
+        .role-card h6 {
+            color: #fff;
+            margin-bottom: 0.25rem;
+        }
+        .role-card p {
+            color: #adb5bd;
+            font-size: 0.875rem;
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="setup-container">
+        <div class="setup-header">
+            <h2><i class="fas fa-user-cog me-2"></i>Налаштування профілю</h2>
+            <p>Заповніть інформацію для завершення реєстрації</p>
+        </div>
+
+        <div class="progress-bar">
+            <div class="progress-fill"></div>
+        </div>
+
+        <form id="profileSetupForm" method="post" action="/complete_profile" enctype="multipart/form-data">
+            <!-- Avatar Upload -->
+            <div class="avatar-upload">
+                <div class="avatar-preview" onclick="document.getElementById('avatarInput').click()">
+                    <i class="fas fa-camera fa-2x text-muted" id="cameraIcon"></i>
+                    <img id="avatarPreview" style="display: none;">
+                </div>
+                <input type="file" id="avatarInput" name="avatar" accept="image/*" style="display: none;">
+                <p class="text-muted">Натисніть для завантаження фото</p>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="firstName" class="form-label">Ім'я</label>
+                    <input type="text" class="form-control" id="firstName" name="first_name" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="lastName" class="form-label">Прізвище</label>
+                    <input type="text" class="form-control" id="lastName" name="last_name" required>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label for="department" class="form-label">Відділ/Організація</label>
+                <input type="text" class="form-control" id="department" name="department" placeholder="Наприклад: Управляюча компанія ЖЕК №1">
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Оберіть роль</label>
+                <div class="role-selection">
+                    <div class="role-card" data-role="operator">
+                        <i class="fas fa-headset"></i>
+                        <h6>Оператор</h6>
+                        <p>Обробка заявок та комунікація з клієнтами</p>
+                    </div>
+                    <div class="role-card" data-role="technician">
+                        <i class="fas fa-tools"></i>
+                        <h6>Технік</h6>
+                        <p>Виконання ремонтних робіт</p>
+                    </div>
+                    <div class="role-card" data-role="admin">
+                        <i class="fas fa-user-shield"></i>
+                        <h6>Адміністратор</h6>
+                        <p>Управління системою та користувачами</p>
+                    </div>
+                </div>
+                <input type="hidden" id="selectedRole" name="role" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="bio" class="form-label">Про себе (необов'язково)</label>
+                <textarea class="form-control" id="bio" name="bio" rows="3" placeholder="Розкажіть коротко про свій досвід роботи..."></textarea>
+            </div>
+
+            <div class="mb-4">
+                <h6 class="text-white mb-3">Налаштування сповіщень</h6>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-check form-switch mb-2">
+                            <input class="form-check-input" type="checkbox" id="emailNotifications" name="email_notifications" checked>
+                            <label class="form-check-label text-white" for="emailNotifications">
+                                Email сповіщення
+                            </label>
+                        </div>
+                        <div class="form-check form-switch mb-2">
+                            <input class="form-check-input" type="checkbox" id="pushNotifications" name="push_notifications" checked>
+                            <label class="form-check-label text-white" for="pushNotifications">
+                                Push сповіщення
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-check form-switch mb-2">
+                            <input class="form-check-input" type="checkbox" id="newRequestNotifications" name="new_request_notifications" checked>
+                            <label class="form-check-label text-white" for="newRequestNotifications">
+                                Нові заявки
+                            </label>
+                        </div>
+                        <div class="form-check form-switch mb-2">
+                            <input class="form-check-input" type="checkbox" id="completedRequestNotifications" name="completed_request_notifications">
+                            <label class="form-check-label text-white" for="completedRequestNotifications">
+                                Виконані заявки
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100">
+                <i class="fas fa-check me-2"></i>Завершити налаштування
+            </button>
+        </form>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Avatar upload handling
+            const avatarInput = document.getElementById('avatarInput');
+            const avatarPreview = document.getElementById('avatarPreview');
+            const cameraIcon = document.getElementById('cameraIcon');
+
+            avatarInput.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        avatarPreview.src = e.target.result;
+                        avatarPreview.style.display = 'block';
+                        cameraIcon.style.display = 'none';
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            // Role selection handling
+            const roleCards = document.querySelectorAll('.role-card');
+            const selectedRoleInput = document.getElementById('selectedRole');
+
+            roleCards.forEach(card => {
+                card.addEventListener('click', function() {
+                    roleCards.forEach(c => c.classList.remove('selected'));
+                    this.classList.add('selected');
+                    selectedRoleInput.value = this.dataset.role;
+                });
+            });
+
+            // Form submission handling
+            const form = document.getElementById('profileSetupForm');
+            form.addEventListener('submit', function(e) {
+                if (!selectedRoleInput.value) {
+                    e.preventDefault();
+                    alert('Будь ласка, оберіть роль');
+                    return;
+                }
+
+                const submitBtn = form.querySelector('button[type="submit"]');
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Збереження...';
+                submitBtn.disabled = true;
+            });
+        });
+    </script>
+</body>
+</html>

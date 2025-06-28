@@ -1,0 +1,13 @@
+[Unit]
+Description=LiftBot Telegram Bot
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/home/sergey-d/liftbot
+ExecStart=/usr/bin/python3 /home/sergey-d/liftbot/run_bot.py
+Restart=always
+User=sergey-d
+
+[Install]
+WantedBy=multi-user.target

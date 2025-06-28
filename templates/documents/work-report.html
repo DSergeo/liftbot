@@ -1,0 +1,392 @@
+{% extends "layout.html" %}
+
+{% block title %}Акт виконаних робіт{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/custom.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h4 class="text-white mb-1">
+                        <i class="fas fa-file-signature me-2"></i>Акт виконаних робіт
+                    </h4>
+                    <p class="text-muted mb-0">Документування виконаних робіт</p>
+                </div>
+                <div class="d-flex gap-2">
+                    <button class="btn btn-outline-secondary">
+                        <i class="fas fa-history me-2"></i>Історія
+                    </button>
+                    <button class="btn btn-primary">
+                        <i class="fas fa-plus me-2"></i>Новий акт
+                    </button>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-8">
+                    <!-- Report Header -->
+                    <div class="card bg-dark border-0 mb-4">
+                        <div class="card-header bg-transparent border-bottom">
+                            <h5 class="text-white mb-0">
+                                <i class="fas fa-info me-2"></i>Загальна інформація
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label text-white">Номер акту</label>
+                                    <input type="text" class="form-control" value="АКТ-2025-001" placeholder="Введіть номер">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label text-white">Дата складання</label>
+                                    <input type="date" class="form-control" value="2025-06-13">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label text-white">Договір</label>
+                                    <select class="form-select">
+                                        <option value="2025-001" selected>2025-001 (ЖЕК 'Центральний')</option>
+                                        <option value="2025-002">2025-002 (ОСББ 'Сонячний')</option>
+                                        <option value="2025-003">2025-003 (ТОВ 'Офіс-Центр')</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label text-white">Період виконання</label>
+                                    <select class="form-select">
+                                        <option value="2025-06" selected>Червень 2025</option>
+                                        <option value="2025-05">Травень 2025</option>
+                                        <option value="2025-04">Квітень 2025</option>
+                                    </select>
+                                </div>
+                                <div class="col-12 mb-3">
+                                    <label class="form-label text-white">Виконавець</label>
+                                    <select class="form-select">
+                                        <option value="petrov" selected>Петров І.А. (старший механік)</option>
+                                        <option value="sidorov">Сидоров В.П. (механік)</option>
+                                        <option value="ivanov">Іванов С.М. (електрик)</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Work Details -->
+                    <div class="card bg-dark border-0 mb-4">
+                        <div class="card-header bg-transparent border-bottom d-flex justify-content-between align-items-center">
+                            <h5 class="text-white mb-0">
+                                <i class="fas fa-tasks me-2"></i>Виконані роботи
+                            </h5>
+                            <button class="btn btn-sm btn-outline-primary">
+                                <i class="fas fa-plus me-1"></i>Додати роботу
+                            </button>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-dark table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>№</th>
+                                            <th>Адреса</th>
+                                            <th>Ліфт №</th>
+                                            <th>Вид роботи</th>
+                                            <th>Дата</th>
+                                            <th>Час (год)</th>
+                                            <th>Статус</th>
+                                            <th>Дії</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>1</td>
+                                            <td>вул. Центральна, 15</td>
+                                            <td>№1</td>
+                                            <td>Планове ТО</td>
+                                            <td>05.06.2025</td>
+                                            <td>2.5</td>
+                                            <td><span class="badge bg-success">Виконано</span></td>
+                                            <td>
+                                                <button class="btn btn-sm btn-outline-info me-1">
+                                                    <i class="fas fa-eye"></i>
+                                                </button>
+                                                <button class="btn btn-sm btn-outline-warning">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>2</td>
+                                            <td>вул. Центральна, 15</td>
+                                            <td>№2</td>
+                                            <td>Заміна троса</td>
+                                            <td>07.06.2025</td>
+                                            <td>6.0</td>
+                                            <td><span class="badge bg-success">Виконано</span></td>
+                                            <td>
+                                                <button class="btn btn-sm btn-outline-info me-1">
+                                                    <i class="fas fa-eye"></i>
+                                                </button>
+                                                <button class="btn btn-sm btn-outline-warning">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>3</td>
+                                            <td>вул. Миру, 42</td>
+                                            <td>№1</td>
+                                            <td>Усунення несправності</td>
+                                            <td>10.06.2025</td>
+                                            <td>1.5</td>
+                                            <td><span class="badge bg-success">Виконано</span></td>
+                                            <td>
+                                                <button class="btn btn-sm btn-outline-info me-1">
+                                                    <i class="fas fa-eye"></i>
+                                                </button>
+                                                <button class="btn btn-sm btn-outline-warning">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>4</td>
+                                            <td>пр. Перемоги, 8</td>
+                                            <td>№3</td>
+                                            <td>Планове ТО</td>
+                                            <td>12.06.2025</td>
+                                            <td>2.0</td>
+                                            <td><span class="badge bg-warning">В процесі</span></td>
+                                            <td>
+                                                <button class="btn btn-sm btn-outline-info me-1">
+                                                    <i class="fas fa-eye"></i>
+                                                </button>
+                                                <button class="btn btn-sm btn-outline-warning">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Materials Used -->
+                    <div class="card bg-dark border-0 mb-4">
+                        <div class="card-header bg-transparent border-bottom d-flex justify-content-between align-items-center">
+                            <h5 class="text-white mb-0">
+                                <i class="fas fa-box me-2"></i>Використані матеріали
+                            </h5>
+                            <button class="btn btn-sm btn-outline-primary">
+                                <i class="fas fa-plus me-1"></i>Додати матеріал
+                            </button>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-dark table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>№</th>
+                                            <th>Найменування</th>
+                                            <th>Кількість</th>
+                                            <th>Од. виміру</th>
+                                            <th>Ціна</th>
+                                            <th>Сума</th>
+                                            <th>Дії</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>1</td>
+                                            <td>Трос металевий 12мм</td>
+                                            <td>45</td>
+                                            <td>м</td>
+                                            <td>120.00 ₴</td>
+                                            <td>5 400.00 ₴</td>
+                                            <td>
+                                                <button class="btn btn-sm btn-outline-warning me-1">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                                <button class="btn btn-sm btn-outline-danger">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>2</td>
+                                            <td>Мастило технічне</td>
+                                            <td>2</td>
+                                            <td>л</td>
+                                            <td>450.00 ₴</td>
+                                            <td>900.00 ₴</td>
+                                            <td>
+                                                <button class="btn btn-sm btn-outline-warning me-1">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                                <button class="btn btn-sm btn-outline-danger">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>3</td>
+                                            <td>Контактор електричний</td>
+                                            <td>1</td>
+                                            <td>шт</td>
+                                            <td>2 200.00 ₴</td>
+                                            <td>2 200.00 ₴</td>
+                                            <td>
+                                                <button class="btn btn-sm btn-outline-warning me-1">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                                <button class="btn btn-sm btn-outline-danger">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Comments -->
+                    <div class="card bg-dark border-0 mb-4">
+                        <div class="card-header bg-transparent border-bottom">
+                            <h5 class="text-white mb-0">
+                                <i class="fas fa-comment me-2"></i>Примітки та рекомендації
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <textarea class="form-control mb-3" rows="4" placeholder="Опис виконаних робіт, виявлених проблем та рекомендацій...">Всі заплановані роботи виконано в повному обсязі. Ліфт №2 (вул. Центральна, 15) потребував заміни троса через значний знос. Роботи виконано якісно з дотриманням всіх технічних вимог. Рекомендується провести додаткове обстеження ліфта №3 (пр. Перемоги, 8) через нестабільну роботу системи керування.</textarea>
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label text-white">Загальна оцінка стану</label>
+                                    <select class="form-select">
+                                        <option value="excellent">Відмінний</option>
+                                        <option value="good" selected>Добрий</option>
+                                        <option value="satisfactory">Задовільний</option>
+                                        <option value="needs_attention">Потребує уваги</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label text-white">Наступне ТО</label>
+                                    <input type="date" class="form-control" value="2025-07-13">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4">
+                    <!-- Report Summary -->
+                    <div class="card bg-dark border-0 mb-4">
+                        <div class="card-header bg-transparent border-bottom">
+                            <h5 class="text-white mb-0">
+                                <i class="fas fa-chart-pie me-2"></i>Підсумок
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between mb-2">
+                                <span class="text-muted">Всього робіт:</span>
+                                <span class="text-white fw-bold">4</span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span class="text-muted">Виконано:</span>
+                                <span class="text-success">3</span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span class="text-muted">В процесі:</span>
+                                <span class="text-warning">1</span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-3">
+                                <span class="text-muted">Загальний час:</span>
+                                <span class="text-white">12.0 год</span>
+                            </div>
+                            <hr class="text-muted">
+                            <div class="d-flex justify-content-between mb-2">
+                                <span class="text-muted">Вартість матеріалів:</span>
+                                <span class="text-white">8 500.00 ₴</span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span class="text-muted">Вартість робіт:</span>
+                                <span class="text-white">9 600.00 ₴</span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-3">
+                                <span class="text-white fw-bold">Загальна вартість:</span>
+                                <span class="text-success fw-bold">18 100.00 ₴</span>
+                            </div>
+                            <div class="progress mb-2">
+                                <div class="progress-bar bg-success" style="width: 75%"></div>
+                            </div>
+                            <small class="text-muted">Виконано 75% запланованих робіт</small>
+                        </div>
+                    </div>
+
+                    <!-- Signatures -->
+                    <div class="card bg-dark border-0 mb-4">
+                        <div class="card-header bg-transparent border-bottom">
+                            <h5 class="text-white mb-0">
+                                <i class="fas fa-signature me-2"></i>Підписи сторін
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <label class="form-label text-white">Виконавець</label>
+                                <div class="border rounded p-3 bg-secondary text-center">
+                                    <i class="fas fa-pen-nib fa-2x text-muted mb-2"></i>
+                                    <p class="text-muted mb-1">Петров І.А.</p>
+                                    <small class="text-muted">Старший механік</small>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label text-white">Замовник</label>
+                                <div class="border rounded p-3 bg-secondary text-center">
+                                    <i class="fas fa-signature fa-2x text-warning mb-2"></i>
+                                    <p class="text-white mb-1">Підписано</p>
+                                    <small class="text-muted">13.06.2025 14:30</small>
+                                </div>
+                            </div>
+                            <button class="btn btn-outline-primary w-100">
+                                <i class="fas fa-pen me-2"></i>Додати підпис
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="card bg-dark border-0">
+                        <div class="card-header bg-transparent border-bottom">
+                            <h5 class="text-white mb-0">
+                                <i class="fas fa-tools me-2"></i>Дії
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="d-grid gap-2">
+                                <button class="btn btn-primary">
+                                    <i class="fas fa-save me-2"></i>Зберегти акт
+                                </button>
+                                <button class="btn btn-outline-success">
+                                    <i class="fas fa-check me-2"></i>Затвердити
+                                </button>
+                                <button class="btn btn-outline-info">
+                                    <i class="fas fa-download me-2"></i>Завантажити PDF
+                                </button>
+                                <button class="btn btn-outline-secondary">
+                                    <i class="fas fa-print me-2"></i>Друк
+                                </button>
+                                <button class="btn btn-outline-warning">
+                                    <i class="fas fa-paper-plane me-2"></i>Відправити
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

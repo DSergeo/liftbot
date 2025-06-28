@@ -1,0 +1,368 @@
+{% extends "layout.html" %}
+
+{% block title %}Додати логотип до рахунку{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/custom.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h4 class="text-white mb-1">
+                        <i class="fas fa-image me-2"></i>Додати логотип до рахунку
+                    </h4>
+                    <p class="text-muted mb-0">Завантаження та управління корпоративним логотипом</p>
+                </div>
+                <button class="btn btn-primary">
+                    <i class="fas fa-save me-2"></i>Зберегти зміни
+                </button>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-8">
+                    <!-- Logo Upload -->
+                    <div class="card bg-dark border-0 mb-4">
+                        <div class="card-header bg-transparent border-bottom">
+                            <h5 class="text-white mb-0">
+                                <i class="fas fa-upload me-2"></i>Завантажити логотип
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="upload-area border-2 border-dashed border-secondary rounded-3 p-5 text-center mb-3">
+                                        <i class="fas fa-cloud-upload-alt fa-3x text-muted mb-3"></i>
+                                        <h6 class="text-white mb-2">Перетягніть файл сюди або клікніть для вибору</h6>
+                                        <p class="text-muted mb-3">Підтримувані формати: PNG, JPG, SVG</p>
+                                        <input type="file" class="form-control d-none" id="logoUpload" accept=".png,.jpg,.jpeg,.svg">
+                                        <button class="btn btn-outline-primary" onclick="document.getElementById('logoUpload').click()">
+                                            <i class="fas fa-folder-open me-2"></i>Вибрати файл
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="current-logo bg-secondary rounded-3 p-4 text-center" style="min-height: 200px;">
+                                        <div class="d-flex align-items-center justify-content-center h-100">
+                                            <div>
+                                                <i class="fas fa-building fa-4x text-muted mb-3"></i>
+                                                <p class="text-muted mb-0">Поточний логотип</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Logo Settings -->
+                    <div class="card bg-dark border-0 mb-4">
+                        <div class="card-header bg-transparent border-bottom">
+                            <h5 class="text-white mb-0">
+                                <i class="fas fa-cog me-2"></i>Налаштування логотипу
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label text-white">Позиція логотипу</label>
+                                    <select class="form-select">
+                                        <option value="header-left" selected>Заголовок (зліва)</option>
+                                        <option value="header-center">Заголовок (по центру)</option>
+                                        <option value="header-right">Заголовок (справа)</option>
+                                        <option value="sidebar-top">Бічна панель (вгорі)</option>
+                                        <option value="sidebar-bottom">Бічна панель (внизу)</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label text-white">Розмір логотипу</label>
+                                    <select class="form-select">
+                                        <option value="small">Малий (32px)</option>
+                                        <option value="medium" selected>Середній (48px)</option>
+                                        <option value="large">Великий (64px)</option>
+                                        <option value="custom">Користувацький</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label text-white">Прозорість</label>
+                                    <input type="range" class="form-range" min="0" max="100" value="100" id="logoOpacity">
+                                    <div class="d-flex justify-content-between text-muted small">
+                                        <span>0%</span>
+                                        <span id="opacityValue">100%</span>
+                                        <span>100%</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label text-white">Відступи</label>
+                                    <div class="input-group">
+                                        <input type="number" class="form-control" value="8" min="0" max="50">
+                                        <span class="input-group-text">px</span>
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <div class="form-check form-switch mb-2">
+                                        <input class="form-check-input" type="checkbox" id="showOnPrint" checked>
+                                        <label class="form-check-label text-white" for="showOnPrint">
+                                            Показувати при друку документів
+                                        </label>
+                                    </div>
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" id="showOnInvoices" checked>
+                                        <label class="form-check-label text-white" for="showOnInvoices">
+                                            Додавати до рахунків
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Logo Variations -->
+                    <div class="card bg-dark border-0 mb-4">
+                        <div class="card-header bg-transparent border-bottom">
+                            <h5 class="text-white mb-0">
+                                <i class="fas fa-layer-group me-2"></i>Варіації логотипу
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-4 mb-3">
+                                    <div class="card bg-secondary border-0">
+                                        <div class="card-body text-center p-3">
+                                            <i class="fas fa-sun fa-2x text-warning mb-2"></i>
+                                            <h6 class="text-white mb-1">Світла версія</h6>
+                                            <small class="text-muted">Для темного фону</small>
+                                            <button class="btn btn-sm btn-outline-primary w-100 mt-2">
+                                                <i class="fas fa-upload me-1"></i>Завантажити
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <div class="card bg-secondary border-0">
+                                        <div class="card-body text-center p-3">
+                                            <i class="fas fa-moon fa-2x text-primary mb-2"></i>
+                                            <h6 class="text-white mb-1">Темна версія</h6>
+                                            <small class="text-muted">Для світлого фону</small>
+                                            <button class="btn btn-sm btn-outline-primary w-100 mt-2">
+                                                <i class="fas fa-upload me-1"></i>Завантажити
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <div class="card bg-secondary border-0">
+                                        <div class="card-body text-center p-3">
+                                            <i class="fas fa-certificate fa-2x text-info mb-2"></i>
+                                            <h6 class="text-white mb-1">Фавікон</h6>
+                                            <small class="text-muted">Іконка сайту</small>
+                                            <button class="btn btn-sm btn-outline-primary w-100 mt-2">
+                                                <i class="fas fa-upload me-1"></i>Завантажити
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4">
+                    <!-- Preview -->
+                    <div class="card bg-dark border-0 mb-4">
+                        <div class="card-header bg-transparent border-bottom">
+                            <h5 class="text-white mb-0">
+                                <i class="fas fa-eye me-2"></i>Попередній перегляд
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="preview-container bg-secondary rounded p-3 mb-3">
+                                <div class="d-flex align-items-center mb-3">
+                                    <div class="logo-preview bg-primary rounded me-2 d-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
+                                        <i class="fas fa-building text-white"></i>
+                                    </div>
+                                    <div>
+                                        <h6 class="text-white mb-0">Ліфт Сервіс</h6>
+                                        <small class="text-muted">Система управління</small>
+                                    </div>
+                                </div>
+                                <div class="border-top pt-3">
+                                    <p class="text-muted small mb-0">Логотип відображатиметься у цьому місці залежно від обраних налаштувань.</p>
+                                </div>
+                            </div>
+                            <div class="d-grid gap-2">
+                                <button class="btn btn-outline-info">
+                                    <i class="fas fa-desktop me-2"></i>Перегляд на комп'ютері
+                                </button>
+                                <button class="btn btn-outline-info">
+                                    <i class="fas fa-mobile-alt me-2"></i>Перегляд на телефоні
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Technical Requirements -->
+                    <div class="card bg-dark border-0 mb-4">
+                        <div class="card-header bg-transparent border-bottom">
+                            <h5 class="text-white mb-0">
+                                <i class="fas fa-info-circle me-2"></i>Технічні вимоги
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <h6 class="text-white mb-2">Формати файлів:</h6>
+                                <ul class="text-muted mb-0">
+                                    <li>PNG (рекомендовано)</li>
+                                    <li>JPG/JPEG</li>
+                                    <li>SVG (векторний)</li>
+                                </ul>
+                            </div>
+                            <div class="mb-3">
+                                <h6 class="text-white mb-2">Розміри:</h6>
+                                <ul class="text-muted mb-0">
+                                    <li>Мінімум: 32x32px</li>
+                                    <li>Рекомендовано: 256x256px</li>
+                                    <li>Максимум: 1024x1024px</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h6 class="text-white mb-2">Обмеження:</h6>
+                                <ul class="text-muted mb-0">
+                                    <li>Розмір файлу: до 2MB</li>
+                                    <li>Співвідношення сторін: 1:1 або 16:9</li>
+                                    <li>Прозорий фон (для PNG)</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Current Settings -->
+                    <div class="card bg-dark border-0">
+                        <div class="card-header bg-transparent border-bottom">
+                            <h5 class="text-white mb-0">
+                                <i class="fas fa-list me-2"></i>Поточні налаштування
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between mb-2">
+                                <span class="text-muted">Статус:</span>
+                                <span class="text-warning">Логотип не завантажено</span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span class="text-muted">Позиція:</span>
+                                <span class="text-white">Заголовок (зліва)</span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span class="text-muted">Розмір:</span>
+                                <span class="text-white">48px</span>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <span class="text-muted">Прозорість:</span>
+                                <span class="text-white">100%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.upload-area {
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.upload-area:hover {
+    border-color: #0d6efd !important;
+    background-color: rgba(13, 110, 253, 0.1);
+}
+
+.upload-area.dragover {
+    border-color: #0d6efd !important;
+    background-color: rgba(13, 110, 253, 0.2);
+}
+
+.logo-preview {
+    transition: all 0.3s ease;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Opacity slider
+    const opacitySlider = document.getElementById('logoOpacity');
+    const opacityValue = document.getElementById('opacityValue');
+    
+    opacitySlider.addEventListener('input', function() {
+        opacityValue.textContent = this.value + '%';
+        document.querySelector('.logo-preview').style.opacity = this.value / 100;
+    });
+    
+    // File upload area
+    const uploadArea = document.querySelector('.upload-area');
+    const fileInput = document.getElementById('logoUpload');
+    
+    uploadArea.addEventListener('click', function() {
+        fileInput.click();
+    });
+    
+    uploadArea.addEventListener('dragover', function(e) {
+        e.preventDefault();
+        this.classList.add('dragover');
+    });
+    
+    uploadArea.addEventListener('dragleave', function() {
+        this.classList.remove('dragover');
+    });
+    
+    uploadArea.addEventListener('drop', function(e) {
+        e.preventDefault();
+        this.classList.remove('dragover');
+        
+        const files = e.dataTransfer.files;
+        if (files.length > 0) {
+            handleFileUpload(files[0]);
+        }
+    });
+    
+    fileInput.addEventListener('change', function() {
+        if (this.files.length > 0) {
+            handleFileUpload(this.files[0]);
+        }
+    });
+    
+    function handleFileUpload(file) {
+        // Validate file
+        const allowedTypes = ['image/png', 'image/jpeg', 'image/svg+xml'];
+        const maxSize = 2 * 1024 * 1024; // 2MB
+        
+        if (!allowedTypes.includes(file.type)) {
+            alert('Підтримуються лише PNG, JPG та SVG файли.');
+            return;
+        }
+        
+        if (file.size > maxSize) {
+            alert('Розмір файлу не повинен перевищувати 2MB.');
+            return;
+        }
+        
+        // Preview the image
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const currentLogo = document.querySelector('.current-logo');
+            currentLogo.innerHTML = `<img src="${e.target.result}" alt="Logo" style="max-width: 100%; max-height: 150px; object-fit: contain;">`;
+            
+            // Update logo preview
+            const logoPreview = document.querySelector('.logo-preview');
+            logoPreview.innerHTML = `<img src="${e.target.result}" alt="Logo" style="width: 100%; height: 100%; object-fit: contain;">`;
+        };
+        reader.readAsDataURL(file);
+    }
+});
+</script>
+{% endblock %}

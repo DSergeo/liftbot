@@ -1,0 +1,570 @@
+{% extends 'layout.html' %}
+{% block title %}Контрагенти{% endblock %}
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="h3 mb-0">Контрагенти</h1>
+            <p class="text-muted mb-0">Управління контрагентами компанії</p>
+        </div>
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createCounterpartyModal">
+            <i class="fas fa-plus me-2"></i>Додати контрагента
+        </button>
+    </div>
+
+    <!-- Статистичні картки -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card bg-primary text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h4 class="mb-0" id="totalCounterparties">0</h4>
+                            <small>Всього</small>
+                        </div>
+                        <div class="align-self-center">
+                            <i class="fas fa-building fa-2x opacity-75"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-success text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h4 class="mb-0" id="activeCounterparties">0</h4>
+                            <small>Активних</small>
+                        </div>
+                        <div class="align-self-center">
+                            <i class="fas fa-check-circle fa-2x opacity-75"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-info text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h4 class="mb-0" id="clientCounterparties">0</h4>
+                            <small>Клієнтів</small>
+                        </div>
+                        <div class="align-self-center">
+                            <i class="fas fa-handshake fa-2x opacity-75"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-warning text-dark">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h4 class="mb-0" id="newCounterparties">0</h4>
+                            <small>Нових за місяць</small>
+                        </div>
+                        <div class="align-self-center">
+                            <i class="fas fa-calendar-plus fa-2x opacity-75"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Пошук та фільтри -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-search"></i></span>
+                        <input type="text" class="form-control" id="searchInput" placeholder="Пошук за назвою, ЄДРПОУ, директором...">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <select class="form-select" id="statusFilter">
+                        <option value="">Всі статуси</option>
+                        <option value="active">Активні</option>
+                        <option value="inactive">Неактивні</option>
+                        <option value="potential">Потенційні</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <select class="form-select" id="typeFilter">
+                        <option value="">Всі типи</option>
+                        <option value="client">Клієнт</option>
+                        <option value="supplier">Постачальник</option>
+                        <option value="partner">Партнер</option>
+                        <option value="competitor">Конкурент</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <button type="button" class="btn btn-outline-secondary w-100" onclick="clearFilters()">
+                        <i class="fas fa-times me-1"></i>Очистити
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Таблиця контрагентів -->
+    <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Список контрагентів</h5>
+            <div class="d-flex gap-2">
+                <button type="button" class="btn btn-outline-primary btn-sm" onclick="exportCounterparties()">
+                    <i class="fas fa-download me-1"></i>Експорт
+                </button>
+            </div>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0" id="counterpartiesTable">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Назва компанії</th>
+                            <th>ЄДРПОУ</th>
+                            <th>Директор</th>
+                            <th>Телефон</th>
+                            <th>Email</th>
+                            <th>Тип</th>
+                            <th>Статус</th>
+                            <th>Дії</th>
+                        </tr>
+                    </thead>
+                    <tbody id="counterpartiesTableBody">
+                        <!-- Контрагенти будуть загружені динамічно -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Повідомлення при відсутності контрагентів -->
+    <div class="text-center py-5" id="noCounterpartiesMessage" style="display: none;">
+        <i class="fas fa-building fa-3x text-muted mb-3"></i>
+        <h4 class="text-muted">Контрагентів не знайдено</h4>
+        <p class="text-muted">Створіть першого контрагента або змініть параметри пошуку</p>
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createCounterpartyModal">
+            <i class="fas fa-plus me-2"></i>Створити контрагента
+        </button>
+    </div>
+</div>
+
+<!-- Модальне вікно створення/редагування контрагента -->
+<div class="modal fade" id="createCounterpartyModal" tabindex="-1" aria-labelledby="createCounterpartyModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="createCounterpartyModalLabel">Новий контрагент</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="counterpartyForm">
+                    <input type="hidden" id="counterpartyId">
+                    
+                    <!-- Основна інформація -->
+                    <div class="row mb-3">
+                        <div class="col-12">
+                            <h6 class="text-muted mb-3">Основна інформація</h6>
+                        </div>
+                    </div>
+                    
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <label for="companyName" class="form-label">Назва компанії <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="companyName" required>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="edrpou" class="form-label">ЄДРПОУ</label>
+                            <input type="text" class="form-control" id="edrpou" maxlength="8">
+                        </div>
+                        <div class="col-md-3">
+                            <label for="counterpartyType" class="form-label">Тип</label>
+                            <select class="form-select" id="counterpartyType">
+                                <option value="client">Клієнт</option>
+                                <option value="supplier">Постачальник</option>
+                                <option value="partner">Партнер</option>
+                                <option value="competitor">Конкурент</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Банківська інформація -->
+                    <div class="row mb-3">
+                        <div class="col-12">
+                            <h6 class="text-muted mb-3">Банківські реквізити</h6>
+                        </div>
+                    </div>
+                    
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <label for="iban" class="form-label">IBAN</label>
+                            <input type="text" class="form-control" id="iban" maxlength="29">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="bank" class="form-label">Банк</label>
+                            <input type="text" class="form-control" id="bank">
+                        </div>
+                    </div>
+
+                    <!-- Контактна інформація -->
+                    <div class="row mb-3">
+                        <div class="col-12">
+                            <h6 class="text-muted mb-3">Контактна інформація</h6>
+                        </div>
+                    </div>
+                    
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <label for="director" class="form-label">Директор</label>
+                            <input type="text" class="form-control" id="director">
+                        </div>
+                        <div class="col-md-3">
+                            <label for="phone" class="form-label">Телефон</label>
+                            <input type="text" class="form-control" id="phone">
+                        </div>
+                        <div class="col-md-3">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="email">
+                        </div>
+                    </div>
+
+                    <!-- Адреса -->
+                    <div class="row mb-3">
+                        <div class="col-12">
+                            <h6 class="text-muted mb-3">Адреса</h6>
+                        </div>
+                    </div>
+                    
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-12">
+                            <label for="legalAddress" class="form-label">Юридична адреса</label>
+                            <input type="text" class="form-control" id="legalAddress">
+                        </div>
+                        <div class="col-md-4">
+                            <label for="city" class="form-label">Місто</label>
+                            <input type="text" class="form-control" id="city">
+                        </div>
+                        <div class="col-md-4">
+                            <label for="region" class="form-label">Область</label>
+                            <input type="text" class="form-control" id="region">
+                        </div>
+                        <div class="col-md-4">
+                            <label for="postalCode" class="form-label">Поштовий індекс</label>
+                            <input type="text" class="form-control" id="postalCode">
+                        </div>
+                    </div>
+
+                    <!-- Додаткові поля -->
+                    <div class="row mb-3">
+                        <div class="col-12">
+                            <h6 class="text-muted mb-3">Додаткова інформація</h6>
+                        </div>
+                    </div>
+                    
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <label for="website" class="form-label">Веб-сайт</label>
+                            <input type="url" class="form-control" id="website">
+                        </div>
+                        <div class="col-md-3">
+                            <label for="industry" class="form-label">Галузь</label>
+                            <input type="text" class="form-control" id="industry">
+                        </div>
+                        <div class="col-md-3">
+                            <label for="status" class="form-label">Статус</label>
+                            <select class="form-select" id="status">
+                                <option value="active">Активний</option>
+                                <option value="inactive">Неактивний</option>
+                                <option value="potential">Потенційний</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <label for="description" class="form-label">Опис</label>
+                            <textarea class="form-control" id="description" rows="3"></textarea>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Скасувати</button>
+                <button type="button" class="btn btn-primary" onclick="saveCounterparty()">Зберегти</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+let counterparties = [];
+
+// Завантаження контрагентів при завантаженні сторінки
+document.addEventListener('DOMContentLoaded', function() {
+    loadCounterparties();
+    
+    // Пошук
+    document.getElementById('searchInput').addEventListener('input', filterCounterparties);
+    document.getElementById('statusFilter').addEventListener('change', filterCounterparties);
+    document.getElementById('typeFilter').addEventListener('change', filterCounterparties);
+});
+
+function loadCounterparties() {
+    fetch('/api/counterparties')
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                counterparties = data.counterparties;
+                renderCounterparties();
+                updateStatistics();
+            } else {
+                console.error('Error loading counterparties:', data.error);
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching counterparties:', error);
+        });
+}
+
+function renderCounterparties() {
+    const tbody = document.getElementById('counterpartiesTableBody');
+    const noDataMessage = document.getElementById('noCounterpartiesMessage');
+    const table = document.getElementById('counterpartiesTable');
+    
+    if (counterparties.length === 0) {
+        table.style.display = 'none';
+        noDataMessage.style.display = 'block';
+        return;
+    }
+    
+    table.style.display = 'table';
+    noDataMessage.style.display = 'none';
+    
+    tbody.innerHTML = counterparties.map((counterparty, index) => {
+        const statusBadge = getStatusBadge(counterparty.status);
+        const typeBadge = getTypeBadge(counterparty.counterpartyType);
+        
+        return `
+            <tr>
+                <td>
+                    <strong>${counterparty.companyName}</strong>
+                    ${counterparty.industry ? `<br><small class="text-muted">${counterparty.industry}</small>` : ''}
+                </td>
+                <td>${counterparty.edrpou || '-'}</td>
+                <td>${counterparty.director || '-'}</td>
+                <td>${counterparty.phone || '-'}</td>
+                <td>${counterparty.email || '-'}</td>
+                <td>${typeBadge}</td>
+                <td>${statusBadge}</td>
+                <td>
+                    <div class="btn-group" role="group">
+                        <button type="button" class="btn btn-outline-primary btn-sm" onclick="editCounterparty(${index})">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button type="button" class="btn btn-outline-danger btn-sm" onclick="deleteCounterparty(${counterparty.id})">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+        `;
+    }).join('');
+}
+
+function getStatusBadge(status) {
+    const badges = {
+        'active': '<span class="badge bg-success">Активний</span>',
+        'inactive': '<span class="badge bg-secondary">Неактивний</span>',
+        'potential': '<span class="badge bg-warning">Потенційний</span>'
+    };
+    return badges[status] || '<span class="badge bg-light text-dark">Невідомо</span>';
+}
+
+function getTypeBadge(type) {
+    const badges = {
+        'client': '<span class="badge bg-primary">Клієнт</span>',
+        'supplier': '<span class="badge bg-info">Постачальник</span>',
+        'partner': '<span class="badge bg-success">Партнер</span>',
+        'competitor': '<span class="badge bg-warning">Конкурент</span>'
+    };
+    return badges[type] || '<span class="badge bg-light text-dark">Інше</span>';
+}
+
+function updateStatistics() {
+    const total = counterparties.length;
+    const active = counterparties.filter(c => c.status === 'active').length;
+    const clients = counterparties.filter(c => c.counterpartyType === 'client').length;
+    
+    // Підрахунок нових за останній місяць
+    const lastMonth = new Date();
+    lastMonth.setMonth(lastMonth.getMonth() - 1);
+    const newCounterparties = counterparties.filter(c => {
+        const createdDate = new Date(c.createdAt);
+        return createdDate >= lastMonth;
+    }).length;
+    
+    document.getElementById('totalCounterparties').textContent = total;
+    document.getElementById('activeCounterparties').textContent = active;
+    document.getElementById('clientCounterparties').textContent = clients;
+    document.getElementById('newCounterparties').textContent = newCounterparties;
+}
+
+function filterCounterparties() {
+    const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+    const statusFilter = document.getElementById('statusFilter').value;
+    const typeFilter = document.getElementById('typeFilter').value;
+    
+    const filtered = counterparties.filter(counterparty => {
+        const matchesSearch = !searchTerm || 
+            counterparty.companyName.toLowerCase().includes(searchTerm) ||
+            (counterparty.edrpou && counterparty.edrpou.toLowerCase().includes(searchTerm)) ||
+            (counterparty.director && counterparty.director.toLowerCase().includes(searchTerm));
+        
+        const matchesStatus = !statusFilter || counterparty.status === statusFilter;
+        const matchesType = !typeFilter || counterparty.counterpartyType === typeFilter;
+        
+        return matchesSearch && matchesStatus && matchesType;
+    });
+    
+    // Тимчасово замінюємо масив для рендерингу
+    const originalCounterparties = counterparties;
+    counterparties = filtered;
+    renderCounterparties();
+    counterparties = originalCounterparties;
+}
+
+function clearFilters() {
+    document.getElementById('searchInput').value = '';
+    document.getElementById('statusFilter').value = '';
+    document.getElementById('typeFilter').value = '';
+    renderCounterparties();
+}
+
+function editCounterparty(index) {
+    const counterparty = counterparties[index];
+    
+    // Заповнення форми
+    document.getElementById('counterpartyId').value = counterparty.id;
+    document.getElementById('companyName').value = counterparty.companyName;
+    document.getElementById('edrpou').value = counterparty.edrpou || '';
+    document.getElementById('counterpartyType').value = counterparty.counterpartyType || 'client';
+    document.getElementById('iban').value = counterparty.iban || '';
+    document.getElementById('bank').value = counterparty.bank || '';
+    document.getElementById('director').value = counterparty.director || '';
+    document.getElementById('phone').value = counterparty.phone || '';
+    document.getElementById('email').value = counterparty.email || '';
+    document.getElementById('legalAddress').value = counterparty.legalAddress || '';
+    document.getElementById('city').value = counterparty.city || '';
+    document.getElementById('region').value = counterparty.region || '';
+    document.getElementById('postalCode').value = counterparty.postalCode || '';
+    document.getElementById('website').value = counterparty.website || '';
+    document.getElementById('industry').value = counterparty.industry || '';
+    document.getElementById('status').value = counterparty.status || 'active';
+    document.getElementById('description').value = counterparty.description || '';
+    
+    document.getElementById('createCounterpartyModalLabel').textContent = 'Редагувати контрагента';
+    
+    const modal = new bootstrap.Modal(document.getElementById('createCounterpartyModal'));
+    modal.show();
+}
+
+function saveCounterparty() {
+    const form = document.getElementById('counterpartyForm');
+    if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+    }
+    
+    const counterpartyId = document.getElementById('counterpartyId').value;
+    const data = {
+        companyName: document.getElementById('companyName').value,
+        edrpou: document.getElementById('edrpou').value,
+        counterpartyType: document.getElementById('counterpartyType').value,
+        iban: document.getElementById('iban').value,
+        bank: document.getElementById('bank').value,
+        director: document.getElementById('director').value,
+        phone: document.getElementById('phone').value,
+        email: document.getElementById('email').value,
+        legalAddress: document.getElementById('legalAddress').value,
+        city: document.getElementById('city').value,
+        region: document.getElementById('region').value,
+        postalCode: document.getElementById('postalCode').value,
+        website: document.getElementById('website').value,
+        industry: document.getElementById('industry').value,
+        status: document.getElementById('status').value,
+        description: document.getElementById('description').value
+    };
+    
+    const url = counterpartyId ? `/api/counterparties/${counterpartyId}` : '/api/counterparties';
+    const method = counterpartyId ? 'PUT' : 'POST';
+    
+    fetch(url, {
+        method: method,
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(result => {
+        if (result.success) {
+            const modal = bootstrap.Modal.getInstance(document.getElementById('createCounterpartyModal'));
+            modal.hide();
+            loadCounterparties();
+            
+            // Очистка форми
+            form.reset();
+            document.getElementById('counterpartyId').value = '';
+            document.getElementById('createCounterpartyModalLabel').textContent = 'Новий контрагент';
+        } else {
+            alert('Помилка при збереженні: ' + result.error);
+        }
+    })
+    .catch(error => {
+        console.error('Error saving counterparty:', error);
+        alert('Помилка при збереженні контрагента');
+    });
+}
+
+function deleteCounterparty(counterpartyId) {
+    if (!confirm('Ви впевнені, що хочете видалити цього контрагента?')) {
+        return;
+    }
+    
+    fetch(`/api/counterparties/${counterpartyId}`, {
+        method: 'DELETE'
+    })
+    .then(response => response.json())
+    .then(result => {
+        if (result.success) {
+            loadCounterparties();
+        } else {
+            alert('Помилка при видаленні: ' + result.error);
+        }
+    })
+    .catch(error => {
+        console.error('Error deleting counterparty:', error);
+        alert('Помилка при видаленні контрагента');
+    });
+}
+
+function exportCounterparties() {
+    // Тут буде логіка експорту
+    alert('Функція експорту буде реалізована');
+}
+
+// Очистка форми при закритті модального вікна
+document.getElementById('createCounterpartyModal').addEventListener('hidden.bs.modal', function () {
+    document.getElementById('counterpartyForm').reset();
+    document.getElementById('counterpartyId').value = '';
+    document.getElementById('createCounterpartyModalLabel').textContent = 'Новий контрагент';
+});
+</script>
+{% endblock %}

@@ -1,0 +1,478 @@
+/* === 🟦 Базові стилі сторінки === */
+body {
+    font-family: 'Segoe UI', sans-serif;
+    color: #fff;
+    height: 100vh;
+    background: linear-gradient(135deg, #141e30, #243b55);
+    background-size: cover;
+    transition: background 0.5s ease-in-out;
+    overflow: hidden;
+}
+
+/* 🎨 Теми фону (використовуються при зміні теми) */
+body.bg-custom-1 { background: linear-gradient(135deg, #1a1a2e, #16213e); }
+body.bg-custom-2 { background: linear-gradient(135deg, #0f2027, #203a43, #2c5364); }
+
+/* === 📦 Обгортка макету — флексбокс === */
+#wrapper {
+    display: flex;
+    height: 100vh;
+}
+
+/* === 🧊 Скляний ефект для панелей (glassmorphism) === */
+.glass-panel {
+    background: linear-gradient(120deg, #0f2027, #203a43, #2c5364);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: none;
+}
+
+/* === 📍 Сайдбар (бічна панель) === */
+#sidebar-wrapper {
+    width: 250px;
+    background: linear-gradient(180deg, #0f2027, #203a43, #2c5364);
+    height: 100vh;
+    flex-shrink: 0;
+    transition: width 0.3s ease;
+    z-index: 1030;
+    border: none;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+/* Sidebar collapse functionality */
+#sidebar-wrapper.sidebar-collapsed {
+    width: 60px;
+}
+
+#sidebar-wrapper.sidebar-collapsed .sidebar-text-main,
+#sidebar-wrapper.sidebar-collapsed .sidebar-item-text,
+#sidebar-wrapper.sidebar-collapsed .sidebar-section-title {
+    display: none;
+}
+
+#sidebar-wrapper.sidebar-collapsed .list-group-item {
+    text-align: center;
+    padding: 0.75rem 0.5rem;
+}
+
+#sidebar-wrapper.sidebar-collapsed .fas.fa-chevron-down {
+    display: none;
+}
+
+#sidebar-wrapper.sidebar-collapsed .mt-3 {
+    display: none;
+}
+
+/* Page content adjustment when sidebar is collapsed */
+#page-content-wrapper {
+    transition: margin-left 0.3s ease;
+    flex: 1;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* Fixed header */
+.fixed-header {
+    position: sticky;
+    top: 0;
+    z-index: 1020;
+    background: linear-gradient(135deg, #141e30, #243b55);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Scrollable main content */
+.main-content {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 20px;
+}
+
+/* Mobile sidebar hide */
+@media (max-width: 991.98px) {
+    #sidebar-wrapper {
+        position: fixed;
+        height: 100vh;
+        margin-left: -250px;
+        transition: margin-left 0.3s ease;
+    }
+    
+    #sidebar-wrapper.show {
+        margin-left: 0;
+    }
+    
+    #page-content-wrapper {
+        margin-left: 0 !important;
+        width: 100%;
+    }
+}
+
+/* === 🔽 Dropdown Menu Z-Index Fix === */
+.dropdown-menu {
+    z-index: 9999 !important;
+    position: absolute !important;
+}
+
+.navbar .dropdown {
+    z-index: 9999 !important;
+    position: relative !important;
+}
+
+.navbar .dropdown-menu {
+    z-index: 9999 !important;
+    position: absolute !important;
+    top: 100% !important;
+}
+
+/* === 🔽 Collapsible Submenu Styles === */
+.collapse {
+    transition: height 0.3s ease-in-out;
+}
+
+.collapse .list-group-item {
+    background: rgba(255, 255, 255, 0.05) !important;
+    border-left: 3px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.collapse .list-group-item:hover {
+    background: rgba(255, 255, 255, 0.1) !important;
+    border-left-color: #007bff;
+    transform: translateX(5px);
+}
+
+.sidebar-item-text {
+    font-size: 0.9rem;
+}
+
+/* Chevron rotation animation */
+[data-bs-toggle="collapse"] .fa-chevron-down {
+    transition: transform 0.3s ease;
+}
+
+[data-bs-toggle="collapse"][aria-expanded="true"] .fa-chevron-down {
+    transform: rotate(180deg);
+}
+
+/* === 🚪 Кнопки сайдбару === */
+.list-group-item-action {
+    display: flex;
+    align-items: center;
+    border: none;
+    color: #fff;
+    border-radius: 12px;
+    padding: 10px 15px;
+    transition: all 0.3s ease-in-out;
+    position: relative;
+    overflow: hidden;
+}
+.list-group-item-action:hover {
+    background-color: rgba(255, 255, 255, 0.08);
+    transform: translateX(5px);
+    box-shadow: 0 0 10px rgba(13, 202, 240, 0.4);
+}
+.list-group-item-action.active::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 10%;
+    width: 80%;
+    height: 4px;
+    background: #0dcaf0;
+    animation: pulseGlow 1.5s infinite;
+    border-radius: 3px;
+}
+
+/* === 🔄 Анімації === */
+@keyframes pulseGlow {
+    0% { box-shadow: 0 0 6px #0dcaf0; }
+    50% { box-shadow: 0 0 12px #0dcaf0; }
+    100% { box-shadow: 0 0 6px #0dcaf0; }
+}
+
+/* === 🔝 Верхня панель === */
+.bg-top {
+    background: rgba(30, 30, 30, 0.6);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+}
+
+/* === 📆 Інфо-панель: час, дата, погода === */
+.top-info-panel {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(6px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #fff;
+    font-size: 0.85rem;
+    position: absolute;
+    top: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 999;
+    white-space: nowrap;
+}
+.top-info-panel i { color: #ffc107; }
+.top-info-panel span { white-space: nowrap; }
+
+/* === 🔘 Перемикачі Telegram === */
+.form-check.form-switch {
+    display: flex;
+    align-items: center;
+    margin-right: 1rem;
+}
+.form-check-input:checked {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+}
+
+/* === 🔍 Група пошуку — без злипання кутів === */
+.search-input-group .form-control {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+.search-input-group .btn {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+/* === 📊 Стилізація графіка === */
+#statsChart {
+    max-width: 200px;
+    margin: 0 auto;
+    filter: drop-shadow(0 0 6px rgba(0, 255, 255, 0.5));
+}
+
+/* === 📋 Заголовки таблиці === */
+.table thead th {
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(4px);
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    color: #ddd;
+    font-size: 0.85rem;
+    border-bottom: 2px solid #444;
+}
+
+/* === ✨ Hover-ефект рядків таблиці === */
+.table tbody tr:hover {
+    background: rgba(255, 255, 255, 0.05);
+    transition: background 0.3s ease;
+}
+
+/* === 🟢 Пульсація іконок статусу === */
+.fa-circle {
+    animation: pulse 2s infinite ease-in-out;
+}
+@keyframes pulse {
+    0%, 100% { opacity: 0.6; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.2); }
+}
+
+/* === 📐 Єдина висота елементів у групі === */
+.form-switch .form-check-input,
+.input-group .form-control,
+.input-group .btn {
+    height: 40px;
+    min-height: 40px;
+    line-height: 0.75;
+}
+
+/* === 🧊 Віджети (dashboard cards) === */
+.card-widget {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(8px);
+    border-radius: 1rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.card-widget:hover {
+    transform: scale(1.03);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.5);
+}
+
+/* === 📱 Mobile Responsiveness === */
+@media (max-width: 576px) {
+    .navbar {
+        padding: 0.5rem 1rem !important;
+    }
+    
+    .top-info-panel {
+        display: none !important;
+    }
+    
+    .navbar-brand {
+        font-size: 1rem !important;
+    }
+    
+    .table th, .table td {
+        font-size: 0.8rem;
+        padding: 0.5rem 0.25rem;
+    }
+    
+    .btn {
+        font-size: 0.8rem;
+        padding: 0.25rem 0.5rem;
+    }
+    
+    .form-check-label {
+        font-size: 0.85rem;
+    }
+}
+
+@media (max-width: 992px) {
+    .card-header {
+        padding: 1rem;
+    }
+    
+    .form-switch {
+        margin-bottom: 0.5rem;
+    }
+}
+
+/* === ⚙️ Settings Panel === */
+.settings-panel {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: all 0.3s ease;
+}
+
+.settings-panel:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+#settingsToggle .fa-chevron-down {
+    transition: transform 0.3s ease;
+}
+
+#settingsToggle[aria-expanded="true"] .fa-chevron-down {
+    transform: rotate(180deg);
+}
+
+#settingsCollapse {
+    transition: all 0.3s ease;
+}
+
+/* === 🔘 Кнопки з анімацією === */
+.btn-outline-info,
+.btn-outline-secondary {
+    border-radius: 30px;
+    padding: 0.4rem 1rem;
+    /*transition: all 0.3s ease;*/
+}
+.btn-outline-info:hover,
+.btn-outline-secondary:hover {
+    background: linear-gradient(135deg, #17a2b8, #0d6efd);
+    color: #fff;
+    border-color: transparent;
+}
+/* Забрати межі, які можуть створити розрив */
+#sidebar-wrapper {
+    border-top-right-radius: 0 !important;
+}
+.bg-top, .navbar {
+    border: none !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+}
+/* === Поведение сайдбара при сворачивании === */
+@media (min-width: 768px) {
+  #wrapper.toggled #sidebar-wrapper {
+    width: 60px;
+  }
+  #wrapper.toggled #page-content-wrapper {
+    margin-left: 0px;
+    width: calc(100% - 60px);
+  }
+  #wrapper.toggled .sidebar-text-main,
+  #wrapper.toggled .sidebar-text-section-title,
+  #wrapper.toggled .sidebar-item-text {
+    opacity: 0;
+    max-width: 0;
+    overflow: hidden;
+    pointer-events: none;
+    margin-left: 0;
+  }
+  #wrapper.toggled .list-group-item-action {
+    justify-content: center;
+    padding: 10px 0;
+  }
+  #wrapper.toggled .sidebar-heading {
+    justify-content: center;
+    padding: 1rem 0;
+  }
+  #wrapper.toggled .sidebar-heading i,
+  #wrapper.toggled .list-group-item-action i {
+    width: 100%;
+    text-align: center;
+    margin-right: 0;
+  }
+}
+
+.sidebar-divider-group {
+  position: relative;
+  height: 20px;
+  margin: 1.5rem 0 1rem 0;
+}
+@media (max-width: 768px) {
+  #sidebar-wrapper {
+    margin-left: -250px;
+    position: fixed;
+    height: 100vh;
+    top: 0;
+    left: 0;
+    z-index: 1030;
+    width: 250px;
+    transition: margin-left 0.3s ease;
+  }
+
+  #wrapper.toggled #sidebar-wrapper {
+    margin-left: 0;
+  }
+
+  #page-content-wrapper {
+    width: 100%;
+    transition: margin-left 0.3s ease;
+  }
+
+  #wrapper.toggled #page-content-wrapper {
+    margin-left: 250px;
+  }
+}
+
+/* Заголовок розділу як зараз */
+.sidebar-section-title {
+  opacity: 1;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+}
+
+/* Роздільник (прихований у звичайному стані) */
+.sidebar-divider {
+  display: none;
+  height: 2px;
+  width: 40%;
+  margin: 0 auto;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 4px;
+  transition: all 0.3s ease;
+}
+
+/* Коли wrapper toggled — ховаємо текст, показуємо роздільник */
+#wrapper.toggled .sidebar-section-title {
+  display: none;
+}
+#wrapper.toggled .sidebar-divider {
+  display: block;
+}
+

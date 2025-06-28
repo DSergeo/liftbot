@@ -1,0 +1,324 @@
+{% extends "layout.html" %}
+
+{% block title %}Налаштування теми{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/custom.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h4 class="text-white mb-1">
+                        <i class="fas fa-palette me-2"></i>Налаштування теми
+                    </h4>
+                    <p class="text-muted mb-0">Персоналізація зовнішнього вигляду системи</p>
+                </div>
+                <button class="btn btn-primary">
+                    <i class="fas fa-save me-2"></i>Застосувати зміни
+                </button>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-8">
+                    <!-- Theme Selection -->
+                    <div class="card bg-dark border-0 mb-4">
+                        <div class="card-header bg-transparent border-bottom">
+                            <h5 class="text-white mb-0">
+                                <i class="fas fa-moon me-2"></i>Тема оформлення
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-4 mb-3">
+                                    <div class="card theme-card border border-primary" data-theme="dark">
+                                        <div class="card-body p-2">
+                                            <div class="bg-dark rounded p-2 mb-2">
+                                                <div class="bg-primary rounded-pill mb-1" style="height: 4px; width: 60%;"></div>
+                                                <div class="bg-secondary rounded-pill mb-1" style="height: 3px; width: 80%;"></div>
+                                                <div class="bg-info rounded-pill" style="height: 3px; width: 40%;"></div>
+                                            </div>
+                                            <h6 class="text-white mb-1">Темна тема</h6>
+                                            <small class="text-muted">Поточна</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <div class="card theme-card border" data-theme="light">
+                                        <div class="card-body p-2">
+                                            <div class="bg-light rounded p-2 mb-2">
+                                                <div class="bg-primary rounded-pill mb-1" style="height: 4px; width: 60%;"></div>
+                                                <div class="bg-dark rounded-pill mb-1" style="height: 3px; width: 80%; opacity: 0.3;"></div>
+                                                <div class="bg-info rounded-pill" style="height: 3px; width: 40%;"></div>
+                                            </div>
+                                            <h6 class="text-white mb-1">Світла тема</h6>
+                                            <small class="text-muted">Доступна</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <div class="card theme-card border" data-theme="auto">
+                                        <div class="card-body p-2">
+                                            <div class="rounded p-2 mb-2" style="background: linear-gradient(90deg, #212529 50%, #f8f9fa 50%);">
+                                                <div class="bg-primary rounded-pill mb-1" style="height: 4px; width: 60%;"></div>
+                                                <div class="bg-secondary rounded-pill mb-1" style="height: 3px; width: 80%;"></div>
+                                                <div class="bg-info rounded-pill" style="height: 3px; width: 40%;"></div>
+                                            </div>
+                                            <h6 class="text-white mb-1">Автоматична</h6>
+                                            <small class="text-muted">За системою</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Color Scheme -->
+                    <div class="card bg-dark border-0 mb-4">
+                        <div class="card-header bg-transparent border-bottom">
+                            <h5 class="text-white mb-0">
+                                <i class="fas fa-color-palette me-2"></i>Колірна схема
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-3 mb-3">
+                                    <label class="form-label text-white">Основний колір</label>
+                                    <div class="d-flex gap-2">
+                                        <div class="color-option" data-color="primary" style="background-color: #0d6efd;"></div>
+                                        <div class="color-option" data-color="success" style="background-color: #198754;"></div>
+                                        <div class="color-option" data-color="info" style="background-color: #0dcaf0;"></div>
+                                        <div class="color-option" data-color="warning" style="background-color: #ffc107;"></div>
+                                        <div class="color-option" data-color="danger" style="background-color: #dc3545;"></div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <label class="form-label text-white">Колір акценту</label>
+                                    <div class="d-flex gap-2">
+                                        <div class="color-option" data-color="accent1" style="background-color: #6f42c1;"></div>
+                                        <div class="color-option" data-color="accent2" style="background-color: #fd7e14;"></div>
+                                        <div class="color-option" data-color="accent3" style="background-color: #20c997;"></div>
+                                        <div class="color-option" data-color="accent4" style="background-color: #e91e63;"></div>
+                                        <div class="color-option" data-color="accent5" style="background-color: #6610f2;"></div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label text-white">Користувацький колір</label>
+                                    <div class="input-group">
+                                        <input type="color" class="form-control form-control-color" value="#0d6efd">
+                                        <input type="text" class="form-control" value="#0d6efd" placeholder="#000000">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Layout Settings -->
+                    <div class="card bg-dark border-0 mb-4">
+                        <div class="card-header bg-transparent border-bottom">
+                            <h5 class="text-white mb-0">
+                                <i class="fas fa-layout me-2"></i>Налаштування макету
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" id="compactMode">
+                                        <label class="form-check-label text-white" for="compactMode">
+                                            Компактний режим
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" id="sidebarCollapse" checked>
+                                        <label class="form-check-label text-white" for="sidebarCollapse">
+                                            Згортання бічної панелі
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" id="animationsEnabled" checked>
+                                        <label class="form-check-label text-white" for="animationsEnabled">
+                                            Анімації інтерфейсу
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" id="roundedCorners" checked>
+                                        <label class="form-check-label text-white" for="roundedCorners">
+                                            Закруглені кути
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Typography -->
+                    <div class="card bg-dark border-0 mb-4">
+                        <div class="card-header bg-transparent border-bottom">
+                            <h5 class="text-white mb-0">
+                                <i class="fas fa-font me-2"></i>Типографіка
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label text-white">Шрифт інтерфейсу</label>
+                                    <select class="form-select">
+                                        <option value="system">Системний шрифт</option>
+                                        <option value="roboto">Roboto</option>
+                                        <option value="opensans">Open Sans</option>
+                                        <option value="inter">Inter</option>
+                                        <option value="ubuntu">Ubuntu</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label text-white">Розмір шрифту</label>
+                                    <select class="form-select">
+                                        <option value="small">Малий (12px)</option>
+                                        <option value="medium" selected>Середній (14px)</option>
+                                        <option value="large">Великий (16px)</option>
+                                        <option value="extra-large">Дуже великий (18px)</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4">
+                    <!-- Live Preview -->
+                    <div class="card bg-dark border-0 mb-4">
+                        <div class="card-header bg-transparent border-bottom">
+                            <h5 class="text-white mb-0">
+                                <i class="fas fa-eye me-2"></i>Попередній перегляд
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="preview-window bg-secondary rounded p-3">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <h6 class="text-white mb-0">Приклад карточки</h6>
+                                    <button class="btn btn-primary btn-sm">Дія</button>
+                                </div>
+                                <p class="text-muted mb-3">Це приклад того, як виглядатиме інтерфейс з обраними налаштуваннями теми.</p>
+                                <div class="d-flex gap-2">
+                                    <span class="badge bg-success">Активно</span>
+                                    <span class="badge bg-warning">Очікує</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Actions -->
+                    <div class="card bg-dark border-0 mb-4">
+                        <div class="card-header bg-transparent border-bottom">
+                            <h5 class="text-white mb-0">
+                                <i class="fas fa-bolt me-2"></i>Швидкі дії
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <button class="btn btn-outline-primary w-100 mb-2">
+                                <i class="fas fa-undo me-2"></i>Скинути до стандартних
+                            </button>
+                            <button class="btn btn-outline-secondary w-100 mb-2">
+                                <i class="fas fa-download me-2"></i>Експортувати тему
+                            </button>
+                            <button class="btn btn-outline-info w-100">
+                                <i class="fas fa-upload me-2"></i>Імпортувати тему
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Theme Info -->
+                    <div class="card bg-dark border-0">
+                        <div class="card-header bg-transparent border-bottom">
+                            <h5 class="text-white mb-0">
+                                <i class="fas fa-info-circle me-2"></i>Інформація
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between mb-2">
+                                <span class="text-muted">Активна тема:</span>
+                                <span class="text-white">Темна</span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span class="text-muted">Основний колір:</span>
+                                <span class="text-primary">#0d6efd</span>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <span class="text-muted">Остання зміна:</span>
+                                <span class="text-white">Сьогодні</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.theme-card {
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.theme-card:hover {
+    transform: translateY(-2px);
+}
+
+.theme-card.border-primary {
+    border-width: 2px !important;
+}
+
+.color-option {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 3px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.color-option:hover {
+    border-color: white;
+}
+
+.color-option.active {
+    border-color: white;
+    transform: scale(1.1);
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Theme selection
+    document.querySelectorAll('.theme-card').forEach(card => {
+        card.addEventListener('click', function() {
+            document.querySelectorAll('.theme-card').forEach(c => c.classList.remove('border-primary'));
+            this.classList.add('border-primary');
+        });
+    });
+    
+    // Color selection
+    document.querySelectorAll('.color-option').forEach(option => {
+        option.addEventListener('click', function() {
+            const container = this.parentElement;
+            container.querySelectorAll('.color-option').forEach(o => o.classList.remove('active'));
+            this.classList.add('active');
+        });
+    });
+    
+    // Set default active colors
+    document.querySelector('.color-option[data-color="primary"]').classList.add('active');
+});
+</script>
+{% endblock %}

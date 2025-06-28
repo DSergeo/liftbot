@@ -1,0 +1,285 @@
+{% extends "layout.html" %}
+
+{% block title %}Профіль користувача{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card bg-dark border-0 shadow-lg">
+                <div class="card-header bg-dark-subtle">
+                    <h4 class="mb-0"><i class="fas fa-user-circle me-2"></i>Профіль користувача</h4>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <!-- Profile Info Section -->
+                        <div class="col-lg-4 mb-4">
+                            <div class="text-center">
+                                <img src="{% if user.get('avatar') %}/static/{{ user.avatar }}{% else %}https://i.pravatar.cc/150?u={{ user.get('email', 'default') }}{% endif %}" class="rounded-circle mb-3" alt="Аватар" style="width: 150px; height: 150px; object-fit: cover; border: 3px solid rgba(255,255,255,0.2);" id="profileAvatar">
+                                <h5 class="text-white">{{ user.get('first_name', '') }} {{ user.get('last_name', '') }}</h5>
+                                <p class="text-muted">
+                                    {% if user.get('role') == 'admin' %}
+                                        Адміністратор системи
+                                    {% elif user.get('role') == 'operator' %}
+                                        Оператор
+                                    {% elif user.get('role') == 'technician' %}
+                                        Технік
+                                    {% else %}
+                                        Користувач
+                                    {% endif %}
+                                </p>
+                                <button type="button" class="btn btn-outline-info btn-sm" onclick="document.getElementById('avatarInput').click()">
+                                    <i class="fas fa-camera me-2"></i>Змінити фото
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Profile Details Section -->
+                        <div class="col-lg-8">
+                            {% if success %}
+                            <div class="alert alert-success" role="alert">
+                                <i class="fas fa-check-circle me-2"></i>{{ success }}
+                            </div>
+                            {% endif %}
+                            <form id="profileForm" method="post" enctype="multipart/form-data">
+                                <!-- Hidden avatar input inside the form -->
+                                <input type="file" id="avatarInput" name="avatar" accept="image/*" style="display: none;">
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="firstName" class="form-label text-white">Ім'я</label>
+                                        <input type="text" class="form-control bg-dark text-white border-secondary" id="firstName" name="first_name" value="{{ user.get('first_name', '') }}">
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="lastName" class="form-label text-white">Прізвище</label>
+                                        <input type="text" class="form-control bg-dark text-white border-secondary" id="lastName" name="last_name" value="{{ user.get('last_name', '') }}">
+                                    </div>
+                                </div>
+                                
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="email" class="form-label text-white">Email</label>
+                                        <input type="email" class="form-control bg-dark text-white border-secondary" id="email" value="{{ user.get('email', '') }}" readonly>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="phone" class="form-label text-white">Телефон</label>
+                                        <input type="tel" class="form-control bg-dark text-white border-secondary" id="phone" name="phone" value="{{ user.get('phone', '') }}">
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="role" class="form-label text-white">Роль</label>
+                                        <select class="form-select bg-dark text-white border-secondary" id="role" name="role" disabled>
+                                            <option value="admin" {% if user.get('role') == 'admin' %}selected{% endif %}>Адміністратор</option>
+                                            <option value="operator" {% if user.get('role') == 'operator' %}selected{% endif %}>Оператор</option>
+                                            <option value="technician" {% if user.get('role') == 'technician' %}selected{% endif %}>Технік</option>
+                                        </select>
+                                        <small class="text-muted">Роль може змінити тільки адміністратор</small>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="department" class="form-label text-white">Відділ</label>
+                                        <input type="text" class="form-control bg-dark text-white border-secondary" id="department" name="department" value="{{ user.get('department', '') }}">
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="bio" class="form-label text-white">Про себе</label>
+                                    <textarea class="form-control bg-dark text-white border-secondary" id="bio" name="bio" rows="3" placeholder="Розкажіть про себе...">{{ user.get('bio', '') }}</textarea>
+                                </div>
+
+                                <hr class="border-secondary">
+
+                                <!-- Security Settings -->
+                                <h6 class="text-white mb-3"><i class="fas fa-shield-alt me-2"></i>Налаштування безпеки</h6>
+                                
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="currentPassword" class="form-label text-white">Поточний пароль</label>
+                                        <input type="password" class="form-control bg-dark text-white border-secondary" id="currentPassword" placeholder="Введіть поточний пароль">
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="newPassword" class="form-label text-white">Новий пароль</label>
+                                        <input type="password" class="form-control bg-dark text-white border-secondary" id="newPassword" placeholder="Введіть новий пароль">
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="confirmPassword" class="form-label text-white">Підтвердіть пароль</label>
+                                        <input type="password" class="form-control bg-dark text-white border-secondary" id="confirmPassword" placeholder="Підтвердіть новий пароль">
+                                    </div>
+                                    <div class="col-md-6 mb-3 d-flex align-items-end">
+                                        <button type="button" class="btn btn-outline-warning">
+                                            <i class="fas fa-key me-2"></i>Змінити пароль
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <hr class="border-secondary">
+
+                                <!-- Notification Settings -->
+                                <h6 class="text-white mb-3"><i class="fas fa-bell me-2"></i>Налаштування сповіщень</h6>
+                                
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-check form-switch mb-2">
+                                            <input class="form-check-input" type="checkbox" id="emailNotifications" checked>
+                                            <label class="form-check-label text-white" for="emailNotifications">
+                                                Email сповіщення
+                                            </label>
+                                        </div>
+                                        <div class="form-check form-switch mb-2">
+                                            <input class="form-check-input" type="checkbox" id="pushNotifications" checked>
+                                            <label class="form-check-label text-white" for="pushNotifications">
+                                                Push сповіщення
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-check form-switch mb-2">
+                                            <input class="form-check-input" type="checkbox" id="newRequestNotifications" checked>
+                                            <label class="form-check-label text-white" for="newRequestNotifications">
+                                                Сповіщення про нові заявки
+                                            </label>
+                                        </div>
+                                        <div class="form-check form-switch mb-2">
+                                            <input class="form-check-input" type="checkbox" id="completedRequestNotifications">
+                                            <label class="form-check-label text-white" for="completedRequestNotifications">
+                                                Сповіщення про виконані заявки
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <hr class="border-secondary">
+
+                                <!-- Action Buttons -->
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <button type="submit" class="btn btn-success me-2">
+                                            <i class="fas fa-save me-2"></i>Зберегти зміни
+                                        </button>
+                                        <button type="button" class="btn btn-outline-secondary">
+                                            <i class="fas fa-undo me-2"></i>Скасувати
+                                        </button>
+                                    </div>
+                                    <div>
+                                        <button type="button" class="btn btn-outline-danger">
+                                            <i class="fas fa-trash me-2"></i>Видалити профіль
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Account Statistics -->
+            <div class="row mt-4">
+                <div class="col-md-3 mb-3">
+                    <div class="card bg-dark border-0 shadow">
+                        <div class="card-body text-center">
+                            <i class="fas fa-clipboard-list fa-2x text-info mb-2"></i>
+                            <h5 class="text-white">127</h5>
+                            <p class="text-muted mb-0">Оброблено заявок</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <div class="card bg-dark border-0 shadow">
+                        <div class="card-body text-center">
+                            <i class="fas fa-clock fa-2x text-warning mb-2"></i>
+                            <h5 class="text-white">23 хв</h5>
+                            <p class="text-muted mb-0">Сер. час відповіді</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <div class="card bg-dark border-0 shadow">
+                        <div class="card-body text-center">
+                            <i class="fas fa-calendar-check fa-2x text-success mb-2"></i>
+                            <h5 class="text-white">89%</h5>
+                            <p class="text-muted mb-0">Виконання в строк</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <div class="card bg-dark border-0 shadow">
+                        <div class="card-body text-center">
+                            <i class="fas fa-star fa-2x text-info mb-2"></i>
+                            <h5 class="text-white">4.7</h5>
+                            <p class="text-muted mb-0">Рейтинг роботи</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Avatar upload preview
+    const avatarInput = document.getElementById('avatarInput');
+    const profileAvatar = document.getElementById('profileAvatar');
+    const headerAvatar = document.querySelector('.navbar img.rounded-circle');
+    
+    if (avatarInput && profileAvatar) {
+        avatarInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                // Validate file type
+                if (!file.type.startsWith('image/')) {
+                    alert('Будь ласка, оберіть файл зображення');
+                    return;
+                }
+                
+                // Validate file size (max 5MB)
+                if (file.size > 5 * 1024 * 1024) {
+                    alert('Розмір файлу не повинен перевищувати 5MB');
+                    return;
+                }
+                
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const imageUrl = e.target.result;
+                    
+                    // Update profile page avatar
+                    profileAvatar.src = imageUrl;
+                    profileAvatar.style.objectFit = 'cover';
+                    
+                    // Update header avatar if it exists
+                    if (headerAvatar) {
+                        headerAvatar.src = imageUrl;
+                        headerAvatar.style.objectFit = 'cover';
+                    }
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    }
+    
+    // Cancel button functionality
+    const cancelBtn = document.querySelector('.btn-outline-secondary');
+    if (cancelBtn) {
+        cancelBtn.addEventListener('click', function() {
+            window.location.reload();
+        });
+    }
+
+    // Form submission with proper POST handling
+    const profileForm = document.getElementById('profileForm');
+    const saveBtn = document.querySelector('button[type="submit"]');
+    
+    profileForm.addEventListener('submit', function(e) {
+        const originalText = saveBtn.innerHTML;
+        saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Збереження...';
+        saveBtn.disabled = true;
+        
+        // Allow form to submit normally to the server
+        // The form will be handled by the backend POST route
+    });
+});
+</script>
+{% endblock %}

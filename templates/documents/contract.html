@@ -1,0 +1,1229 @@
+{% extends "layout.html" %}
+
+{% block title %}Договір{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/custom.css') }}">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+    .detail-row input.form-control-sm {
+        width: 50% !important;
+        min-width: 60px;
+    }
+    .detail-item input[type="number"] {
+        width: 85px !important;
+    }
+    .detail-item input[type="text"] {
+        width: 80px !important;
+    }
+    .detail-item .area-input {
+        width: 120px !important; /* Расширено на одну треть */
+    }
+    .detail-item .tariff-input {
+        width: 80px !important;
+    }
+    .detail-item .calculated-cost {
+        width: 150px !important; /* Расширено на половину */
+    }
+   
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h4 class="text-white mb-1">
+                        <i class="fas fa-file-contract me-2"></i>
+                        {% if contract %}
+                            Договір № {{ contract.number or 'Не вказано' }}
+                        {% else %}
+                            Договір на обслуговування ліфтів
+                        {% endif %}
+                    </h4>
+                    <p class="text-muted mb-0">
+                        {% if contract %}
+                            Редагування договору з замовником
+                        {% else %}
+                            Створення договору з замовником
+                        {% endif %}
+                    </p>
+                </div>
+                <div class="d-flex gap-2">
+                    <button class="btn btn-outline-secondary" onclick="printContract()">
+                        <i class="fas fa-print me-2"></i>Друк
+                    </button>
+                    {% if contract %}
+                        <button class="btn btn-outline-secondary" onclick="window.location.href='/registries/contracts'">
+                            <i class="fas fa-arrow-left me-2"></i>Назад до реєстру
+                        </button>
+                    {% else %}
+                        <button class="btn btn-outline-secondary" onclick="saveAsDraft()">
+                            <i class="fas fa-save me-2"></i>Чернетка
+                        </button>
+                        <button class="btn btn-primary" onclick="saveContract()">
+                            <i class="fas fa-check me-2"></i>Зберегти зміни
+                        </button>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-12">
+                    <!-- Contract Form -->
+                    <div class="card bg-dark border-0 mb-4">
+                        <div class="card-header bg-transparent border-bottom">
+                            <h5 class="text-white mb-0">
+                                <i class="fas fa-edit me-2"></i>Основна інформація договору
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label text-white">Номер договору</label>
+                                    <input type="text" class="form-control" id="contractNumber" 
+                                           value="{{ contract.number if contract else '' }}"
+                                           placeholder="Введіть номер">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label text-white">Дата укладення</label>
+                                    <input type="date" class="form-control" id="contractDate"
+                                           value="{{ contract.date if contract else '' }}">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label text-white">Замовник</label>
+                                    <input type="text" class="form-control" id="customerName"
+                                           value="{{ contract.customer if contract else '' }}"
+                                           placeholder="Введіть назву організації">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label text-white">Контактна особа</label>
+                                    <input type="text" class="form-control" value="{{ contract.customer if contract else '' }}"
+                                    placeholder="ПІБ контактної особи">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label text-white">Телефон</label>
+                                    <input type="tel" class="form-control" value="{{ contract.customer if contract else '' }}"
+                                    placeholder="Номер телефону">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label text-white">Email</label>
+                                    <input type="email" class="form-control" value="{{ contract.customer if contract else '' }}"
+                                    placeholder="Електронна пошта">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Addresses Table -->
+                    <div class="card bg-dark border-0 mb-4">
+                        <div class="card-header bg-transparent border-bottom d-flex justify-content-between align-items-center">
+                            <h5 class="text-white mb-0">
+                                <i class="fas fa-map-marker-alt me-2"></i>Адреси обслуговування
+                            </h5>
+                            <div>
+                                <button class="btn btn-sm btn-outline-primary me-2" onclick="addNewAddress()">
+                                    <i class="fas fa-plus me-1"></i>Додати адресу
+                                </button>
+                                <label for="fileUpload" class="btn btn-sm btn-outline-info">
+                                    <i class="fas fa-upload me-1"></i>Завантажити Excel
+                                </label>
+                                <input type="file" id="fileUpload" accept=".xlsx,.xls,.csv" style="display: none;" onchange="handleFileUpload(this)">
+                            </div>
+                        </div>
+                        <div class="card-body p-0">
+                            <div class="table-responsive">
+                                <table class="table table-dark table-hover mb-0" id="addressTable">
+                                    <thead>
+                                        <tr>
+                                            <th width="25%">Адреса</th>
+                                            <th width="15%">Кількість ліфтів</th>
+                                            <th width="15%">Загальна площа</th>
+                                            <th width="15%">Середній тариф</th>
+                                            <th width="20%">Вартість</th>
+                                            <th width="10%">Дії</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="addressTableBody">
+                                        {% if addresses_summary %}
+                                            {% for address in addresses_summary %}
+                                            <tr class="address-row" data-address="{{ address[0] }}">
+                                                <td>
+                                                    <div class="d-flex justify-content-between align-items-center">
+                                                        <span class="expand-icon cursor-pointer" onclick="toggleAddressDetails(this)">
+                                                            <i class="fas fa-chevron-right me-2"></i>
+                                                        </span>
+                                                        <strong class="flex-grow-1">{{ address[0] }}</strong>
+                                                    </div>
+                                                </td>
+                                                <td class="total-lifts">{{ address[3] }}</td>
+                                                <td class="total-area">{{ "%.1f"|format(address[1]) }}</td>
+                                                <td class="total-tariff">{{ "%.2f"|format(address[2] / address[1] if address[1] > 0 else 0) }}</td>
+                                                <td class="total-cost">{{ "{:,.2f}".format(address[2]).replace('.', ',') }}</td>
+                                                <td>
+                                                    <button class="btn btn-sm btn-outline-primary me-1" onclick="editAddress(this)" title="Редагувати">
+                                                        <i class="fas fa-edit"></i>
+                                                    </button>
+                                                    <button class="btn btn-sm btn-outline-danger" onclick="deleteAddress(this)" title="Видалити">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                            <tr class="detail-row" data-parent="{{ address[0] }}" style="display: none;">
+                                                <td colspan="6">
+                                                    <div class="ps-4 pe-2 py-2 bg-dark bg-opacity-50 rounded">
+                                                        <div class="row mb-2">
+                                                            <div class="col-2"><strong>Під'їзд</strong></div>
+                                                            <div class="col-2"><strong>Кількість поверхів</strong></div>
+                                                            <div class="col-2"><strong>Рег№</strong></div>
+                                                            <div class="col-2"><strong>Площа, м.кв</strong></div>
+                                                            <div class="col-1"><strong>Тариф</strong></div>
+                                                            <div class="col-2"><strong>Вартість ТО</strong></div>
+                                                            <div class="col-1"><strong>Дії</strong></div>
+                                                        </div>
+                                                        <div id="lifts-for-{{ address[0]|replace(' ', '-')|replace('.', '-')|replace(',', '-') }}">
+                                                            <!-- Лифты для этого адреса будут загружены через JavaScript -->
+                                                        </div>
+                                                        <button class="btn btn-sm btn-outline-success" onclick="addStop(this)">
+                                                            <i class="fas fa-plus me-1"></i>Додати зупинку
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            {% endfor %}
+                                        {% else %}
+                                            <tr>
+                                                <td colspan="5" class="text-center text-muted py-4">
+                                                    <i class="fas fa-building fa-2x mb-2"></i><br>
+                                                    Адреси не знайдені. Додайте адреси обслуговування.
+                                                </td>
+                                            </tr>
+                                        {% endif %}
+                                    </tbody>
+                                </table>
+                                
+                                <div class="mt-3 p-3 bg-dark bg-opacity-50 rounded">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <strong class="text-white">Загальна кількість ліфтів: <span id="totalLifts">0</span></strong>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <strong class="text-white">Місячна вартість: <span id="totalMonthlyCost">0</span> грн</strong>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <strong class="text-white">Річна вартість: <span id="totalYearlyCost">0</span> грн</strong>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Service Conditions -->
+                    <div class="card bg-dark border-0 mb-4">
+                        <div class="card-header bg-transparent border-bottom">
+                            <h5 class="text-white mb-0">
+                                <i class="fas fa-tools me-2"></i>Умови обслуговування
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label text-white">Кількість ліфтів</label>
+                                    <input type="number" class="form-control" id="serviceLiftsCount" value="0" readonly>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label text-white">Місячна вартість обслуговування</label>
+                                    <input type="number" class="form-control" id="totalMonthlyInput" value="0" step="0.01">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label text-white">Тип обслуговування</label>
+                                    <select class="form-control">
+                                        <option>Повне технічне обслуговування</option>
+                                        <option>Часткове технічне обслуговування</option>
+                                        <option>Аварійне обслуговування</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label text-white">Періодичність</label>
+                                    <select class="form-control">
+                                        <option>Щомісячно</option>
+                                        <option>Щоквартально</option>
+                                        <option>Щопівроку</option>
+                                        <option>Щорічно</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bottom Widgets Row -->
+                    <div class="row">
+                        <div class="col-lg-4">
+                            <!-- Status Info -->
+                            <div class="card bg-dark border-0 mb-4">
+                                <div class="card-header bg-transparent border-bottom">
+                                    <h5 class="text-white mb-0">
+                                        <i class="fas fa-info-circle me-2"></i>Статус договору
+                                    </h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between mb-2">
+                                        <span class="text-muted">Статус:</span>
+                                        <span class="badge 
+                                            {% if contract and contract.status == 'active' %}bg-success
+                                            {% elif contract and contract.status == 'закінчується' %}bg-warning
+                                            {% elif contract and contract.status == 'terminated' %}bg-danger
+                                            {% else %}bg-secondary{% endif %}">
+                                            
+                                            {% if contract and contract.status == 'active' %}Активний
+                                            {% elif contract and contract.status == 'закінчується' %}Закінчується
+                                            {% elif contract and contract.status == 'terminated' %}Розірвано
+                                            {% else %}Активний{% endif %}
+                                        </span>
+                                    </div>
+                                    <div class="d-flex justify-content-between mb-2">
+                                        <span class="text-muted">Дата початку:</span>
+                                        <span class="text-white" id="displayStartDate">
+                                            {% if contract and contract.date %}
+                                                {{ contract.date.split('-')[2] }}.{{ contract.date.split('-')[1] }}.{{ contract.date.split('-')[0] }}
+                                            {% else %}
+                                                13.06.2025
+                                            {% endif %}
+                                        </span>
+                                    </div>
+                                    <div class="d-flex justify-content-between mb-2">
+                                        <span class="text-muted">Дата закінчення:</span>
+                                        <span class="text-white" id="displayEndDate">
+                                            {% if contract and contract.end_date %}
+                                                {{ contract.end_date.split('-')[2] }}.{{ contract.end_date.split('-')[1] }}.{{ contract.end_date.split('-')[0] }}
+                                            {% else %}
+                                                13.06.2026
+                                            {% endif %}
+                                        </span>
+                                    </div>
+                                    <div class="d-flex justify-content-between mb-3">
+                                        <span class="text-muted">Залишилося днів:</span>
+                                        <span class="text-info">364</span>
+                                    </div>
+                                    <div class="progress mb-3" style="height: 8px;">
+                                        <div class="progress-bar bg-success" style="width: 25%"></div>
+                                    </div>
+                                    <small class="text-muted">25% терміну виконано</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4">
+                            <!-- Financial Info -->
+                            <div class="card bg-dark border-0 mb-4">
+                                <div class="card-header bg-transparent border-bottom">
+                                    <h5 class="text-white mb-0">
+                                        <i class="fas fa-money-bill-wave me-2"></i>Фінансова інформація
+                                    </h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between mb-2">
+                                        <span class="text-muted">Місячна вартість:</span>
+                                        <span class="text-white fw-bold">0 ₴</span>
+                                    </div>
+                                    <div class="d-flex justify-content-between mb-2">
+                                        <span class="text-muted">Річна вартість:</span>
+                                        <span class="text-info">0 ₴</span>
+                                    </div>
+                                    <div class="d-flex justify-content-between mb-2">
+                                        <span class="text-muted">Наступний платіж:</span>
+                                        <span class="text-warning">15.07.2025</span>
+                                    </div>
+                                    <div class="d-flex justify-content-between mb-3">
+                                        <span class="text-muted">Статус оплати:</span>
+                                        <span class="badge bg-success">Оплачено</span>
+                                    </div>
+                                    <div class="progress mb-3" style="height: 8px;">
+                                        <div class="progress-bar bg-success" style="width: 85%"></div>
+                                    </div>
+                                    <small class="text-muted">85% річної суми сплачено</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4">
+                            <!-- Actions -->
+                            <div class="card bg-dark border-0 mb-4">
+                                <div class="card-header bg-transparent border-bottom">
+                                    <h5 class="text-white mb-0">
+                                        <i class="fas fa-tools me-2"></i>Дії
+                                    </h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="d-grid gap-2">
+                                        <button class="btn btn-primary" onclick="saveContract()">
+                                            <i class="fas fa-save me-2"></i>Зберегти зміни
+                                        </button>
+                                        {% if contract %}
+                                            <button class="btn btn-outline-danger" onclick="terminateContract()">
+                                                <i class="fas fa-times me-2"></i>Розірвати договір
+                                            </button>
+                                        {% endif %}
+                                        <button class="btn btn-outline-info">
+                                            <i class="fas fa-copy me-2"></i>Дублювати договір
+                                        </button>
+                                        <button class="btn btn-outline-secondary">
+                                            <i class="fas fa-file-export me-2"></i>Експорт в Excel
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+* {
+    -webkit-focus-ring-color: transparent !important;
+    -webkit-tap-highlight-color: transparent !important;
+}
+
+*:focus {
+    outline: 0 !important;
+    outline-offset: 0 !important;
+    box-shadow: none !important;
+}
+
+*::-moz-focus-inner {
+    border: 0 !important;
+    outline: none !important;
+}
+
+.expand-icon {
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.expand-icon:focus {
+    outline: none !important;
+}
+
+.expand-icon::-moz-focus-inner {
+    border: 0;
+    outline: none;
+}
+
+.expand-icon:focus,
+.expand-icon:active,
+.expand-icon:hover,
+.expand-icon:visited,
+.expand-icon:target {
+    outline: 0 !important;
+    border: 0 !important;
+    background: transparent !important;
+    text-decoration: none !important;
+    box-shadow: none !important;
+    -webkit-focus-ring-color: rgba(0,0,0,0) !important;
+}
+
+.expand-icon::before,
+.expand-icon::after {
+    outline: 0 !important;
+    border: 0 !important;
+    background: transparent !important;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Обработчик для раскрытия/скрытия детальной информации
+    document.addEventListener('click', function(event) {
+        // Проверяем, что клик был именно по иконке разворачивания
+        if (event.target.classList.contains('expand-icon')) {
+            event.preventDefault();
+            event.stopPropagation();
+            
+            var addressRow = event.target.closest('.address-row');
+            if (addressRow) {
+                var address = addressRow.getAttribute('data-address');
+                var detailRow = document.querySelector('.detail-row[data-parent="' + address + '"]');
+                var icon = event.target;
+                
+                if (detailRow && (detailRow.style.display === 'none' || !detailRow.style.display)) {
+                    detailRow.style.display = 'table-row';
+                    icon.textContent = '▼';
+                } else if (detailRow) {
+                    detailRow.style.display = 'none';
+                    icon.textContent = '▶';
+                }
+                
+                // Убираем focus
+                event.target.blur();
+                if (document.activeElement && document.activeElement !== document.body) {
+                    document.activeElement.blur();
+                }
+            }
+        }
+    });
+    
+    // Инициализация: пересчитать общие суммы
+    updateTotals();
+});
+
+function formatCurrencyUA(amount) {
+    if (!amount) return "0,00 ₴";
+    // Format with Ukrainian style: comma as decimal separator
+    var formatted = parseFloat(amount).toFixed(2);
+    formatted = formatted.replace('.', ',');
+    return formatted + " ₴";
+}
+
+function calculateCost(input) {
+    var detailItem = input.closest('.detail-item');
+    var areaInput = detailItem.querySelector('.area-input');
+    var tariffInput = detailItem.querySelector('.tariff-input');
+    var costSpan = detailItem.querySelector('.calculated-cost');
+    
+    var area = parseFloat(areaInput.value) || 0;
+    var tariff = parseFloat(tariffInput.value) || 0;
+    var cost = (area * tariff);
+    
+    costSpan.textContent = formatCurrencyUA(cost);
+    
+    // Обновить итоги по адресу
+    updateAddressTotals(input);
+}
+
+function updateAddressTotals(input) {
+    var detailRow = input.closest('.detail-row');
+    var parentAddress = detailRow.getAttribute('data-parent');
+    var addressRow = document.querySelector('.address-row[data-address="' + parentAddress + '"]');
+    
+    // Подсчитать общую площадь, средний тариф и общую стоимость для адреса
+    var detailItems = detailRow.querySelectorAll('.detail-item');
+    var totalArea = 0;
+    var totalCost = 0;
+    var totalTariff = 0;
+    var itemCount = 0;
+    
+    detailItems.forEach(function(item) {
+        var area = parseFloat(item.querySelector('.area-input').value) || 0;
+        var tariff = parseFloat(item.querySelector('.tariff-input').value) || 0;
+        var costText = item.querySelector('.calculated-cost').textContent || '0';
+        // Правильно парсимо вартість, замінюючи кому на крапку
+        var cost = parseFloat(costText.replace(',', '.')) || 0;
+        
+        totalArea += area;
+        totalTariff += tariff;
+        totalCost += cost;
+        itemCount++;
+    });
+    
+    var avgTariff = itemCount > 0 ? (totalTariff / itemCount).toFixed(2) : 0;
+    
+    // Обновить основную строку адреса
+    addressRow.querySelector('.total-area').textContent = totalArea.toFixed(1).replace('.', ',');
+    addressRow.querySelector('.total-tariff').textContent = avgTariff.replace('.', ',');
+    addressRow.querySelector('.total-cost').textContent = totalCost.toFixed(2).replace('.', ',');
+    
+    // Пересчитать общие итоги
+    updateTotals();
+}
+
+function formatCurrency(amount) {
+    // Форматування валюти в українському форматі 0000,00
+    return parseFloat(amount || 0).toFixed(2).replace('.', ',');
+}
+
+function updateTotals() {
+    var totalLifts = 0;
+    var totalCost = 0;
+    
+    document.querySelectorAll('.address-row').forEach(function(row) {
+        // Получаем количество лифтов из колонки таблицы
+        var liftsCell = row.querySelector('.total-lifts');
+        var liftCount = liftsCell ? parseInt(liftsCell.textContent) || 0 : 0;
+        
+        // Получаем стоимость из колонки таблицы
+        var costCell = row.querySelector('.total-cost');
+        var cost = costCell ? parseFloat(costCell.textContent.replace(',', '.').replace(/\s/g, '')) || 0 : 0;
+        
+        totalLifts += liftCount;
+        totalCost += cost;
+    });
+    
+    // Обновить отображение общих итогов с форматированием
+    var totalLiftsEl = document.getElementById('totalLifts');
+    var totalMonthlyCostEl = document.getElementById('totalMonthlyCost');
+    var totalYearlyCostEl = document.getElementById('totalYearlyCost');
+    
+    if (totalLiftsEl) totalLiftsEl.textContent = totalLifts;
+    if (totalMonthlyCostEl) totalMonthlyCostEl.textContent = formatCurrency(totalCost) + " ₴";
+    if (totalYearlyCostEl) totalYearlyCostEl.textContent = formatCurrency(totalCost * 12) + " ₴";
+    
+    // Обновить поле ввода общей стоимости
+    var totalInput = document.getElementById('totalMonthlyInput');
+    if (totalInput) {
+        totalInput.value = totalCost;
+    }
+    
+    // Обновить количество лифтов в условиях обслуживания  
+    var serviceLiftsInput = document.getElementById('serviceLiftsCount');
+    if (serviceLiftsInput) {
+        serviceLiftsInput.value = totalLifts;
+    }
+}
+
+function toggleAddressDetails(icon) {
+    var addressRow = icon.closest('.address-row');
+    var address = addressRow.getAttribute('data-address');
+    var detailRow = document.querySelector('.detail-row[data-parent="' + address + '"]');
+    
+    if (detailRow && (detailRow.style.display === 'none' || !detailRow.style.display)) {
+        detailRow.style.display = 'table-row';
+        icon.querySelector('i').classList.remove('fa-chevron-right');
+        icon.querySelector('i').classList.add('fa-chevron-down');
+        
+        // Загрузить детали лифтов для этого адреса
+        loadLiftsForAddress(address);
+    } else if (detailRow) {
+        detailRow.style.display = 'none';
+        icon.querySelector('i').classList.remove('fa-chevron-down');
+        icon.querySelector('i').classList.add('fa-chevron-right');
+    }
+}
+
+function loadLiftsForAddress(address) {
+    // Загружаем лифты для конкретного адреса из базы данных
+    fetch('/api/contract/{{ contract.id if contract else 0 }}/lifts/' + encodeURIComponent(address))
+        .then(response => response.json())
+        .then(data => {
+            if (data.success && data.lifts) {
+                renderLiftsForAddress(address, data.lifts);
+            }
+        })
+        .catch(error => {
+            console.error('Error loading lifts:', error);
+        });
+}
+
+function renderLiftsForAddress(address, lifts) {
+    var containerId = 'lifts-for-' + address.replace(/[ .,]/g, '-');
+    var container = document.getElementById(containerId);
+    
+    if (!container) return;
+    
+    var liftsHtml = '';
+    lifts.forEach(function(lift, index) {
+        // Извлекаем номер подъезда из адреса лифта
+        var entranceNumber = 'п.' + (index + 1);
+        if (lift.address && lift.address.includes('п.')) {
+            var match = lift.address.match(/п\.(\d+)/);
+            if (match) {
+                entranceNumber = 'п.' + match[1];
+            }
+        }
+        
+        liftsHtml += `
+            <div class="detail-item mb-2" data-lift-id="${lift.id || index}">
+                <div class="row align-items-center">
+                    <div class="col-2">
+                        <span>${entranceNumber}</span>
+                    </div>
+                    <div class="col-2">
+                        <input type="number" class="form-control form-control-sm" value="${lift.floors || 9}" min="1" max="50">
+                    </div>
+                    <div class="col-2">
+                        <input type="text" class="form-control form-control-sm" value="${lift.reg_num || ''}">
+                    </div>
+                    <div class="col-2">
+                        <input type="number" class="form-control form-control-sm area-input" value="${lift.area || 0}" step="0.1" onchange="calculateCost(this)">
+                    </div>
+                    <div class="col-2">
+                        <input type="number" class="form-control form-control-sm tariff-input" value="${lift.tariff || 0.68}" step="0.01" onchange="calculateCost(this)">
+                    </div>
+                    <div class="col-1">
+                        <span class="calculated-cost">${formatCurrencyUA(lift.cost || 0)}</span>
+                    </div>
+                    <div class="col-1">
+                        <button class="btn btn-sm btn-outline-danger" onclick="removeStop(this)">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+    });
+    
+    container.innerHTML = liftsHtml;
+    updateTotals();
+}
+
+function removeAddress(button) {
+    if (confirm('Видалити цю адресу та всі її лифти?')) {
+        var addressRow = button.closest('.address-row');
+        var address = addressRow.getAttribute('data-address');
+        var detailRow = document.querySelector('.detail-row[data-parent="' + address + '"]');
+        
+        // Удалить строки адреса и деталей
+        if (addressRow) addressRow.remove();
+        if (detailRow) detailRow.remove();
+        
+        // Обновить общие итоги
+        updateTotals();
+    }
+}
+
+function removeStop(button) {
+    if (confirm('Видалити цю зупинку?')) {
+        var detailItem = button.closest('.detail-item');
+        var detailRow = button.closest('.detail-row');
+        
+        if (detailItem) {
+            detailItem.remove();
+            
+            // Перенумеровать оставшиеся элементы
+            var parentAddress = detailRow.getAttribute('data-parent');
+            var items = detailRow.querySelectorAll('.detail-item');
+            
+            items.forEach(function(item, index) {
+                var addressCell = item.querySelector('.col-2');
+                if (addressCell) {
+                    addressCell.textContent = parentAddress + ' п.' + (index + 1);
+                }
+            });
+            
+            // Пересчитать итоги если остались элементы
+            if (items.length > 0) {
+                updateAddressTotals(items[0].querySelector('.area-input'));
+            } else {
+                // Если элементов не осталось, обнулить итоги
+                var addressRow = document.querySelector('.address-row[data-address="' + parentAddress + '"]');
+                if (addressRow) {
+                    addressRow.querySelector('.total-area').textContent = '0';
+                    addressRow.querySelector('.total-cost').textContent = '0';
+                    updateTotals();
+                }
+            }
+        }
+    }
+}
+
+function addStop(button) {
+    var detailContainer = button.closest('.ps-4');
+    var parentAddress = button.closest('.detail-row').getAttribute('data-parent');
+    var existingItems = detailContainer.querySelectorAll('.detail-item');
+    var nextNumber = existingItems.length + 1;
+    
+    var newItemHtml = `
+        <div class="row mb-1 detail-item">
+            <div class="col-2">${parentAddress} п.${nextNumber}</div>
+            <div class="col-2">
+                <input type="number" class="form-control form-control-sm" value="9" min="1" max="50">
+            </div>
+            <div class="col-2">
+                <input type="text" class="form-control form-control-sm" value="">
+            </div>
+            <div class="col-2">
+                <input type="number" class="form-control form-control-sm area-input" value="0" step="0.1" onchange="calculateCost(this)">
+            </div>
+            <div class="col-2">
+                <input type="number" class="form-control form-control-sm tariff-input" value="0.68" step="0.01" onchange="calculateCost(this)">
+            </div>
+            <div class="col-1">
+                <span class="calculated-cost">0.00</span> грн
+            </div>
+            <div class="col-1">
+                <button class="btn btn-sm btn-outline-danger" onclick="deleteStop(this)">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </div>
+        </div>
+    `;
+    
+    button.insertAdjacentHTML('beforebegin', newItemHtml);
+    updateAddressTotals(button.closest('.detail-row').querySelector('.area-input'));
+}
+
+function addNewAddress() {
+    var newAddress = prompt('Введіть адресу нового об\'єкту:', 'вул. Нова, 1');
+    if (!newAddress) return;
+    
+    // Создать новую запись с одним подъездом
+    var stops = [{
+        address: newAddress + ' п.1',
+        floors: 9,
+        regNum: '',
+        area: 0,
+        tariff: 0.68,
+        cost: 0
+    }];
+    
+    createAddressRow(newAddress, 0, 0.68, 0, stops);
+    updateTotals();
+}
+
+function deleteStop(button) {
+    if (confirm('Видалити цю зупинку?')) {
+        var detailItem = button.closest('.detail-item');
+        var detailRow = button.closest('.detail-row');
+        detailItem.remove();
+        
+        // Перенумеровать оставшиеся элементы
+        var parentAddress = detailRow.getAttribute('data-parent');
+        var items = detailRow.querySelectorAll('.detail-item');
+        items.forEach(function(item, index) {
+            var addressCell = item.querySelector('.col-2');
+            addressCell.textContent = parentAddress + ' п.' + (index + 1);
+        });
+        
+        // Пересчитать итоги если остались элементы
+        if (items.length > 0) {
+            updateAddressTotals(items[0].querySelector('.area-input'));
+        } else {
+            // Если элементов не осталось, обнулить итоги
+            var addressRow = document.querySelector('.address-row[data-address="' + parentAddress + '"]');
+            if (addressRow) {
+                addressRow.querySelector('.total-area').textContent = '0';
+                addressRow.querySelector('.total-cost').textContent = '0';
+                updateTotals();
+            }
+        }
+    }
+}
+
+function editAddress(button) {
+    var row = button.closest('.address-row');
+    var address = row.getAttribute('data-address');
+    var newAddress = prompt('Введіть нову адресу:', address);
+    
+    if (newAddress && newAddress !== address) {
+        // Обновить основную строку
+        row.setAttribute('data-address', newAddress);
+        var addressCell = row.querySelector('td:first-child');
+        var icon = addressCell.querySelector('.expand-icon');
+        addressCell.innerHTML = '';
+        addressCell.appendChild(icon);
+        addressCell.appendChild(document.createTextNode(' ' + newAddress));
+        
+        // Обновить связанную детальную строку
+        var detailRow = document.querySelector('.detail-row[data-parent="' + address + '"]');
+        if (detailRow) {
+            detailRow.setAttribute('data-parent', newAddress);
+            
+            // Обновить адреса в детальных элементах
+            var items = detailRow.querySelectorAll('.detail-item');
+            items.forEach(function(item, index) {
+                var addressCell = item.querySelector('.col-2');
+                addressCell.textContent = newAddress + ' п.' + (index + 1);
+            });
+        }
+    }
+}
+
+function deleteAddress(button) {
+    if (confirm('Видалити цей адрес зі всіма зупинками?')) {
+        var row = button.closest('.address-row');
+        var address = row.getAttribute('data-address');
+        var detailRow = document.querySelector('.detail-row[data-parent="' + address + '"]');
+        
+        row.remove();
+        if (detailRow) {
+            detailRow.remove();
+        }
+        
+        updateAllTotals();
+    }
+}
+
+function handleFileUpload(input) {
+    var file = input.files[0];
+    if (!file) return;
+    
+    var reader = new FileReader();
+    reader.onload = function(e) {
+        try {
+            var data = new Uint8Array(e.target.result);
+            var workbook = XLSX.read(data, {type: 'array'});
+            var firstSheetName = workbook.SheetNames[0];
+            var worksheet = workbook.Sheets[firstSheetName];
+            var jsonData = XLSX.utils.sheet_to_json(worksheet);
+            
+            processUploadedData(jsonData);
+        } catch (error) {
+            alert('Помилка при читанні файлу: ' + error.message);
+        }
+    };
+    reader.readAsArrayBuffer(file);
+}
+
+function processUploadedData(data) {
+    if (!data || data.length === 0) {
+        alert('Файл порожній або має неправильний формат');
+        return;
+    }
+    
+    // Очистить существующую таблицу
+    var tbody = document.querySelector('#addressTable tbody');
+    tbody.innerHTML = '';
+    
+    // Группировка данных по адресам
+    var groupedData = {};
+    
+    data.forEach(function(row) {
+        var address = row['Адреса'] || row['адреса'] || row['Address'] || row['address'] || 
+                     row['Адрес'] || row['адрес'] || '';
+        var floors = parseInt(row['Кількість поверхів'] || row['кількість поверхів'] || 
+                             row['Floors'] || row['floors'] || row['Этажей'] || row['этажей'] || 9);
+        var area = parseFloat(row['Площа'] || row['площа'] || row['Area'] || row['area'] || 
+                            row['Площа м.кв'] || row['площа м.кв'] || 0);
+        var tariff = parseFloat(row['Тариф'] || row['тариф'] || row['Tariff'] || row['tariff'] || 0.68);
+        var regNum = row['Рег№'] || row['рег№'] || row['RegNum'] || row['regnum'] || 
+                    row['Реєстраційний номер'] || row['реєстраційний номер'] || '';
+        
+        if (!address) return;
+        
+        var mainAddress = address.split(' п.')[0].split(' под.')[0].trim();
+        
+        if (!groupedData[mainAddress]) {
+            groupedData[mainAddress] = {
+                stops: [],
+                totalArea: 0,
+                totalCost: 0,
+                avgTariff: tariff
+            };
+        }
+        
+        var cost = area * tariff;
+        groupedData[mainAddress].stops.push({
+            address: address,
+            floors: floors,
+            regNum: regNum,
+            area: area,
+            tariff: tariff,
+            cost: cost
+        });
+        
+        groupedData[mainAddress].totalArea += area;
+        groupedData[mainAddress].totalCost += cost;
+    });
+    
+    // Создать строки таблицы
+    Object.keys(groupedData).forEach(function(mainAddress) {
+        var addressData = groupedData[mainAddress];
+        var avgTariff = addressData.stops.length > 0 ? 
+            (addressData.stops.reduce(function(sum, stop) { return sum + stop.tariff; }, 0) / addressData.stops.length).toFixed(2) : 0;
+        
+        createAddressRow(mainAddress, addressData.totalArea, avgTariff, addressData.totalCost, addressData.stops);
+    });
+    
+    updateTotals();
+    alert('Файл успішно завантажено та оброблено!');
+}
+
+function createAddressRow(address, totalArea, avgTariff, totalCost, stops) {
+    var tbody = document.querySelector('#addressTable tbody');
+    
+    // Создать основную строку адреса - используем ту же структуру что и при сохранении
+    var addressRowHtml = `
+        <tr class="address-row" data-address="${address}">
+            <td>
+                <span class="expand-icon me-2" style="cursor: pointer; font-family: monospace; font-size: 14px;">▶</span>
+                ${address}
+            </td>
+            <td class="total-lifts">${stops.length}</td>
+            <td class="total-area">${totalArea.toFixed(1)}</td>
+            <td class="total-tariff">${avgTariff}</td>
+            <td class="total-cost">${totalCost.toFixed(2).replace('.', ',')}</td>
+            <td>
+                <button class="btn btn-sm btn-outline-primary me-1" onclick="editAddress(this)">
+                    <i class="fas fa-edit"></i>
+                </button>
+                <button class="btn btn-sm btn-outline-danger" onclick="removeAddress(this)">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </td>
+        </tr>
+    `;
+    
+    // Создать детальную строку
+    var stopsHtml = stops.map(function(stop, index) {
+        return `
+            <div class="row mb-1 detail-item">
+                <div class="col-2">${stop.address}</div>
+                <div class="col-2">
+                    <input type="number" class="form-control form-control-sm" value="${stop.floors || 9}" min="1" max="50">
+                </div>
+                <div class="col-2">
+                    <input type="text" class="form-control form-control-sm" value="${stop.regNum}">
+                </div>
+                <div class="col-2">
+                    <input type="number" class="form-control form-control-sm area-input" value="${stop.area}" step="0.1" onchange="calculateCost(this)">
+                </div>
+                <div class="col-2">
+                    <input type="number" class="form-control form-control-sm tariff-input" value="${stop.tariff}" step="0.01" onchange="calculateCost(this)">
+                </div>
+                <div class="col-1">
+                    <span class="calculated-cost">${stop.cost.toFixed(2).replace('.', ',')}</span> ₴
+                </div>
+                <div class="col-1">
+                    <button class="btn btn-sm btn-outline-danger" onclick="removeStop(this)">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            </div>
+        `;
+    }).join('');
+    
+    var detailRowHtml = `
+        <tr class="detail-row" data-parent="${address}" style="display: none;">
+            <td colspan="6">
+                <div class="ps-4 pe-2 py-2 bg-dark bg-opacity-50 rounded">
+                    <div class="row mb-2">
+                        <div class="col-2"><strong>Адреса</strong></div>
+                        <div class="col-2"><strong>Кількість поверхів</strong></div>
+                        <div class="col-2"><strong>Рег№</strong></div>
+                        <div class="col-2"><strong>Площа, м.кв</strong></div>
+                        <div class="col-2"><strong>Тариф</strong></div>
+                        <div class="col-1"><strong>Вартість ТО</strong></div>
+                        <div class="col-1"><strong>Дії</strong></div>
+                    </div>
+                    ${stopsHtml}
+                    <button class="btn btn-sm btn-outline-success" onclick="addStop(this)">
+                        <i class="fas fa-plus me-1"></i>Додати зупинку
+                    </button>
+                </div>
+            </td>
+        </tr>
+    `;
+    
+    tbody.insertAdjacentHTML('beforeend', addressRowHtml + detailRowHtml);
+}
+
+function saveContract() {
+    // Собрать данные договора
+    var contractData = {
+        number: document.querySelector('input[placeholder="Введіть номер"]').value,
+        date: document.querySelector('input[type="date"]').value,
+        customer: document.querySelector('input[placeholder="Введіть назву організації"]').value,
+        contact_person: document.querySelector('input[placeholder="ПІБ контактної особи"]').value,
+        phone: document.querySelector('input[placeholder="Номер телефону"]').value,
+        email: document.querySelector('input[placeholder="Електронна пошта"]').value,
+        total_lifts: document.getElementById('totalLifts').textContent,
+        monthly_cost: parseFloat(document.getElementById('totalMonthlyCost').textContent.replace(',', '.').replace('₴', '').replace('грн', '').trim()) || 0,
+        addresses: []
+    };
+    
+    // Собрать данные адресов - только те что действительно есть в таблице
+    document.querySelectorAll('.address-row').forEach(function(addressRow) {
+        var address = addressRow.getAttribute('data-address');
+        var detailRow = document.querySelector('.detail-row[data-parent="' + address + '"]');
+        
+        if (detailRow) {
+            var addressData = {
+                address: address,
+                total_area: parseFloat(addressRow.querySelector('.total-area').textContent.replace(',', '.')) || 0,
+                total_cost: parseFloat(addressRow.querySelector('.total-cost').textContent.replace(',', '.')) || 0,
+                lifts: []
+            };
+            
+            detailRow.querySelectorAll('.detail-item').forEach(function(item) {
+                var liftData = {
+                    address: item.querySelector('.col-2').textContent,
+                    floors: parseInt(item.querySelector('input[type="number"]').value) || 9,
+                    reg_num: item.querySelectorAll('input')[1].value || '',
+                    area: parseFloat(item.querySelector('.area-input').value) || 0,
+                    tariff: parseFloat(item.querySelector('.tariff-input').value) || 0.68,
+                    cost: parseFloat(item.querySelector('.calculated-cost').textContent.replace(',', '.')) || 0
+                };
+                addressData.lifts.push(liftData);
+            });
+            
+            // Додаємо адресу тільки якщо є ліфти
+            if (addressData.lifts.length > 0) {
+                contractData.addresses.push(addressData);
+            }
+        }
+    });
+    
+    // Определить URL и метод в зависимости от режима (создание или редактирование)
+ {% if contract %}
+    var url = '/contracts/{{ contract.id }}/update';
+    var method = 'PUT';
+    var successMessage = 'Зміни успішно збережено!';
+    {% else %}
+    var url = '/save_contract';
+    var method = 'POST';
+    var successMessage = 'Договір успішно збережено!';
+    {% endif %}
+    // Логирование данных перед отправкой
+    console.log('Sending contract data:', contractData);
+    console.log('URL:', url, 'Method:', method);
+    
+    // Отправить данные на сервер
+    fetch(url, {
+        method: method,
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(contractData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Оновити відображення сум після збереження
+            updateTotals();
+            alert(successMessage);
+            // Завжди перенаправляємо до реєстру після збереження
+            setTimeout(function() {
+                window.location.href = '/registries/contracts';
+            }, 500);
+        } else {
+            alert('Помилка при збереженні: ' + data.error);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Помилка при збереженні договору');
+    });
+}
+
+function terminateContract() {
+    if (!confirm('Ви впевнені, що хочете розірвати цей договір?')) {
+        return;
+    }
+    
+    {% if contract %}
+    fetch('/contracts/{{ contract.id }}/terminate', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('Договір успішно розірвано!');
+            window.location.href = '/registries/contracts';
+        } else {
+            alert('Помилка при розірванні договору: ' + data.error);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Помилка при розірванні договору');
+    });
+    {% endif %}
+}
+
+// Загрузка сохраненных данных при редактировании
+document.addEventListener('DOMContentLoaded', function() {
+    {% if contract and contract.addresses_data %}
+    try {
+        console.log('Raw addresses data:', '{{ contract.addresses_data|safe }}');
+        var savedAddresses = JSON.parse(`{{ contract.addresses_data|safe }}`);
+        console.log('Parsed addresses:', savedAddresses);
+        
+        if (savedAddresses && savedAddresses.length > 0) {
+            var tbody = document.querySelector('#addressTable tbody');
+            // Очищаем существующие строки
+            tbody.innerHTML = '';
+            
+            savedAddresses.forEach(function(addressData) {
+                // Создать строку адреса
+                var addressRowHtml = `
+                    <tr class="address-row" data-address="${addressData.address}">
+                        <td>
+                            <span class="expand-icon me-2" style="cursor: pointer; font-family: monospace; font-size: 14px;">▶</span>
+                            ${addressData.address}
+                        </td>
+                        <td class="total-lifts">${addressData.lifts ? addressData.lifts.length : 0}</td>
+                        <td class="total-area">${parseFloat(addressData.total_area || 0).toFixed(1).replace('.', ',')}</td>
+                        <td class="total-tariff">${addressData.lifts && addressData.lifts.length > 0 ? (addressData.lifts.reduce((sum, lift) => sum + (lift.tariff || 0), 0) / addressData.lifts.length).toFixed(2).replace('.', ',') : '0,68'}</td>
+                        <td class="total-cost">${addressData.lifts && addressData.lifts.length > 0 ? (addressData.lifts.reduce((sum, lift) => sum + (lift.cost || 0), 0)).toFixed(2).replace('.', ',') : (addressData.total_cost || 0).toFixed(2).replace('.', ',')}</td>
+                        <td>
+                            <button class="btn btn-sm btn-outline-primary me-1" onclick="editAddress(this)">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn btn-sm btn-outline-danger" onclick="removeAddress(this)">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+                
+                // Создать детали адреса
+                var detailRowHtml = `
+                    <tr class="detail-row" data-parent="${addressData.address}" style="display: none;">
+                        <td colspan="6">
+                            <div class="ps-4 pe-2 py-2 bg-dark bg-opacity-50 rounded">
+                                <div class="row mb-2">
+                                    <div class="col-2"><strong>Адреса</strong></div>
+                                    <div class="col-2"><strong>Кількість поверхів</strong></div>
+                                    <div class="col-2"><strong>Рег№</strong></div>
+                                    <div class="col-2"><strong>Площа, м.кв</strong></div>
+                                    <div class="col-2"><strong>Тариф</strong></div>
+                                    <div class="col-1"><strong>Вартість ТО</strong></div>
+                                    <div class="col-1"><strong>Дії</strong></div>
+                                </div>
+                `;
+                
+                // Добавить лифты
+                if (addressData.lifts && addressData.lifts.length > 0) {
+                    addressData.lifts.forEach(function(liftData, index) {
+                        detailRowHtml += `
+                            <div class="detail-item row mb-1">
+                                <div class="col-2">${liftData.address || addressData.address + ' п.' + (index + 1)}</div>
+                                <div class="col-2">
+                                    <input type="number" class="form-control form-control-sm" value="${liftData.floors || 9}" min="1" max="50" onchange="calculateCost(this)">
+                                </div>
+                                <div class="col-2">
+                                    <input type="text" class="form-control form-control-sm" value="${liftData.reg_num || ''}" placeholder="Реєстр. номер">
+                                </div>
+                                <div class="col-2">
+                                    <input type="number" class="form-control form-control-sm area-input" value="${liftData.area || 0}" step="0.01" onchange="calculateCost(this)">
+                                </div>
+                                <div class="col-2">
+                                    <input type="number" class="form-control form-control-sm tariff-input" value="${liftData.tariff || 0.68}" step="0.01" onchange="calculateCost(this)">
+                                </div>
+                                <div class="col-1">
+                                    <span class="calculated-cost">${(liftData.cost || 0).toFixed(2)}</span> грн
+                                </div>
+                                <div class="col-1">
+                                    <button class="btn btn-sm btn-outline-danger" onclick="removeStop(this)">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        `;
+                    });
+                }
+                
+                detailRowHtml += `
+                                <button class="btn btn-sm btn-outline-success" onclick="addStop(this)">
+                                    <i class="fas fa-plus me-1"></i>Додати зупинку
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+                
+                tbody.insertAdjacentHTML('beforeend', addressRowHtml + detailRowHtml);
+            });
+            
+            updateTotals();
+        }
+    } catch (e) {
+        console.error('Error loading saved addresses:', e);
+    }
+    {% endif %}
+});
+</script>
+
+{% endblock %}
