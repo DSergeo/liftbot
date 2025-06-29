@@ -23,10 +23,11 @@ def save_counterparty_html():
         return redirect(url_for("login"))
     data = request.form
     fields = [
-        "companyName", "edrpou", "iban", "bank", "mfo", "director", "accountant",
-        "address", "phone", "email", "vatNumber", "taxNumber", "certificateNumber",
-        "certificateDate", "legalForm", "customerType"
-    ]
+    "companyName", "edrpou", "iban", "bank", "mfo", "director", "accountant",
+    "address", "phone", "email", "vatNumber", "taxNumber", "certificateNumber",
+    "certificateDate", "legalForm", "customerType",
+    "legalAddress", "city", "region", "postalCode", "website", "industry", "description"
+]
     conn = sqlite3.connect(get_company_db_path())
     cursor = conn.cursor()
     cursor.execute(f'''
@@ -64,10 +65,11 @@ def api_save_counterparty():
         return jsonify({"success": False, "error": "Unauthorized"}), 401
     data = request.get_json()
     fields = [
-        "companyName", "edrpou", "iban", "bank", "mfo", "director", "accountant",
-        "address", "phone", "email", "vatNumber", "taxNumber", "certificateNumber",
-        "certificateDate", "legalForm", "customerType"
-    ]
+    "companyName", "edrpou", "iban", "bank", "mfo", "director", "accountant",
+    "address", "phone", "email", "vatNumber", "taxNumber", "certificateNumber",
+    "certificateDate", "legalForm", "customerType",
+    "legalAddress", "city", "region", "postalCode", "website", "industry", "description"
+]
     try:
         conn = sqlite3.connect(get_company_db_path())
         cursor = conn.cursor()
@@ -94,10 +96,11 @@ def api_update_counterparty(counterparty_id):
         return jsonify({"success": False, "error": "Unauthorized"}), 401
     data = request.get_json()
     fields = [
-        "companyName", "edrpou", "iban", "bank", "mfo", "director", "accountant",
-        "address", "phone", "email", "vatNumber", "taxNumber", "certificateNumber",
-        "certificateDate", "legalForm", "customerType"
-    ]
+    "companyName", "edrpou", "iban", "bank", "mfo", "director", "accountant",
+    "address", "phone", "email", "vatNumber", "taxNumber", "certificateNumber",
+    "certificateDate", "legalForm", "customerType",
+    "legalAddress", "city", "region", "postalCode", "website", "industry", "description"
+]
     try:
         conn = sqlite3.connect(get_company_db_path())
         cursor = conn.cursor()

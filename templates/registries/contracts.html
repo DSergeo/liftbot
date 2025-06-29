@@ -454,7 +454,7 @@ document.addEventListener('DOMContentLoaded', function() {
         };
         
         // Отправляем данные на сервер
-        fetch(`/contracts/${id}/update`, {
+        fetch(`/api/contracts/${id}/update`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -625,7 +625,7 @@ function deleteSelectedContracts() {
     });
     
     // Отправить запрос на удаление
-    fetch('/contracts/delete', {
+    fetch('/api/contracts/delete', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

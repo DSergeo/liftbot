@@ -1054,11 +1054,11 @@ function saveContract() {
     
     // Определить URL и метод в зависимости от режима (создание или редактирование)
  {% if contract %}
-    var url = '/contracts/{{ contract.id }}/update';
+    var url = '/api/contracts/{{ contract.id }}/update';
     var method = 'PUT';
     var successMessage = 'Зміни успішно збережено!';
     {% else %}
-    var url = '/save_contract';
+    var url = '/api/contracts/save';
     var method = 'POST';
     var successMessage = 'Договір успішно збережено!';
     {% endif %}
@@ -1100,7 +1100,7 @@ function terminateContract() {
     }
     
     {% if contract %}
-    fetch('/contracts/{{ contract.id }}/terminate', {
+    fetch('/api/contracts/{{ contract.id }}/terminate', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

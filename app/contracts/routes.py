@@ -3,17 +3,18 @@ import sqlite3
 import json
 from datetime import datetime
 from app.utils import get_company_db_path
+from app.utils import clean_currency_format
 
 # Blueprint для HTML-страницы
-contract_html = Blueprint('contract_html', __name__, url_prefix='/documents/contract')
+contract_html = Blueprint('contract_html', __name__)
 
-@contract_html.route("/")
+@contract_html.route("/documents/contract")
 def documents_contract():
     if "user_email" not in session:
         return redirect(url_for("login"))
     return render_template("documents/contract.html")
 
-@contract_html.route("/<int:contract_id>")
+@contract_html.route("/documents/contract/<int:contract_id>")
 def view_contract(contract_id):
     if "user_email" not in session:
         return redirect(url_for("login"))
@@ -199,6 +200,104 @@ def view_contract(contract_id):
         print(f"Error deleting contracts: {e}")
         return jsonify({'success': False, 'error': str(e)}), 500
 
+@contract_html.route("/registries/contracts")
+def registries_contracts():
+    if "user_email" not in session:
+        return redirect(url_for("login"))
+    
+    # Загрузка договоров из базы данных
+    try:
+        conn = sqlite3.connect(get_company_db_path())
+        cursor = conn.cursor()
+        
+        cursor.execute('''
+            SELECT id, number, customer, date, end_date, total_lifts, monthly_cost, yearly_cost, status, created_at
+            FROM contracts
+            ORDER BY created_at DESC
+        ''')
+        
+        contracts = []
+        current_date = datetime.now().date()
+        
+        for row in cursor.fetchall():
+            contract = {
+                'id': row[0],
+                'number': row[1],
+                'customer': row[2],
+                'date': row[3],
+                'end_date': row[4],
+                'total_lifts': row[5],
+                'monthly_cost': row[6],
+                'yearly_cost': row[7],
+                'status': row[8],
+                'created_at': row[9]
+            }
+            
+            # Определяем статус договора на основе дат
+            if contract['end_date']:
+                try:
+                    end_date = datetime.strptime(contract['end_date'], '%Y-%m-%d').date()
+                    days_until_end = (end_date - current_date).days
+                    new_status = contract['status']
+                    
+                    if days_until_end <= 0:
+                        # Договор истек - автопролонгация на следующий день после окончания
+                        if contract['status'] != 'terminated':
+                            new_end_date = end_date.replace(year=end_date.year + 1)
+                            cursor.execute('''
+                                UPDATE contracts SET end_date = ?, status = 'active'
+                                WHERE id = ?
+                            ''', (new_end_date.strftime('%Y-%m-%d'), contract['id']))
+                            contract['end_date'] = new_end_date.strftime('%Y-%m-%d')
+                            contract['status'] = 'active'
+                            new_status = 'active'
+                            print(f"Auto-prolonged contract {contract['id']} from {end_date} to {new_end_date}")
+                    elif days_until_end <= 45:  # 1,5 месяца = ~45 дней
+                        new_status = 'заканчивается'
+                        if contract['status'] != 'заканчивается' and contract['status'] != 'terminated':
+                            cursor.execute('''
+                                UPDATE contracts SET status = 'заканчивается'
+                                WHERE id = ?
+                            ''', (contract['id'],))
+                            contract['status'] = 'заканчивается'
+                    elif contract['status'] != 'terminated':
+                        new_status = 'active'
+                        if contract['status'] != 'active':
+                            cursor.execute('''
+                                UPDATE contracts SET status = 'active'
+                                WHERE id = ?
+                            ''', (contract['id'],))
+                            contract['status'] = 'active'
+                except ValueError:
+                    contract['status'] = 'active'
+            
+            contracts.append(contract)
+        
+        conn.commit()
+        
+        # Подсчитываем статистику для виджетов
+        total_contracts = len(contracts)
+        active_contracts = len([c for c in contracts if c['status'] == 'active'])
+        ending_contracts = len([c for c in contracts if c['status'] == 'заканчивается'])
+        total_value = sum([float(c['monthly_cost'] or 0) for c in contracts])
+        unique_customers = len(set([c['customer'] for c in contracts if c['customer']]))
+        
+        stats = {
+            'total_contracts': total_contracts,
+            'active_contracts': active_contracts,
+            'ending_contracts': ending_contracts,
+            'total_value': total_value,
+            'unique_customers': unique_customers
+        }
+        
+        conn.close()
+        
+        return render_template("registries/contracts.html", contracts=contracts, stats=stats)
+        
+    except Exception as e:
+        print(f"Error loading contracts: {e}")
+        return render_template("registries/contracts.html", contracts=[])
+
 # API Blueprint
 contract_api = Blueprint('contract_api', __name__, url_prefix='/api/contracts')
 
@@ -329,104 +428,6 @@ def save_contract():
     except Exception as e:
         print(f"Error saving contract: {e}")
         return jsonify({'success': False, 'error': str(e)}), 500
-
-@contract_api.route("/registries")
-def registries_contracts():
-    if "user_email" not in session:
-        return redirect(url_for("login"))
-    
-    # Загрузка договоров из базы данных
-    try:
-        conn = sqlite3.connect(get_company_db_path())
-        cursor = conn.cursor()
-        
-        cursor.execute('''
-            SELECT id, number, customer, date, end_date, total_lifts, monthly_cost, yearly_cost, status, created_at
-            FROM contracts
-            ORDER BY created_at DESC
-        ''')
-        
-        contracts = []
-        current_date = datetime.now().date()
-        
-        for row in cursor.fetchall():
-            contract = {
-                'id': row[0],
-                'number': row[1],
-                'customer': row[2],
-                'date': row[3],
-                'end_date': row[4],
-                'total_lifts': row[5],
-                'monthly_cost': row[6],
-                'yearly_cost': row[7],
-                'status': row[8],
-                'created_at': row[9]
-            }
-            
-            # Определяем статус договора на основе дат
-            if contract['end_date']:
-                try:
-                    end_date = datetime.strptime(contract['end_date'], '%Y-%m-%d').date()
-                    days_until_end = (end_date - current_date).days
-                    new_status = contract['status']
-                    
-                    if days_until_end <= 0:
-                        # Договор истек - автопролонгация на следующий день после окончания
-                        if contract['status'] != 'terminated':
-                            new_end_date = end_date.replace(year=end_date.year + 1)
-                            cursor.execute('''
-                                UPDATE contracts SET end_date = ?, status = 'active'
-                                WHERE id = ?
-                            ''', (new_end_date.strftime('%Y-%m-%d'), contract['id']))
-                            contract['end_date'] = new_end_date.strftime('%Y-%m-%d')
-                            contract['status'] = 'active'
-                            new_status = 'active'
-                            print(f"Auto-prolonged contract {contract['id']} from {end_date} to {new_end_date}")
-                    elif days_until_end <= 45:  # 1,5 месяца = ~45 дней
-                        new_status = 'заканчивается'
-                        if contract['status'] != 'заканчивается' and contract['status'] != 'terminated':
-                            cursor.execute('''
-                                UPDATE contracts SET status = 'заканчивается'
-                                WHERE id = ?
-                            ''', (contract['id'],))
-                            contract['status'] = 'заканчивается'
-                    elif contract['status'] != 'terminated':
-                        new_status = 'active'
-                        if contract['status'] != 'active':
-                            cursor.execute('''
-                                UPDATE contracts SET status = 'active'
-                                WHERE id = ?
-                            ''', (contract['id'],))
-                            contract['status'] = 'active'
-                except ValueError:
-                    contract['status'] = 'active'
-            
-            contracts.append(contract)
-        
-        conn.commit()
-        
-        # Подсчитываем статистику для виджетов
-        total_contracts = len(contracts)
-        active_contracts = len([c for c in contracts if c['status'] == 'active'])
-        ending_contracts = len([c for c in contracts if c['status'] == 'заканчивается'])
-        total_value = sum([float(c['monthly_cost'] or 0) for c in contracts])
-        unique_customers = len(set([c['customer'] for c in contracts if c['customer']]))
-        
-        stats = {
-            'total_contracts': total_contracts,
-            'active_contracts': active_contracts,
-            'ending_contracts': ending_contracts,
-            'total_value': total_value,
-            'unique_customers': unique_customers
-        }
-        
-        conn.close()
-        
-        return render_template("registries/contracts.html", contracts=contracts, stats=stats)
-        
-    except Exception as e:
-        print(f"Error loading contracts: {e}")
-        return render_template("registries/contracts.html", contracts=[])
 
 @contract_api.route("/<int:contract_id>/lifts/<path:address>")
 def get_lifts_for_address(contract_id, address):
