@@ -25,7 +25,7 @@ def save_counterparty_html():
     fields = [
     "companyName", "edrpou", "iban", "bank", "mfo", "director", "accountant",
     "address", "phone", "email", "vatNumber", "taxNumber", "certificateNumber",
-    "certificateDate", "legalForm", "customerType",
+    "certificateDate", "legalForm", "customerType","counterpartyType", "status",
     "legalAddress", "city", "region", "postalCode", "website", "industry", "description"
 ]
     conn = sqlite3.connect(get_company_db_path())
@@ -67,7 +67,7 @@ def api_save_counterparty():
     fields = [
     "companyName", "edrpou", "iban", "bank", "mfo", "director", "accountant",
     "address", "phone", "email", "vatNumber", "taxNumber", "certificateNumber",
-    "certificateDate", "legalForm", "customerType",
+    "certificateDate", "legalForm", "customerType","counterpartyType", "status",
     "legalAddress", "city", "region", "postalCode", "website", "industry", "description"
 ]
     try:
@@ -98,7 +98,7 @@ def api_update_counterparty(counterparty_id):
     fields = [
     "companyName", "edrpou", "iban", "bank", "mfo", "director", "accountant",
     "address", "phone", "email", "vatNumber", "taxNumber", "certificateNumber",
-    "certificateDate", "legalForm", "customerType",
+    "certificateDate", "legalForm", "customerType","counterpartyType", "status",
     "legalAddress", "city", "region", "postalCode", "website", "industry", "description"
 ]
     try:
