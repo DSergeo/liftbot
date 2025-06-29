@@ -233,9 +233,19 @@
                             </h6>
                             
                             <div class="mb-3">
-                                <label for="company" class="form-label">Компанія</label>
-                                <input type="text" class="form-control" id="company" name="company">
-                            </div>
+    <label for="company" class="form-label">Компанія</label>
+    <div class="input-group">
+        <input list="companyList" class="form-control" id="company" name="company" placeholder="Введіть або оберіть компанію">
+        <button class="btn btn-outline-primary" type="button" onclick="openCounterpartyModal()" title="Додати нову компанію">
+            <i class="fas fa-plus"></i>
+        </button>
+    </div>
+    <datalist id="companyList">
+        {% for c in companies %}
+            <option value="{{ c }}">
+        {% endfor %}
+    </datalist>
+</div>
                             
                             <div class="mb-3">
                                 <label for="industry" class="form-label">Галузь</label>
@@ -343,6 +353,37 @@
             </div>
         </div>
     </div>
+</div>
+
+<!-- Модальне вікно вибору/додавання компанії -->
+<div class="modal fade" id="createCounterpartyModal" tabindex="-1" aria-labelledby="createCounterpartyModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="createCounterpartyModalLabel">Оберіть або додайте компанію</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрити"></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-3">
+          <label for="selectCounterparty" class="form-label">Список компаній</label>
+          <select class="form-select" id="selectCounterparty">
+            <option value="">Оберіть компанію зі списку</option>
+            {% for c in companies %}
+              <option value="{{ c }}">{{ c }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="mb-3">
+          <label for="manualCounterparty" class="form-label">Або введіть нову компанію</label>
+          <input type="text" class="form-control" id="manualCounterparty" placeholder="Введіть назву компанії">
+        </div>
+        <div class="d-flex justify-content-between">
+          <button type="button" class="btn btn-primary" id="chooseCounterpartyBtn">Вибрати</button>
+          <button type="button" class="btn btn-outline-success" id="addNewCounterpartyBtn">+ Додати компанію</button>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -636,6 +677,27 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Завантаження контактів при завантаженні сторінки
     loadContacts();
+ 
+    window.openCounterpartyModal = function() {
+    const modal = new bootstrap.Modal(document.getElementById('createCounterpartyModal'));
+    modal.show();
+};
+
+document.getElementById('chooseCounterpartyBtn').onclick = function() {
+    const select = document.getElementById('selectCounterparty');
+    const manual = document.getElementById('manualCounterparty');
+    let value = manual.value.trim() || select.value;
+    if (value) {
+        document.getElementById('company').value = value;
+        bootstrap.Modal.getInstance(document.getElementById('createCounterpartyModal')).hide();
+    }
+};
+
+document.getElementById('addNewCounterpartyBtn').onclick = function() {
+    // Здесь можно открыть отдельную форму создания компании
+    alert('Открыть форму создания новой компанії');
+};
+
 });
 </script>
 
