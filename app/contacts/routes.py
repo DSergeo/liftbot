@@ -2,20 +2,6 @@ from flask import Blueprint, request, jsonify, render_template, redirect, url_fo
 import sqlite3
 from app.utils import get_company_db_path
 
-def ensure_company_field_in_contacts():
-    conn = sqlite3.connect('elestek_lift.db')
-    cursor = conn.cursor()
-    cursor.execute("PRAGMA table_info(contacts)")
-    columns = [row[1] for row in cursor.fetchall()]
-    if "company" not in columns:
-        cursor.execute("ALTER TABLE contacts ADD COLUMN company TEXT")
-        conn.commit()
-        print("✅ Добавлено поле company в таблицу contacts")
-    conn.close()
-
-# Вызовите эту функцию при старте приложения:
-ensure_company_field_in_contacts()
-
 # Blueprint для HTML-страницы
 contacts_html = Blueprint("contacts_html", __name__)
 
@@ -28,11 +14,8 @@ def contacts_page():
     cursor.execute("SELECT * FROM contacts")
     columns = [desc[0] for desc in cursor.description]
     contacts = [dict(zip(columns, row)) for row in cursor.fetchall()]
-    # Загрузить список компаний (контрагентов)
-    cursor.execute("SELECT companyName FROM counterparties")
-    companies = [row[0] for row in cursor.fetchall()]
     conn.close()
-    return render_template("contacts.html", contacts=contacts, companies=companies)
+    return render_template("contacts.html", contacts=contacts)
 
 @contacts_html.route("/contacts/save", methods=["POST"])
 def save_contact_html():
@@ -153,4 +136,3 @@ def api_delete_contact(contact_id):
     except Exception as e:
         print("❌ Error deleting contact:", e)
         return jsonify({"success": False, "error": str(e)}), 500
-

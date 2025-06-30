@@ -233,19 +233,19 @@
                             </h6>
                             
                             <div class="mb-3">
-    <label for="company" class="form-label">Компанія</label>
-    <div class="input-group">
-        <input list="companyList" class="form-control" id="company" name="company" placeholder="Введіть або оберіть компанію">
-        <button class="btn btn-outline-primary" type="button" onclick="openCounterpartyModal()" title="Додати нову компанію">
-            <i class="fas fa-plus"></i>
-        </button>
-    </div>
-    <datalist id="companyList">
-        {% for c in companies %}
-            <option value="{{ c }}">
-        {% endfor %}
-    </datalist>
-</div>
+                                <label class="form-label">Компанії</label>
+                                <div id="companiesContainer">
+                                    <!-- Динамічні поля компаній будуть додаватися тут -->
+                                </div>
+                                <div class="company-field mb-2">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control company-input" placeholder="Натисніть + для вибору компанії" readonly>
+                                        <button class="btn btn-outline-primary company-select-btn" type="button" onclick="openCompanySelectModal(this)" title="Вибрати компанію">
+                                            <i class="fas fa-plus"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
                             
                             <div class="mb-3">
                                 <label for="industry" class="form-label">Галузь</label>
@@ -355,32 +355,30 @@
     </div>
 </div>
 
-<!-- Модальне вікно вибору/додавання компанії -->
-<div class="modal fade" id="createCounterpartyModal" tabindex="-1" aria-labelledby="createCounterpartyModalLabel" aria-hidden="true">
+<!-- Модальне вікно вибору компанії -->
+<div class="modal fade" id="companySelectModal" tabindex="-1" aria-labelledby="companySelectModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="createCounterpartyModalLabel">Оберіть або додайте компанію</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрити"></button>
+        <h5 class="modal-title" id="companySelectModalLabel">
+          <i class="fas fa-building me-2"></i>Оберіть компанію
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
         <div class="mb-3">
           <label for="selectCounterparty" class="form-label">Список компаній</label>
-          <select class="form-select" id="selectCounterparty">
-            <option value="">Оберіть компанію зі списку</option>
-            {% for c in companies %}
-              <option value="{{ c }}">{{ c }}</option>
-            {% endfor %}
+          <select class="form-select" id="selectCounterparty" size="8">
+            <option value="">Оберіть компанію...</option>
+            <!-- Опції будуть завантажені динамічно -->
           </select>
         </div>
-        <div class="mb-3">
-          <label for="manualCounterparty" class="form-label">Або введіть нову компанію</label>
-          <input type="text" class="form-control" id="manualCounterparty" placeholder="Введіть назву компанії">
-        </div>
-        <div class="d-flex justify-content-between">
-          <button type="button" class="btn btn-primary" id="chooseCounterpartyBtn">Вибрати</button>
-          <button type="button" class="btn btn-outline-success" id="addNewCounterpartyBtn">+ Додати компанію</button>
-        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Скасувати</button>
+        <button type="button" class="btn btn-primary" id="chooseCounterpartyBtn">
+          <i class="fas fa-check me-2"></i>Вибрати
+        </button>
       </div>
     </div>
   </div>
@@ -573,6 +571,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         const formData = new FormData(contactForm);
         const contactData = Object.fromEntries(formData.entries());
+        contactData.attachedCompanies = getSelectedCompanies();
         
         const method = editingContactId ? 'PUT' : 'POST';
         const url = editingContactId ? `/api/contacts/${editingContactId}` : '/api/contacts';
@@ -678,25 +677,145 @@ document.addEventListener('DOMContentLoaded', function() {
     // Завантаження контактів при завантаженні сторінки
     loadContacts();
  
-    window.openCounterpartyModal = function() {
-    const modal = new bootstrap.Modal(document.getElementById('createCounterpartyModal'));
-    modal.show();
-};
+    let currentCompanyField = null;
+    let availableCounterparties = [];
 
-document.getElementById('chooseCounterpartyBtn').onclick = function() {
-    const select = document.getElementById('selectCounterparty');
-    const manual = document.getElementById('manualCounterparty');
-    let value = manual.value.trim() || select.value;
-    if (value) {
-        document.getElementById('company').value = value;
-        bootstrap.Modal.getInstance(document.getElementById('createCounterpartyModal')).hide();
+    // Завантаження списку контрагентів
+    function loadCounterparties() {
+        fetch('/api/counterparties')
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    availableCounterparties = data.counterparties;
+                    updateCounterpartiesSelect();
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching counterparties:', error);
+            });
     }
-};
 
-document.getElementById('addNewCounterpartyBtn').onclick = function() {
-    // Здесь можно открыть отдельную форму создания компании
-    alert('Открыть форму создания новой компанії');
-};
+    // Оновлення списку в модальному вікні
+    function updateCounterpartiesSelect() {
+        const select = document.getElementById('selectCounterparty');
+        select.innerHTML = '<option value="">Оберіть компанію...</option>';
+        
+        availableCounterparties.forEach(cp => {
+            const option = document.createElement('option');
+            option.value = cp.companyName || cp.company_name;
+            option.textContent = cp.companyName || cp.company_name;
+            select.appendChild(option);
+        });
+    }
+
+    // Відкриття модального вікна вибору компанії
+    window.openCompanySelectModal = function(button) {
+        currentCompanyField = button.closest('.company-field');
+        const modal = new bootstrap.Modal(document.getElementById('companySelectModal'));
+        modal.show();
+    };
+
+    // Вибір компанії та створення нового поля
+    document.getElementById('chooseCounterpartyBtn').onclick = function() {
+        const select = document.getElementById('selectCounterparty');
+        const selectedCompany = select.value;
+        
+        if (selectedCompany && currentCompanyField) {
+            // Заповнюємо поточне поле
+            const input = currentCompanyField.querySelector('.company-input');
+            const button = currentCompanyField.querySelector('.company-select-btn');
+            
+            input.value = selectedCompany;
+            input.setAttribute('data-company', selectedCompany);
+            
+            // Змінюємо кнопку на видалення
+            button.innerHTML = '<i class="fas fa-times"></i>';
+            button.setAttribute('title', 'Видалити компанію');
+            button.setAttribute('onclick', 'removeCompanyField(this)');
+            button.classList.remove('btn-outline-primary');
+            button.classList.add('btn-outline-danger');
+            
+            // Створюємо нове порожнє поле
+            createNewCompanyField();
+            
+            // Закриваємо модальне вікно
+            bootstrap.Modal.getInstance(document.getElementById('companySelectModal')).hide();
+            
+            // Скидаємо вибір
+            select.value = '';
+        }
+    };
+
+    // Створення нового поля для компанії
+    function createNewCompanyField() {
+        const newField = document.createElement('div');
+        newField.className = 'company-field mb-2';
+        newField.innerHTML = `
+            <div class="input-group">
+                <input type="text" class="form-control company-input" placeholder="Натисніть + для вибору компанії" readonly>
+                <button class="btn btn-outline-primary company-select-btn" type="button" onclick="openCompanySelectModal(this)" title="Вибрати компанію">
+                    <i class="fas fa-plus"></i>
+                </button>
+            </div>
+        `;
+        
+        // Додаємо нове поле після останнього заповненого поля
+        const lastField = document.querySelector('.company-field:last-child');
+        lastField.parentNode.insertBefore(newField, lastField.nextSibling);
+    }
+
+    // Видалення поля компанії
+    window.removeCompanyField = function(button) {
+        const field = button.closest('.company-field');
+        field.remove();
+    };
+
+    // Збирання всіх обраних компаній для відправки
+    function getSelectedCompanies() {
+        const companies = [];
+        document.querySelectorAll('.company-input[data-company]').forEach(input => {
+            if (input.getAttribute('data-company')) {
+                companies.push(input.getAttribute('data-company'));
+            }
+        });
+        return companies;
+    }
+
+    // Завантажуємо контрагентів при ініціалізації
+    loadCounterparties();
+
+    // Скидання полів компаній при створенні нового контакту
+    function resetCompanyFields() {
+        // Видаляємо всі поля компаній
+        document.querySelectorAll('.company-field').forEach(field => {
+            field.remove();
+        });
+        
+        // Створюємо одне порожнє поле
+        const companiesContainer = document.querySelector('.mb-3:has(#companiesContainer)');
+        const newField = document.createElement('div');
+        newField.className = 'company-field mb-2';
+        newField.innerHTML = `
+            <div class="input-group">
+                <input type="text" class="form-control company-input" placeholder="Натисніть + для вибору компанії" readonly>
+                <button class="btn btn-outline-primary company-select-btn" type="button" onclick="openCompanySelectModal(this)" title="Вибрати компанію">
+                    <i class="fas fa-plus"></i>
+                </button>
+            </div>
+        `;
+        companiesContainer.appendChild(newField);
+    }
+
+    // Обробка кнопки "Створити контакт"
+    const createContactBtn = document.getElementById('createContactBtn');
+    if (createContactBtn) {
+        createContactBtn.addEventListener('click', function() {
+            document.getElementById('createContactModalLabel').innerHTML = '<i class="fas fa-user-plus me-2"></i>Створити контакт';
+            editingContactId = null;
+            resetCompanyFields();
+            createContactModal.show();
+        });
+    }
 
 });
 </script>
