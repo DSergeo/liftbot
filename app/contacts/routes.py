@@ -29,6 +29,7 @@ def save_contact_html():
         "city", "street", "postalCode",
         "status", "description"
     ]
+    attached_companies = request.form.getlist("attachedCompanies")
     conn = sqlite3.connect(get_company_db_path())
     cursor = conn.cursor()
     cursor.execute(f'''
@@ -41,6 +42,34 @@ def save_contact_html():
         INSERT INTO contacts ({", ".join(fields)})
         VALUES ({", ".join(["?"] * len(fields))})
     ''', tuple(data.get(f, "") for f in fields))
+    contact_id = cursor.lastrowid
+
+    # --- Работа с companies и contact_companies ---
+    cursor.execute('''CREATE TABLE IF NOT EXISTS companies (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL UNIQUE,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )''')
+    cursor.execute('''CREATE TABLE IF NOT EXISTS contact_companies (
+        contact_id INTEGER NOT NULL,
+        company_id INTEGER NOT NULL,
+        PRIMARY KEY (contact_id, company_id),
+        FOREIGN KEY (contact_id) REFERENCES contacts(id) ON DELETE CASCADE,
+        FOREIGN KEY (company_id) REFERENCES companies(id) ON DELETE CASCADE
+    )''')
+    company_ids = []
+    for company_name in attached_companies:
+        cursor.execute("SELECT id FROM companies WHERE name = ?", (company_name,))
+        row = cursor.fetchone()
+        if row:
+            company_id = row[0]
+        else:
+            cursor.execute("INSERT INTO companies (name) VALUES (?)", (company_name,))
+            company_id = cursor.lastrowid
+        company_ids.append(company_id)
+    cursor.execute("DELETE FROM contact_companies WHERE contact_id = ?", (contact_id,))
+    for company_id in company_ids:
+        cursor.execute("INSERT OR IGNORE INTO contact_companies (contact_id, company_id) VALUES (?, ?)", (contact_id, company_id))
     conn.commit()
     conn.close()
     return redirect(url_for("contacts_page"))
@@ -104,6 +133,7 @@ def api_update_contact(contact_id):
         "city", "street", "postalCode",
         "status", "description"
     ]
+    attached_companies = data.get("attachedCompanies", [])
     try:
         conn = sqlite3.connect(get_company_db_path())
         cursor = conn.cursor()
@@ -115,6 +145,34 @@ def api_update_contact(contact_id):
             SET {updates}
             WHERE id = ?
         ''', values)
+
+        # --- Работа с companies и contact_companies ---
+        cursor.execute('''CREATE TABLE IF NOT EXISTS companies (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL UNIQUE,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )''')
+        cursor.execute('''CREATE TABLE IF NOT EXISTS contact_companies (
+            contact_id INTEGER NOT NULL,
+            company_id INTEGER NOT NULL,
+            PRIMARY KEY (contact_id, company_id),
+            FOREIGN KEY (contact_id) REFERENCES contacts(id) ON DELETE CASCADE,
+            FOREIGN KEY (company_id) REFERENCES companies(id) ON DELETE CASCADE
+        )''')
+        company_ids = []
+        for company_name in attached_companies:
+            cursor.execute("SELECT id FROM companies WHERE name = ?", (company_name,))
+            row = cursor.fetchone()
+            if row:
+                company_id = row[0]
+            else:
+                cursor.execute("INSERT INTO companies (name) VALUES (?)", (company_name,))
+                company_id = cursor.lastrowid
+            company_ids.append(company_id)
+        cursor.execute("DELETE FROM contact_companies WHERE contact_id = ?", (contact_id,))
+        for company_id in company_ids:
+            cursor.execute("INSERT OR IGNORE INTO contact_companies (contact_id, company_id) VALUES (?, ?)", (contact_id, company_id))
+
         conn.commit()
         conn.close()
         return jsonify({"success": True})
