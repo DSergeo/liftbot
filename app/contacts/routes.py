@@ -83,11 +83,30 @@ def api_get_contacts():
         return jsonify({"success": False, "error": "Unauthorized"}), 401
     conn = sqlite3.connect(get_company_db_path())
     cursor = conn.cursor()
+    # Получаем все контакты
     cursor.execute("SELECT * FROM contacts")
     columns = [desc[0] for desc in cursor.description]
-    data = [dict(zip(columns, row)) for row in cursor.fetchall()]
+    contacts = [dict(zip(columns, row)) for row in cursor.fetchall()]
+
+    # Получаем связи контакт-компания и названия компаний
+    cursor.execute('''
+        SELECT cc.contact_id, c.id as company_id, c.name as company_name
+        FROM contact_companies cc
+        JOIN companies c ON cc.company_id = c.id
+    ''')
+    company_links = cursor.fetchall()
+    # Формируем словарь: contact_id -> [{id, name}, ...]
+    from collections import defaultdict
+    contact_to_companies = defaultdict(list)
+    for contact_id, company_id, company_name in company_links:
+        contact_to_companies[contact_id].append({"id": company_id, "name": company_name})
+
+    # Добавляем массив counterparties к каждому контакту
+    for contact in contacts:
+        contact["counterparties"] = contact_to_companies.get(contact["id"], [])
+
     conn.close()
-    return jsonify({"success": True, "contacts": data})
+    return jsonify({"success": True, "contacts": contacts})
 
 @contacts_api.route("/", methods=["POST"])
 def api_save_contact():

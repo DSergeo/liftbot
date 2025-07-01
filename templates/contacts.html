@@ -236,17 +236,9 @@
                                 <label class="form-label">Компанії</label>
                                 <div id="companiesContainer">
                                     <!-- Динамічні поля компаній будуть додаватися тут -->
-                                </div>
-                                <div class="company-field mb-2">
-                                    <div class="input-group">
-                                        <input type="text" class="form-control company-input" placeholder="Натисніть + для вибору компанії" readonly>
-                                        <button class="btn btn-outline-primary company-select-btn" type="button" onclick="openCompanySelectModal(this)" title="Вибрати компанію">
-                                            <i class="fas fa-plus"></i>
-                                        </button>
-                                    </div>
+                                
                                 </div>
                             </div>
-                            
                             <div class="mb-3">
                                 <label for="industry" class="form-label">Галузь</label>
                                 <select class="form-select" id="industry" name="industry">
@@ -519,7 +511,11 @@ document.addEventListener('DOMContentLoaded', function() {
                     </div>
                 </div>
             </td>
-            <td>${contact.company || '-'}</td>
+            <td>
+                ${(contact.counterparties && contact.counterparties.length)
+                    ? contact.counterparties.map(cp => `<a href="/counterparties/${cp.id}" class="badge bg-info" target="_blank">${cp.name}</a>`).join(' ')
+                    : '-'}
+            </td>
             <td>${contact.phone || '-'}</td>
             <td>${contact.email || '-'}</td>
             <td>${typeLabels[contact.contactType] || contact.contactType}</td>
@@ -612,7 +608,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     <p><strong>Ім'я:</strong> ${contact.firstName} ${contact.lastName || ''}</p>
                     ${contact.middleName ? `<p><strong>По батькові:</strong> ${contact.middleName}</p>` : ''}
                     ${contact.position ? `<p><strong>Посада:</strong> ${contact.position}</p>` : ''}
-                    ${contact.company ? `<p><strong>Компанія:</strong> ${contact.company}</p>` : ''}
+                    ${(contact.counterparties && contact.counterparties.length)
+                        ? `<p><strong>Компанії:</strong> ` + contact.counterparties.map(cp => `<a href="/counterparties/${cp.id}" class="badge bg-info" target="_blank">${cp.name}</a>`).join(' ') + `</p>`
+                        : ''}
                 </div>
                 <div class="col-md-6">
                     <h6 class="text-primary">Контактна інформація</h6>
@@ -631,9 +629,9 @@ document.addEventListener('DOMContentLoaded', function() {
     window.editContact = function(id) {
         const contact = contacts.find(c => c.id === id);
         if (!contact) return;
-        
+
         editingContactId = id;
-        
+
         // Заповнення форми даними контакту
         Object.keys(contact).forEach(key => {
             const input = document.getElementById(key);
@@ -641,7 +639,39 @@ document.addEventListener('DOMContentLoaded', function() {
                 input.value = contact[key] || '';
             }
         });
-        
+
+        // --- Заполнение связанных компаний ---
+        // Очищаем контейнер компаний
+        const companiesContainer = document.getElementById('companiesContainer');
+        companiesContainer.innerHTML = '';
+        if (contact.counterparties && contact.counterparties.length) {
+            contact.counterparties.forEach(cp => {
+                const field = document.createElement('div');
+                field.className = 'company-field mb-2';
+                field.innerHTML = `
+                    <div class="input-group">
+                        <input type="text" class="form-control company-input" placeholder="Натисніть + для вибору компанії" readonly value="${cp.name}" data-company-id="${cp.id}" data-company="${cp.name}">
+                        <button class="btn btn-outline-danger company-select-btn" type="button" onclick="removeCompanyField(this)" title="Видалити компанію">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                `;
+                companiesContainer.appendChild(field);
+            });
+        }
+        // Добавляем пустое поле для новой компании
+        const newField = document.createElement('div');
+        newField.className = 'company-field mb-2';
+        newField.innerHTML = `
+            <div class="input-group">
+                <input type="text" class="form-control company-input" placeholder="Натисніть + для вибору компанії" readonly>
+                <button class="btn btn-outline-primary company-select-btn" type="button" onclick="openCompanySelectModal(this)" title="Вибрати компанію">
+                    <i class="fas fa-plus"></i>
+                </button>
+            </div>
+        `;
+        companiesContainer.appendChild(newField);
+
         document.getElementById('createContactModalLabel').innerHTML = '<i class="fas fa-edit me-2"></i>Редагувати контакт';
         viewContactModal.hide();
         createContactModal.show();
@@ -719,80 +749,36 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('chooseCounterpartyBtn').onclick = function() {
         const select = document.getElementById('selectCounterparty');
         const selectedCompany = select.value;
-        
         if (selectedCompany && currentCompanyField) {
-            // Заповнюємо поточне поле
-            const input = currentCompanyField.querySelector('.company-input');
-            const button = currentCompanyField.querySelector('.company-select-btn');
-            
-            input.value = selectedCompany;
-            input.setAttribute('data-company', selectedCompany);
-            
-            // Змінюємо кнопку на видалення
-            button.innerHTML = '<i class="fas fa-times"></i>';
-            button.setAttribute('title', 'Видалити компанію');
-            button.setAttribute('onclick', 'removeCompanyField(this)');
-            button.classList.remove('btn-outline-primary');
-            button.classList.add('btn-outline-danger');
-            
-            // Створюємо нове порожнє поле
-            createNewCompanyField();
-            
-            // Закриваємо модальне вікно
+            // Создаём новое поле для выбранной компании (readonly + крестик)
+            const companiesContainer = document.getElementById('companiesContainer');
+            const companyField = document.createElement('div');
+            companyField.className = 'company-field mb-2';
+            companyField.innerHTML = `
+                <div class="input-group">
+                    <input type="text" class="form-control company-input" placeholder="Натисніть + для вибору компанії" readonly value="${selectedCompany}" data-company="${selectedCompany}">
+                    <button class="btn btn-outline-danger company-select-btn" type="button" onclick="removeCompanyField(this)" title="Видалити компанію">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            `;
+            // Вставляем перед текущим пустым полем
+            companiesContainer.insertBefore(companyField, currentCompanyField);
+            // Очищаем текущее пустое поле (оно всегда последнее)
+            currentCompanyField.querySelector('.company-input').value = '';
+            // Закрываем модалку
             bootstrap.Modal.getInstance(document.getElementById('companySelectModal')).hide();
-            
-            // Скидаємо вибір
+            // Сбрасываем выбор
             select.value = '';
         }
     };
 
     // Створення нового поля для компанії
     function createNewCompanyField() {
-        const newField = document.createElement('div');
-        newField.className = 'company-field mb-2';
-        newField.innerHTML = `
-            <div class="input-group">
-                <input type="text" class="form-control company-input" placeholder="Натисніть + для вибору компанії" readonly>
-                <button class="btn btn-outline-primary company-select-btn" type="button" onclick="openCompanySelectModal(this)" title="Вибрати компанію">
-                    <i class="fas fa-plus"></i>
-                </button>
-            </div>
-        `;
-        
-        // Додаємо нове поле після останнього заповненого поля
-        const lastField = document.querySelector('.company-field:last-child');
-        lastField.parentNode.insertBefore(newField, lastField.nextSibling);
-    }
-
-    // Видалення поля компанії
-    window.removeCompanyField = function(button) {
-        const field = button.closest('.company-field');
-        field.remove();
-    };
-
-    // Збирання всіх обраних компаній для відправки
-    function getSelectedCompanies() {
-        const companies = [];
-        document.querySelectorAll('.company-input[data-company]').forEach(input => {
-            if (input.getAttribute('data-company')) {
-                companies.push(input.getAttribute('data-company'));
-            }
-        });
-        return companies;
-    }
-
-    // Завантажуємо контрагентів при ініціалізації
-    loadCounterparties();
-
-    // Скидання полів компаній при створенні нового контакту
-    function resetCompanyFields() {
-        // Видаляємо всі поля компаній
-        document.querySelectorAll('.company-field').forEach(field => {
-            field.remove();
-        });
-        
-        // Створюємо одне порожнє поле
-        const companiesContainer = document.querySelector('.mb-3:has(#companiesContainer)');
+        // Проверяем, есть ли уже пустое поле
+        const companiesContainer = document.getElementById('companiesContainer');
+        const emptyField = Array.from(companiesContainer.querySelectorAll('.company-input')).find(input => !input.value);
+        if (emptyField) return; // Уже есть пустое поле
         const newField = document.createElement('div');
         newField.className = 'company-field mb-2';
         newField.innerHTML = `
@@ -806,13 +792,63 @@ document.addEventListener('DOMContentLoaded', function() {
         companiesContainer.appendChild(newField);
     }
 
+    // Видалення поля компанії
+    window.removeCompanyField = function(button) {
+        const field = button.closest('.company-field');
+        field.remove();
+    };
+
+    // Збирання всіх обраних компаній для відправки
+    function getSelectedCompanies() {
+        // Собираем имена компаний из всех заполненных полей
+        const companies = [];
+        document.querySelectorAll('.company-field .company-input').forEach(input => {
+            const val = input.value.trim();
+            if (val) {
+                companies.push(val);
+            }
+        });
+        return companies;
+    }
+
+    // Завантажуємо контрагентів при ініціалізації
+    loadCounterparties();
+
+    // Скидання полів компаній при створенні нового контакту
+    function resetCompanyFields() {
+        // Очищаем контейнер компаний
+        const companiesContainer = document.getElementById('companiesContainer');
+        companiesContainer.innerHTML = '';
+        // Створюємо одне порожнє поле
+        const newField = document.createElement('div');
+        newField.className = 'company-field mb-2';
+        newField.innerHTML = `
+            <div class="input-group">
+                <input type="text" class="form-control company-input" placeholder="Натисніть + для вибору компанії" readonly>
+                <button class="btn btn-outline-primary company-select-btn" type="button" onclick="openCompanySelectModal(this)" title="Вибрати компанію">
+                    <i class="fas fa-plus"></i>
+                </button>
+            </div>
+        `;
+        companiesContainer.appendChild(newField);
+    }
+
+
+    // Гарантируем, что при каждом открытии модалки будет хотя бы одно поле для компанії
+    document.getElementById('createContactModal').addEventListener('show.bs.modal', function() {
+        // Только если не редактируем существующий контакт (иначе поля уже заполняются в editContact)
+        if (!editingContactId) {
+            resetCompanyFields();
+        }
+    });
+
     // Обробка кнопки "Створити контакт"
     const createContactBtn = document.getElementById('createContactBtn');
     if (createContactBtn) {
         createContactBtn.addEventListener('click', function() {
             document.getElementById('createContactModalLabel').innerHTML = '<i class="fas fa-user-plus me-2"></i>Створити контакт';
             editingContactId = null;
-            resetCompanyFields();
+            // resetCompanyFields(); // больше не нужно тут, вызывается при show.bs.modal
             createContactModal.show();
         });
     }
