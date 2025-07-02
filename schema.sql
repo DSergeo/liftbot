@@ -51,3 +51,10 @@ CREATE TABLE contract_lifts (
                 FOREIGN KEY (contract_id) REFERENCES contracts (id),
                 FOREIGN KEY (address_id) REFERENCES contract_addresses (id)
             );
+CREATE TABLE IF NOT EXISTS contacts_counterparties (
+    contact_id INTEGER NOT NULL,
+    counterparty_id INTEGER NOT NULL,
+    PRIMARY KEY (contact_id, counterparty_id),
+    FOREIGN KEY (contact_id) REFERENCES contacts(id) ON DELETE CASCADE,
+    FOREIGN KEY (counterparty_id) REFERENCES counterparties(id) ON DELETE CASCADE
+);

@@ -7,7 +7,7 @@
     "profile_completed": true,
     "first_name": "Сергій",
     "last_name": "Дубровін",
-    "department": "Обслуговуюча компанія",
+    "department": "ІТР",
     "role": "admin",
     "bio": "",
     "email_notifications": true,
@@ -16,6 +16,6 @@
     "completed_request_notifications": true,
     "profile_completed_at": "2025-06-13T16:35:04.252910",
     "avatar": "uploads/avatar_dsergeod_gmail_com.jpg",
-    "updated_at": "2025-06-15T15:17:55.351931"
+    "updated_at": "2025-07-02T15:02:05.257784"
   }
 }

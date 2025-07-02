@@ -1,5 +1,6 @@
 from flask import Blueprint, request, jsonify, render_template, redirect, url_for, session
 import sqlite3
+import traceback
 from app.utils import get_company_db_path
 
 # Blueprint для HTML-страницы
@@ -44,32 +45,33 @@ def save_contact_html():
     ''', tuple(data.get(f, "") for f in fields))
     contact_id = cursor.lastrowid
 
-    # --- Работа с companies и contact_companies ---
-    cursor.execute('''CREATE TABLE IF NOT EXISTS companies (
+    # --- Работа только с counterparties и contacts_counterparties ---
+    cursor.execute('''CREATE TABLE IF NOT EXISTS counterparties (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT NOT NULL UNIQUE,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )''')
-    cursor.execute('''CREATE TABLE IF NOT EXISTS contact_companies (
+    cursor.execute('''CREATE TABLE IF NOT EXISTS contacts_counterparties (
         contact_id INTEGER NOT NULL,
-        company_id INTEGER NOT NULL,
-        PRIMARY KEY (contact_id, company_id),
+        counterparty_id INTEGER NOT NULL,
+        PRIMARY KEY (contact_id, counterparty_id),
         FOREIGN KEY (contact_id) REFERENCES contacts(id) ON DELETE CASCADE,
-        FOREIGN KEY (company_id) REFERENCES companies(id) ON DELETE CASCADE
+        FOREIGN KEY (counterparty_id) REFERENCES counterparties(id) ON DELETE CASCADE
     )''')
-    company_ids = []
-    for company_name in attached_companies:
-        cursor.execute("SELECT id FROM companies WHERE name = ?", (company_name,))
-        row = cursor.fetchone()
-        if row:
-            company_id = row[0]
-        else:
-            cursor.execute("INSERT INTO companies (name) VALUES (?)", (company_name,))
-            company_id = cursor.lastrowid
-        company_ids.append(company_id)
-    cursor.execute("DELETE FROM contact_companies WHERE contact_id = ?", (contact_id,))
-    for company_id in company_ids:
-        cursor.execute("INSERT OR IGNORE INTO contact_companies (contact_id, company_id) VALUES (?, ?)", (contact_id, company_id))
+    cursor.execute("DELETE FROM contacts_counterparties WHERE contact_id = ?", (contact_id,))
+    for cp in attached_companies:
+        # Если это id (число) — используем напрямую, если строка — ищем/создаём
+        try:
+            counterparty_id = int(cp)
+        except (ValueError, TypeError):
+            cursor.execute("SELECT id FROM counterparties WHERE name = ?", (cp,))
+            row = cursor.fetchone()
+            if row:
+                counterparty_id = row[0]
+            else:
+                cursor.execute("INSERT INTO counterparties (name) VALUES (?)", (cp,))
+                counterparty_id = cursor.lastrowid
+        cursor.execute("INSERT OR IGNORE INTO contacts_counterparties (contact_id, counterparty_id) VALUES (?, ?)", (contact_id, counterparty_id))
     conn.commit()
     conn.close()
     return redirect(url_for("contacts_page"))
@@ -81,32 +83,32 @@ contacts_api = Blueprint("contacts_api", __name__, url_prefix="/api/contacts")
 def api_get_contacts():
     if "user_email" not in session:
         return jsonify({"success": False, "error": "Unauthorized"}), 401
-    conn = sqlite3.connect(get_company_db_path())
-    cursor = conn.cursor()
-    # Получаем все контакты
-    cursor.execute("SELECT * FROM contacts")
-    columns = [desc[0] for desc in cursor.description]
-    contacts = [dict(zip(columns, row)) for row in cursor.fetchall()]
-
-    # Получаем связи контакт-компания и названия компаний
-    cursor.execute('''
-        SELECT cc.contact_id, c.id as company_id, c.name as company_name
-        FROM contact_companies cc
-        JOIN companies c ON cc.company_id = c.id
-    ''')
-    company_links = cursor.fetchall()
-    # Формируем словарь: contact_id -> [{id, name}, ...]
-    from collections import defaultdict
-    contact_to_companies = defaultdict(list)
-    for contact_id, company_id, company_name in company_links:
-        contact_to_companies[contact_id].append({"id": company_id, "name": company_name})
-
-    # Добавляем массив counterparties к каждому контакту
-    for contact in contacts:
-        contact["counterparties"] = contact_to_companies.get(contact["id"], [])
-
-    conn.close()
-    return jsonify({"success": True, "contacts": contacts})
+    try:
+        conn = sqlite3.connect(get_company_db_path())
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM contacts")
+        columns = [desc[0] for desc in cursor.description]
+        contacts = [dict(zip(columns, row)) for row in cursor.fetchall()]
+        print(f"[DEBUG] Загружено контактов: {len(contacts)}")
+        cursor.execute('''
+            SELECT cc.contact_id, c.id as counterparty_id, c.companyName as counterparty_name
+            FROM contacts_counterparties cc
+            JOIN counterparties c ON cc.counterparty_id = c.id
+        ''')
+        counterparty_links = cursor.fetchall()
+        from collections import defaultdict
+        contact_to_counterparties = defaultdict(list)
+        for contact_id, counterparty_id, counterparty_name in counterparty_links:
+            contact_to_counterparties[contact_id].append({"id": counterparty_id, "name": counterparty_name})
+        for contact in contacts:
+            contact["counterparties"] = contact_to_counterparties.get(contact["id"], [])
+        conn.close()
+        print(f"[DEBUG] Ответ contacts: {contacts}")
+        return jsonify({"success": True, "contacts": contacts})
+    except Exception as e:
+        print("❌ Error loading contacts:", e)
+        traceback.print_exc()
+        return jsonify({"success": False, "error": str(e)}), 500
 
 @contacts_api.route("/", methods=["POST"])
 def api_save_contact():
@@ -120,9 +122,11 @@ def api_save_contact():
         "city", "street", "postalCode",
         "status", "description"
     ]
+    attached_companies = data.get("attachedCompanies", [])
     try:
         conn = sqlite3.connect(get_company_db_path())
         cursor = conn.cursor()
+        print("[DEBUG] Сохраняем контакт:", data)
         cursor.execute(f'''
             CREATE TABLE IF NOT EXISTS contacts (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -133,11 +137,42 @@ def api_save_contact():
             INSERT INTO contacts ({", ".join(fields)})
             VALUES ({", ".join(["?"] * len(fields))})
         ''', tuple(data.get(f, "") for f in fields))
+        contact_id = cursor.lastrowid
+        print(f"[DEBUG] Новый contact_id: {contact_id}")
+        cursor.execute('''CREATE TABLE IF NOT EXISTS counterparties (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL UNIQUE,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )''')
+        cursor.execute('''CREATE TABLE IF NOT EXISTS contacts_counterparties (
+            contact_id INTEGER NOT NULL,
+            counterparty_id INTEGER NOT NULL,
+            PRIMARY KEY (contact_id, counterparty_id),
+            FOREIGN KEY (contact_id) REFERENCES contacts(id) ON DELETE CASCADE,
+            FOREIGN KEY (counterparty_id) REFERENCES counterparties(id) ON DELETE CASCADE
+        )''')
+        cursor.execute("DELETE FROM contacts_counterparties WHERE contact_id = ?", (contact_id,))
+        print(f"[DEBUG] Привязка контрагентов: {attached_companies}")
+        for cp in attached_companies:
+            try:
+                counterparty_id = int(cp)
+            except (ValueError, TypeError):
+                cursor.execute("SELECT id FROM counterparties WHERE name = ?", (cp,))
+                row = cursor.fetchone()
+                if row:
+                    counterparty_id = row[0]
+                else:
+                    cursor.execute("INSERT INTO counterparties (name) VALUES (?)", (cp,))
+                    counterparty_id = cursor.lastrowid
+            print(f"[DEBUG] Привязываем contact_id={contact_id} к counterparty_id={counterparty_id}")
+            cursor.execute("INSERT OR IGNORE INTO contacts_counterparties (contact_id, counterparty_id) VALUES (?, ?)", (contact_id, counterparty_id))
         conn.commit()
         conn.close()
+        print("[DEBUG] Контакт успешно сохранён!")
         return jsonify({"success": True})
     except Exception as e:
         print("❌ Error saving contact:", e)
+        traceback.print_exc()
         return jsonify({"success": False, "error": str(e)}), 500
 
 @contacts_api.route("/<int:contact_id>", methods=["PUT"])
@@ -165,32 +200,32 @@ def api_update_contact(contact_id):
             WHERE id = ?
         ''', values)
 
-        # --- Работа с companies и contact_companies ---
-        cursor.execute('''CREATE TABLE IF NOT EXISTS companies (
+        # --- Работа с counterparties и contacts_counterparties ---
+        cursor.execute('''CREATE TABLE IF NOT EXISTS counterparties (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT NOT NULL UNIQUE,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )''')
-        cursor.execute('''CREATE TABLE IF NOT EXISTS contact_companies (
+        cursor.execute('''CREATE TABLE IF NOT EXISTS contacts_counterparties (
             contact_id INTEGER NOT NULL,
-            company_id INTEGER NOT NULL,
-            PRIMARY KEY (contact_id, company_id),
+            counterparty_id INTEGER NOT NULL,
+            PRIMARY KEY (contact_id, counterparty_id),
             FOREIGN KEY (contact_id) REFERENCES contacts(id) ON DELETE CASCADE,
-            FOREIGN KEY (company_id) REFERENCES companies(id) ON DELETE CASCADE
+            FOREIGN KEY (counterparty_id) REFERENCES counterparties(id) ON DELETE CASCADE
         )''')
-        company_ids = []
-        for company_name in attached_companies:
-            cursor.execute("SELECT id FROM companies WHERE name = ?", (company_name,))
-            row = cursor.fetchone()
-            if row:
-                company_id = row[0]
-            else:
-                cursor.execute("INSERT INTO companies (name) VALUES (?)", (company_name,))
-                company_id = cursor.lastrowid
-            company_ids.append(company_id)
-        cursor.execute("DELETE FROM contact_companies WHERE contact_id = ?", (contact_id,))
-        for company_id in company_ids:
-            cursor.execute("INSERT OR IGNORE INTO contact_companies (contact_id, company_id) VALUES (?, ?)", (contact_id, company_id))
+        cursor.execute("DELETE FROM contacts_counterparties WHERE contact_id = ?", (contact_id,))
+        for cp in attached_companies:
+            try:
+                counterparty_id = int(cp)
+            except (ValueError, TypeError):
+                cursor.execute("SELECT id FROM counterparties WHERE name = ?", (cp,))
+                row = cursor.fetchone()
+                if row:
+                    counterparty_id = row[0]
+                else:
+                    cursor.execute("INSERT INTO counterparties (name) VALUES (?)", (cp,))
+                    counterparty_id = cursor.lastrowid
+            cursor.execute("INSERT OR IGNORE INTO contacts_counterparties (contact_id, counterparty_id) VALUES (?, ?)", (contact_id, counterparty_id))
 
         conn.commit()
         conn.close()

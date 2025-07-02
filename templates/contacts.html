@@ -400,44 +400,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (data.success) {
                     contacts = data.contacts;
                 } else {
-                    // Використовуємо тестові дані якщо API недоступне
-                    contacts = [
-                        {
-                            id: 1,
-                            firstName: 'Олександр',
-                            lastName: 'Петренко',
-                            middleName: 'Іванович',
-                            company: 'ТОВ "Ліфт-Сервіс"',
-                            phone: '+380671234567',
-                            email: 'petenko@lift-service.ua',
-                            position: 'Директор',
-                            contactType: 'customer',
-                            status: 'active',
-                            city: 'Миколаїв',
-                            createdAt: '2024-12-01'
-                        },
-                        {
-                            id: 2,
-                            firstName: 'Марія',
-                            lastName: 'Іваненко',
-                            middleName: 'Петрівна',
-                            company: 'ОСББ "Сонячний"',
-                            phone: '+380509876543',
-                            email: 'ivanenko@osbb-sun.ua',
-                            position: 'Голова ОСББ',
-                            contactType: 'customer',
-                            status: 'active',
-                            city: 'Миколаїв',
-                            createdAt: '2024-11-15'
-                        }
-                    ];
+                    contacts = [];
                 }
                 filterAndDisplayContacts();
                 updateStatistics();
             })
             .catch(error => {
                 console.error('Error loading contacts:', error);
-                // Використовуємо тестові дані у випадку помилки
                 contacts = [];
                 filterAndDisplayContacts();
                 updateStatistics();
@@ -729,11 +698,11 @@ document.addEventListener('DOMContentLoaded', function() {
     function updateCounterpartiesSelect() {
         const select = document.getElementById('selectCounterparty');
         select.innerHTML = '<option value="">Оберіть компанію...</option>';
-        
         availableCounterparties.forEach(cp => {
             const option = document.createElement('option');
             option.value = cp.companyName || cp.company_name;
             option.textContent = cp.companyName || cp.company_name;
+            option.dataset.companyId = cp.id || cp.company_id;
             select.appendChild(option);
         });
     }
@@ -749,6 +718,8 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('chooseCounterpartyBtn').onclick = function() {
         const select = document.getElementById('selectCounterparty');
         const selectedCompany = select.value;
+        const selectedOption = select.options[select.selectedIndex];
+        const companyId = selectedOption && selectedOption.dataset.companyId;
         if (selectedCompany && currentCompanyField) {
             // Создаём новое поле для выбранной компании (readonly + крестик)
             const companiesContainer = document.getElementById('companiesContainer');
@@ -756,7 +727,7 @@ document.addEventListener('DOMContentLoaded', function() {
             companyField.className = 'company-field mb-2';
             companyField.innerHTML = `
                 <div class="input-group">
-                    <input type="text" class="form-control company-input" placeholder="Натисніть + для вибору компанії" readonly value="${selectedCompany}" data-company="${selectedCompany}">
+                    <input type="text" class="form-control company-input" placeholder="Натисніть + для вибору компанії" readonly value="${selectedCompany}" data-company="${selectedCompany}" data-company-id="${companyId || ''}">
                     <button class="btn btn-outline-danger company-select-btn" type="button" onclick="removeCompanyField(this)" title="Видалити компанію">
                         <i class="fas fa-times"></i>
                     </button>
@@ -766,6 +737,7 @@ document.addEventListener('DOMContentLoaded', function() {
             companiesContainer.insertBefore(companyField, currentCompanyField);
             // Очищаем текущее пустое поле (оно всегда последнее)
             currentCompanyField.querySelector('.company-input').value = '';
+            currentCompanyField.querySelector('.company-input').removeAttribute('data-company-id');
             // Закрываем модалку
             bootstrap.Modal.getInstance(document.getElementById('companySelectModal')).hide();
             // Сбрасываем выбор
@@ -800,12 +772,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Збирання всіх обраних компаній для відправки
     function getSelectedCompanies() {
-        // Собираем имена компаний из всех заполненных полей
+        // Собираем id компаний из всех заполненных полей
         const companies = [];
         document.querySelectorAll('.company-field .company-input').forEach(input => {
             const val = input.value.trim();
-            if (val) {
-                companies.push(val);
+            const id = input.getAttribute('data-company-id');
+            if (val && id) {
+                companies.push(id);
             }
         });
         return companies;
