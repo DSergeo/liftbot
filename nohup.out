@@ -431,3 +431,538 @@ Loaded 12 requests from database
 2025-07-02 17:25:45,661 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 17:25:45] "[33mGET /static/css/themes.css HTTP/1.0[0m" 404 -
 2025-07-02 17:25:45,662 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 17:25:45] "[33mGET /uploads/avatar_dsergeod_gmail_com.jpg HTTP/1.0[0m" 404 -
 2025-07-02 17:25:45,829 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 17:25:45] "GET /analytics/data HTTP/1.0" 200 -
+2025-07-02 17:26:16,671 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 17:26:16] "GET /analytics/data HTTP/1.0" 200 -
+2025-07-02 17:26:46,661 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 17:26:46] "GET /analytics/data HTTP/1.0" 200 -
+2025-07-02 17:26:50,125 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 17:26:50] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-02 17:27:16,664 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 17:27:16] "GET /analytics/data HTTP/1.0" 200 -
+2025-07-02 17:27:46,654 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 17:27:46] "GET /analytics/data HTTP/1.0" 200 -
+2025-07-02 17:28:16,662 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 17:28:16] "GET /analytics/data HTTP/1.0" 200 -
+2025-07-02 17:28:46,665 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 17:28:46] "GET /analytics/data HTTP/1.0" 200 -
+2025-07-02 17:30:10,667 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 17:30:10] "GET /analytics/data HTTP/1.0" 200 -
+2025-07-02 17:31:10,670 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 17:31:10] "GET /analytics/data HTTP/1.0" 200 -
+2025-07-02 17:32:10,674 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 17:32:10] "GET /analytics/data HTTP/1.0" 200 -
+2025-07-02 17:33:10,667 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 17:33:10] "GET /analytics/data HTTP/1.0" 200 -
+2025-07-02 17:34:10,665 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 17:34:10] "GET /analytics/data HTTP/1.0" 200 -
+2025-07-02 17:35:10,679 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 17:35:10] "GET /analytics/data HTTP/1.0" 200 -
+2025-07-02 17:36:10,671 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 17:36:10] "GET /analytics/data HTTP/1.0" 200 -
+2025-07-02 17:37:10,672 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 17:37:10] "GET /analytics/data HTTP/1.0" 200 -
+2025-07-02 17:38:10,677 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 17:38:10] "GET /analytics/data HTTP/1.0" 200 -
+2025-07-02 17:39:10,676 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 17:39:10] "GET /analytics/data HTTP/1.0" 200 -
+2025-07-02 17:40:04,233 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 17:40:04] "[33mGET /login.asp HTTP/1.0[0m" 404 -
+2025-07-02 17:40:10,669 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 17:40:10] "GET /analytics/data HTTP/1.0" 200 -
+2025-07-02 17:41:10,684 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 17:41:10] "GET /analytics/data HTTP/1.0" 200 -
+2025-07-02 17:41:49,207 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 17:41:49] "GET /analytics/data HTTP/1.0" 200 -
+2025-07-02 17:42:16,667 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 17:42:16] "GET /analytics/data HTTP/1.0" 200 -
+2025-07-02 17:42:46,671 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 17:42:46] "GET /analytics/data HTTP/1.0" 200 -
+2025-07-02 17:44:10,679 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 17:44:10] "GET /analytics/data HTTP/1.0" 200 -
+2025-07-02 17:45:10,671 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 17:45:10] "GET /analytics/data HTTP/1.0" 200 -
+2025-07-02 17:46:10,683 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 17:46:10] "GET /analytics/data HTTP/1.0" 200 -
+2025-07-02 17:46:15,788 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 17:46:15] "GET /analytics/data HTTP/1.0" 200 -
+2025-07-02 17:46:45,789 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 17:46:45] "GET /analytics/data HTTP/1.0" 200 -
+2025-07-02 17:50:47,429 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 17:50:47] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-02 17:55:03,301 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 17:55:03] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-02 18:08:57,855 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 18:08:57] "[33mGET /login.asp HTTP/1.0[0m" 404 -
+2025-07-02 18:28:01,899 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 18:28:01] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-02 18:28:39,773 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 18:28:39] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-02 18:34:57,477 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 18:34:57] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-02 18:36:47,493 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 18:36:47] "[33mGET /login.asp HTTP/1.0[0m" 404 -
+2025-07-02 18:57:55,850 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 18:57:55] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-02 18:57:55,918 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 18:57:55] "GET /login HTTP/1.0" 200 -
+2025-07-02 19:07:19,334 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 19:07:19] "[33mGET /login.asp HTTP/1.0[0m" 404 -
+2025-07-02 19:11:03,650 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 19:11:03] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-02 19:11:04,049 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 19:11:04] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-02 19:11:04,446 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 19:11:04] "[33mGET /favicon.ico HTTP/1.0[0m" 404 -
+2025-07-02 19:11:04,842 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 19:11:04] "GET /login HTTP/1.0" 200 -
+2025-07-02 19:11:05,241 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 19:11:05] "[33mGET /favicon.ico HTTP/1.0[0m" 404 -
+2025-07-02 19:11:17,809 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 19:11:17] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-02 19:11:18,257 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 19:11:18] "GET /login HTTP/1.0" 200 -
+2025-07-02 19:11:18,678 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 19:11:18] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-02 19:11:19,073 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 19:11:19] "GET /login HTTP/1.0" 200 -
+2025-07-02 19:11:24,682 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 19:11:24] "[33mGET /favicon.ico HTTP/1.0[0m" 404 -
+2025-07-02 19:12:28,449 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 19:12:28] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-02 19:26:31,185 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 19:26:31] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-02 19:27:23,174 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 19:27:23] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-02 19:32:32,888 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 19:32:32] "[33mGET /login.asp HTTP/1.0[0m" 404 -
+2025-07-02 19:37:49,278 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 19:37:49] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-02 19:53:37,618 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 19:53:37] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-02 20:04:08,361 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 20:04:08] "[33mGET /login.asp HTTP/1.0[0m" 404 -
+2025-07-02 20:35:40,971 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 20:35:40] "[33mGET /login.asp HTTP/1.0[0m" 404 -
+2025-07-02 20:35:43,914 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 20:35:43] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-02 20:38:30,306 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 20:38:30] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-02 20:59:41,002 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 20:59:41] "[33mGET /login.asp HTTP/1.0[0m" 404 -
+2025-07-02 21:05:46,997 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 21:05:46] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-02 21:14:10,179 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 21:14:10] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-02 21:15:43,007 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 21:15:43] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-02 21:32:23,650 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 21:32:23] "[33mGET /login.asp HTTP/1.0[0m" 404 -
+2025-07-02 21:42:14,463 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 21:42:14] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-02 21:45:23,295 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 21:45:23] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-02 21:53:21,259 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 21:53:21] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-02 22:01:08,128 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 22:01:08] "[33mGET /login.asp HTTP/1.0[0m" 404 -
+2025-07-02 22:10:14,660 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 22:10:14] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-02 22:10:15,702 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 22:10:15] "GET /login HTTP/1.0" 200 -
+2025-07-02 22:10:16,620 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 22:10:16] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-02 22:10:17,023 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 22:10:17] "GET /login HTTP/1.0" 200 -
+2025-07-02 22:26:44,692 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 22:26:44] "[33mGET /login.asp HTTP/1.0[0m" 404 -
+2025-07-02 22:34:29,630 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 22:34:29] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-02 22:38:06,795 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 22:38:06] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-02 22:53:21,330 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 22:53:21] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-02 22:59:58,670 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 22:59:58] "[33mGET /login.asp HTTP/1.0[0m" 404 -
+2025-07-02 23:16:15,729 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 23:16:15] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-02 23:50:23,144 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 23:50:23] "[33mGET /userRpmNatDebugRpm26525557/start_art.html HTTP/1.0[0m" 404 -
+2025-07-02 23:54:29,979 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 23:54:29] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-02 23:58:42,332 - werkzeug - INFO - 127.0.0.1 - - [02/Jul/2025 23:58:42] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-03 00:16:37,087 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 00:16:37] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-03 00:37:40,652 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 00:37:40] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-03 01:02:48,436 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 01:02:48] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-03 01:04:33,053 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 01:04:33] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-03 01:14:24,608 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 01:14:24] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-03 01:36:41,928 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 01:36:41] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-03 01:38:08,218 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 01:38:08] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-03 01:44:15,249 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 01:44:15] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-03 01:56:08,475 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 01:56:08] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-03 02:35:59,444 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 02:35:59] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-03 02:41:15,157 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 02:41:15] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-03 02:56:22,857 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 02:56:22] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-03 03:15:48,895 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 03:15:48] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-03 03:45:11,997 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 03:45:11] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-03 03:57:08,991 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 03:57:08] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-03 03:57:21,864 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 03:57:21] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-03 03:57:23,321 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 03:57:23] "GET /login HTTP/1.0" 200 -
+2025-07-03 04:14:09,351 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 04:14:09] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-03 04:38:51,381 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 04:38:51] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-03 04:41:32,549 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 04:41:32] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-03 04:52:18,344 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 04:52:18] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-03 04:58:32,094 (__init__.py:1241 Thread-2 (start_bot)) ERROR - TeleBot: "Threaded polling exception: A request to the Telegram API was unsuccessful. Error code: 502. Description: Bad Gateway"
+2025-07-03 04:58:32,094 - TeleBot - ERROR - Threaded polling exception: A request to the Telegram API was unsuccessful. Error code: 502. Description: Bad Gateway
+2025-07-03 04:58:32,182 (__init__.py:1243 Thread-2 (start_bot)) ERROR - TeleBot: "Exception traceback:
+Traceback (most recent call last):
+  File "/home/sergey-d/liftbot/venv/lib/python3.12/site-packages/telebot/__init__.py", line 1234, in __threaded_polling
+    polling_thread.raise_exceptions()
+  File "/home/sergey-d/liftbot/venv/lib/python3.12/site-packages/telebot/util.py", line 111, in raise_exceptions
+    raise self.exception_info
+  File "/home/sergey-d/liftbot/venv/lib/python3.12/site-packages/telebot/util.py", line 93, in run
+    task(*args, **kwargs)
+  File "/home/sergey-d/liftbot/venv/lib/python3.12/site-packages/telebot/__init__.py", line 688, in __retrieve_updates
+    updates = self.get_updates(offset=(self.last_update_id + 1),
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sergey-d/liftbot/venv/lib/python3.12/site-packages/telebot/__init__.py", line 660, in get_updates
+    json_updates = apihelper.get_updates(
+                   ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sergey-d/liftbot/venv/lib/python3.12/site-packages/telebot/apihelper.py", line 332, in get_updates
+    return _make_request(token, method_url, params=payload)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sergey-d/liftbot/venv/lib/python3.12/site-packages/telebot/apihelper.py", line 168, in _make_request
+    json_result = _check_result(method_name, result)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sergey-d/liftbot/venv/lib/python3.12/site-packages/telebot/apihelper.py", line 195, in _check_result
+    raise ApiTelegramException(method_name, result, result_json)
+telebot.apihelper.ApiTelegramException: A request to the Telegram API was unsuccessful. Error code: 502. Description: Bad Gateway
+"
+2025-07-03 04:58:32,182 - TeleBot - ERROR - Exception traceback:
+Traceback (most recent call last):
+  File "/home/sergey-d/liftbot/venv/lib/python3.12/site-packages/telebot/__init__.py", line 1234, in __threaded_polling
+    polling_thread.raise_exceptions()
+  File "/home/sergey-d/liftbot/venv/lib/python3.12/site-packages/telebot/util.py", line 111, in raise_exceptions
+    raise self.exception_info
+  File "/home/sergey-d/liftbot/venv/lib/python3.12/site-packages/telebot/util.py", line 93, in run
+    task(*args, **kwargs)
+  File "/home/sergey-d/liftbot/venv/lib/python3.12/site-packages/telebot/__init__.py", line 688, in __retrieve_updates
+    updates = self.get_updates(offset=(self.last_update_id + 1),
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sergey-d/liftbot/venv/lib/python3.12/site-packages/telebot/__init__.py", line 660, in get_updates
+    json_updates = apihelper.get_updates(
+                   ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sergey-d/liftbot/venv/lib/python3.12/site-packages/telebot/apihelper.py", line 332, in get_updates
+    return _make_request(token, method_url, params=payload)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sergey-d/liftbot/venv/lib/python3.12/site-packages/telebot/apihelper.py", line 168, in _make_request
+    json_result = _check_result(method_name, result)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sergey-d/liftbot/venv/lib/python3.12/site-packages/telebot/apihelper.py", line 195, in _check_result
+    raise ApiTelegramException(method_name, result, result_json)
+telebot.apihelper.ApiTelegramException: A request to the Telegram API was unsuccessful. Error code: 502. Description: Bad Gateway
+
+2025-07-03 04:58:32,481 (__init__.py:1241 Thread-2 (start_bot)) ERROR - TeleBot: "Threaded polling exception: A request to the Telegram API was unsuccessful. Error code: 502. Description: Bad Gateway"
+2025-07-03 04:58:32,481 - TeleBot - ERROR - Threaded polling exception: A request to the Telegram API was unsuccessful. Error code: 502. Description: Bad Gateway
+2025-07-03 04:58:32,483 (__init__.py:1243 Thread-2 (start_bot)) ERROR - TeleBot: "Exception traceback:
+Traceback (most recent call last):
+  File "/home/sergey-d/liftbot/venv/lib/python3.12/site-packages/telebot/__init__.py", line 1234, in __threaded_polling
+    polling_thread.raise_exceptions()
+  File "/home/sergey-d/liftbot/venv/lib/python3.12/site-packages/telebot/util.py", line 111, in raise_exceptions
+    raise self.exception_info
+  File "/home/sergey-d/liftbot/venv/lib/python3.12/site-packages/telebot/util.py", line 93, in run
+    task(*args, **kwargs)
+  File "/home/sergey-d/liftbot/venv/lib/python3.12/site-packages/telebot/__init__.py", line 688, in __retrieve_updates
+    updates = self.get_updates(offset=(self.last_update_id + 1),
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sergey-d/liftbot/venv/lib/python3.12/site-packages/telebot/__init__.py", line 660, in get_updates
+    json_updates = apihelper.get_updates(
+                   ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sergey-d/liftbot/venv/lib/python3.12/site-packages/telebot/apihelper.py", line 332, in get_updates
+    return _make_request(token, method_url, params=payload)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sergey-d/liftbot/venv/lib/python3.12/site-packages/telebot/apihelper.py", line 168, in _make_request
+    json_result = _check_result(method_name, result)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sergey-d/liftbot/venv/lib/python3.12/site-packages/telebot/apihelper.py", line 195, in _check_result
+    raise ApiTelegramException(method_name, result, result_json)
+telebot.apihelper.ApiTelegramException: A request to the Telegram API was unsuccessful. Error code: 502. Description: Bad Gateway
+"
+2025-07-03 04:58:32,483 - TeleBot - ERROR - Exception traceback:
+Traceback (most recent call last):
+  File "/home/sergey-d/liftbot/venv/lib/python3.12/site-packages/telebot/__init__.py", line 1234, in __threaded_polling
+    polling_thread.raise_exceptions()
+  File "/home/sergey-d/liftbot/venv/lib/python3.12/site-packages/telebot/util.py", line 111, in raise_exceptions
+    raise self.exception_info
+  File "/home/sergey-d/liftbot/venv/lib/python3.12/site-packages/telebot/util.py", line 93, in run
+    task(*args, **kwargs)
+  File "/home/sergey-d/liftbot/venv/lib/python3.12/site-packages/telebot/__init__.py", line 688, in __retrieve_updates
+    updates = self.get_updates(offset=(self.last_update_id + 1),
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sergey-d/liftbot/venv/lib/python3.12/site-packages/telebot/__init__.py", line 660, in get_updates
+    json_updates = apihelper.get_updates(
+                   ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sergey-d/liftbot/venv/lib/python3.12/site-packages/telebot/apihelper.py", line 332, in get_updates
+    return _make_request(token, method_url, params=payload)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sergey-d/liftbot/venv/lib/python3.12/site-packages/telebot/apihelper.py", line 168, in _make_request
+    json_result = _check_result(method_name, result)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sergey-d/liftbot/venv/lib/python3.12/site-packages/telebot/apihelper.py", line 195, in _check_result
+    raise ApiTelegramException(method_name, result, result_json)
+telebot.apihelper.ApiTelegramException: A request to the Telegram API was unsuccessful. Error code: 502. Description: Bad Gateway
+
+2025-07-03 04:58:33,030 (__init__.py:1241 Thread-2 (start_bot)) ERROR - TeleBot: "Threaded polling exception: A request to the Telegram API was unsuccessful. Error code: 502. Description: Bad Gateway"
+2025-07-03 04:58:33,030 - TeleBot - ERROR - Threaded polling exception: A request to the Telegram API was unsuccessful. Error code: 502. Description: Bad Gateway
+2025-07-03 04:58:33,030 (__init__.py:1243 Thread-2 (start_bot)) ERROR - TeleBot: "Exception traceback:
+Traceback (most recent call last):
+  File "/home/sergey-d/liftbot/venv/lib/python3.12/site-packages/telebot/__init__.py", line 1234, in __threaded_polling
+    polling_thread.raise_exceptions()
+  File "/home/sergey-d/liftbot/venv/lib/python3.12/site-packages/telebot/util.py", line 111, in raise_exceptions
+    raise self.exception_info
+  File "/home/sergey-d/liftbot/venv/lib/python3.12/site-packages/telebot/util.py", line 93, in run
+    task(*args, **kwargs)
+  File "/home/sergey-d/liftbot/venv/lib/python3.12/site-packages/telebot/__init__.py", line 688, in __retrieve_updates
+    updates = self.get_updates(offset=(self.last_update_id + 1),
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sergey-d/liftbot/venv/lib/python3.12/site-packages/telebot/__init__.py", line 660, in get_updates
+    json_updates = apihelper.get_updates(
+                   ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sergey-d/liftbot/venv/lib/python3.12/site-packages/telebot/apihelper.py", line 332, in get_updates
+    return _make_request(token, method_url, params=payload)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sergey-d/liftbot/venv/lib/python3.12/site-packages/telebot/apihelper.py", line 168, in _make_request
+    json_result = _check_result(method_name, result)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sergey-d/liftbot/venv/lib/python3.12/site-packages/telebot/apihelper.py", line 195, in _check_result
+    raise ApiTelegramException(method_name, result, result_json)
+telebot.apihelper.ApiTelegramException: A request to the Telegram API was unsuccessful. Error code: 502. Description: Bad Gateway
+"
+2025-07-03 04:58:33,030 - TeleBot - ERROR - Exception traceback:
+Traceback (most recent call last):
+  File "/home/sergey-d/liftbot/venv/lib/python3.12/site-packages/telebot/__init__.py", line 1234, in __threaded_polling
+    polling_thread.raise_exceptions()
+  File "/home/sergey-d/liftbot/venv/lib/python3.12/site-packages/telebot/util.py", line 111, in raise_exceptions
+    raise self.exception_info
+  File "/home/sergey-d/liftbot/venv/lib/python3.12/site-packages/telebot/util.py", line 93, in run
+    task(*args, **kwargs)
+  File "/home/sergey-d/liftbot/venv/lib/python3.12/site-packages/telebot/__init__.py", line 688, in __retrieve_updates
+    updates = self.get_updates(offset=(self.last_update_id + 1),
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sergey-d/liftbot/venv/lib/python3.12/site-packages/telebot/__init__.py", line 660, in get_updates
+    json_updates = apihelper.get_updates(
+                   ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sergey-d/liftbot/venv/lib/python3.12/site-packages/telebot/apihelper.py", line 332, in get_updates
+    return _make_request(token, method_url, params=payload)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sergey-d/liftbot/venv/lib/python3.12/site-packages/telebot/apihelper.py", line 168, in _make_request
+    json_result = _check_result(method_name, result)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sergey-d/liftbot/venv/lib/python3.12/site-packages/telebot/apihelper.py", line 195, in _check_result
+    raise ApiTelegramException(method_name, result, result_json)
+telebot.apihelper.ApiTelegramException: A request to the Telegram API was unsuccessful. Error code: 502. Description: Bad Gateway
+
+Exception in thread Thread-2 (start_bot):
+Traceback (most recent call last):
+  File "/home/sergey-d/liftbot/venv/lib/python3.12/site-packages/urllib3/connectionpool.py", line 534, in _make_request
+    response = conn.getresponse()
+               ^^^^^^^^^^^^^^^^^^
+  File "/home/sergey-d/liftbot/venv/lib/python3.12/site-packages/urllib3/connection.py", line 516, in getresponse
+    httplib_response = super().getresponse()
+                       ^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/http/client.py", line 1428, in getresponse
+    response.begin()
+  File "/usr/lib/python3.12/http/client.py", line 331, in begin
+    version, status, reason = self._read_status()
+                              ^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/http/client.py", line 292, in _read_status
+    line = str(self.fp.readline(_MAXLINE + 1), "iso-8859-1")
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/socket.py", line 707, in readinto
+    return self._sock.recv_into(b)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/ssl.py", line 1252, in recv_into
+    return self.read(nbytes, buffer)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/ssl.py", line 1104, in read
+    return self._sslobj.read(len, buffer)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TimeoutError: The read operation timed out
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/sergey-d/liftbot/venv/lib/python3.12/site-packages/requests/adapters.py", line 667, in send
+    resp = conn.urlopen(
+           ^^^^^^^^^^^^^
+  File "/home/sergey-d/liftbot/venv/lib/python3.12/site-packages/urllib3/connectionpool.py", line 841, in urlopen
+    retries = retries.increment(
+              ^^^^^^^^^^^^^^^^^^
+  File "/home/sergey-d/liftbot/venv/lib/python3.12/site-packages/urllib3/util/retry.py", line 474, in increment
+    raise reraise(type(error), error, _stacktrace)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sergey-d/liftbot/venv/lib/python3.12/site-packages/urllib3/util/util.py", line 39, in reraise
+    raise value
+  File "/home/sergey-d/liftbot/venv/lib/python3.12/site-packages/urllib3/connectionpool.py", line 787, in urlopen
+    response = self._make_request(
+               ^^^^^^^^^^^^^^^^^^^
+  File "/home/sergey-d/liftbot/venv/lib/python3.12/site-packages/urllib3/connectionpool.py", line 536, in _make_request
+    self._raise_timeout(err=e, url=url, timeout_value=read_timeout)
+  File "/home/sergey-d/liftbot/venv/lib/python3.12/site-packages/urllib3/connectionpool.py", line 367, in _raise_timeout
+    raise ReadTimeoutError(
+urllib3.exceptions.ReadTimeoutError: HTTPSConnectionPool(host='api.telegram.org', port=443): Read timed out. (read timeout=25)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/threading.py", line 1073, in _bootstrap_inner
+    self.run()
+  File "/usr/lib/python3.12/threading.py", line 1010, in run
+    self._target(*self._args, **self._kwargs)
+  File "/home/sergey-d/liftbot/main.py", line 1647, in start_bot
+    bot.polling(none_stop=True, allowed_updates=["message", "callback_query", "chat_member", "my_chat_member"])
+  File "/home/sergey-d/liftbot/venv/lib/python3.12/site-packages/telebot/__init__.py", line 1198, in polling
+    self.__threaded_polling(non_stop=non_stop, interval=interval, timeout=timeout, long_polling_timeout=long_polling_timeout,
+  File "/home/sergey-d/liftbot/venv/lib/python3.12/site-packages/telebot/__init__.py", line 1273, in __threaded_polling
+    raise e
+  File "/home/sergey-d/liftbot/venv/lib/python3.12/site-packages/telebot/__init__.py", line 1234, in __threaded_polling
+    polling_thread.raise_exceptions()
+  File "/home/sergey-d/liftbot/venv/lib/python3.12/site-packages/telebot/util.py", line 111, in raise_exceptions
+    raise self.exception_info
+  File "/home/sergey-d/liftbot/venv/lib/python3.12/site-packages/telebot/util.py", line 93, in run
+    task(*args, **kwargs)
+  File "/home/sergey-d/liftbot/venv/lib/python3.12/site-packages/telebot/__init__.py", line 688, in __retrieve_updates
+    updates = self.get_updates(offset=(self.last_update_id + 1), 
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sergey-d/liftbot/venv/lib/python3.12/site-packages/telebot/__init__.py", line 660, in get_updates
+    json_updates = apihelper.get_updates(
+                   ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sergey-d/liftbot/venv/lib/python3.12/site-packages/telebot/apihelper.py", line 332, in get_updates
+    return _make_request(token, method_url, params=payload)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sergey-d/liftbot/venv/lib/python3.12/site-packages/telebot/apihelper.py", line 162, in _make_request
+    result = _get_req_session().request(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sergey-d/liftbot/venv/lib/python3.12/site-packages/requests/sessions.py", line 589, in request
+    resp = self.send(prep, **send_kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sergey-d/liftbot/venv/lib/python3.12/site-packages/requests/sessions.py", line 703, in send
+    r = adapter.send(request, **kwargs)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sergey-d/liftbot/venv/lib/python3.12/site-packages/requests/adapters.py", line 713, in send
+    raise ReadTimeout(e, request=request)
+requests.exceptions.ReadTimeout: HTTPSConnectionPool(host='api.telegram.org', port=443): Read timed out. (read timeout=25)
+2025-07-03 04:59:33,215 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 04:59:33] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-03 05:00:17,564 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 05:00:17] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-03 05:00:23,741 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 05:00:23] "GET /login HTTP/1.0" 200 -
+2025-07-03 05:00:25,662 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 05:00:25] "[33mGET /favicon.ico HTTP/1.0[0m" 404 -
+2025-07-03 05:00:39,605 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 05:00:39] "[33mGET /wiki HTTP/1.0[0m" 404 -
+2025-07-03 05:38:31,059 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 05:38:31] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-03 05:58:35,014 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 05:58:35] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-03 07:03:07,321 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 07:03:07] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-03 07:04:04,768 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 07:04:04] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-03 07:45:05,140 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 07:45:05] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-03 07:53:40,380 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 07:53:40] "[33mGET /get.php HTTP/1.0[0m" 404 -
+2025-07-03 07:54:10,528 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 07:54:10] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-03 07:54:28,060 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 07:54:28] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-03 07:54:28,324 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 07:54:28] "GET /login HTTP/1.0" 200 -
+2025-07-03 07:54:42,878 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 07:54:42] "[33mGET /favicon.ico HTTP/1.0[0m" 404 -
+2025-07-03 07:54:51,487 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 07:54:51] "[32mGET /?format=json HTTP/1.0[0m" 302 -
+2025-07-03 07:55:14,891 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 07:55:14] "[33mGET /geoserver/web/ HTTP/1.0[0m" 404 -
+2025-07-03 08:08:06,969 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 08:08:06] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-03 08:09:33,161 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 08:09:33] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-03 08:11:48,079 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 08:11:48] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-03 08:11:48,184 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 08:11:48] "GET /login HTTP/1.0" 200 -
+2025-07-03 08:18:04,689 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 08:18:04] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-03 08:58:24,534 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 08:58:24] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-03 09:04:45,244 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 09:04:45] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-03 09:09:54,142 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 09:09:54] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-03 09:10:32,413 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 09:10:32] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-03 09:18:06,220 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 09:18:06] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-03 09:24:36,239 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 09:24:36] "[33mGET /pscan HTTP/1.0[0m" 404 -
+2025-07-03 09:36:31,766 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 09:36:31] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-03 09:39:39,942 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 09:39:39] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-03 10:00:00,883 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 10:00:00] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-03 10:00:01,482 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 10:00:01] "GET /login HTTP/1.0" 200 -
+2025-07-03 10:18:36,190 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 10:18:36] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-03 10:31:09,208 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 10:31:09] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-03 11:00:55,810 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 11:00:55] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-03 11:17:42,628 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 11:17:42] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-03 11:18:36,087 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 11:18:36] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-03 11:32:24,937 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 11:32:24] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-03 11:34:12,071 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 11:34:12] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-03 12:15:17,685 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 12:15:17] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-03 12:28:42,461 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 12:28:42] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-03 12:44:48,038 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 12:44:48] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-03 13:07:16,222 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 13:07:16] "[32mGET /?XDEBUG_SESSION_START=phpstorm HTTP/1.0[0m" 302 -
+2025-07-03 13:07:16,312 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 13:07:16] "GET /login HTTP/1.0" 200 -
+2025-07-03 13:30:46,417 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 13:30:46] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-03 13:38:13,618 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 13:38:13] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-03 13:46:58,140 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 13:46:58] "[33mGET /actuator/gateway/routes HTTP/1.0[0m" 404 -
+2025-07-03 13:55:02,817 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 13:55:02] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-03 14:27:51,867 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 14:27:51] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-03 14:36:06,428 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 14:36:06] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-03 14:59:02,588 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 14:59:02] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-03 14:59:32,506 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 14:59:32] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-03 15:04:16,269 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 15:04:16] "[33mGET /cgi/conf.bin HTTP/1.0[0m" 404 -
+2025-07-03 15:17:01,428 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 15:17:01] "[33mGET /locales/locale.json?locale=../../config/&namespace=database HTTP/1.0[0m" 404 -
+2025-07-03 15:44:03,308 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 15:44:03] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-03 15:56:07,254 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 15:56:07] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-03 15:56:07,325 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 15:56:07] "GET /login HTTP/1.0" 200 -
+2025-07-03 15:56:07,401 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 15:56:07] "[33mGET /favicon.ico HTTP/1.0[0m" 404 -
+2025-07-03 15:56:08,840 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 15:56:08] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-03 16:11:35,068 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 16:11:35] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-03 16:13:59,944 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 16:13:59] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-03 16:18:42,635 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 16:18:42] "[33mGET /locales/locale.json?locale=../../config/&namespace=database HTTP/1.0[0m" 404 -
+2025-07-03 16:18:43,210 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 16:18:43] "[33mGET /locales/locale.json?locale=../../config/&namespace=database HTTP/1.0[0m" 404 -
+2025-07-03 16:36:00,185 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 16:36:00] "[33mGET /locales/locale.json?locale=../../config/&namespace=database HTTP/1.0[0m" 404 -
+2025-07-03 16:47:00,974 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 16:47:00] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-03 17:16:50,985 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 17:16:50] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-03 17:16:51,162 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 17:16:51] "GET /login HTTP/1.0" 200 -
+2025-07-03 17:17:23,517 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 17:17:23] "[33mGET /favicon.ico HTTP/1.0[0m" 404 -
+2025-07-03 17:23:30,145 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 17:23:30] "[33mGET /actuator/health HTTP/1.0[0m" 404 -
+2025-07-03 17:33:03,656 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 17:33:03] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-03 17:50:23,641 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 17:50:23] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-03 17:55:49,404 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 17:55:49] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-03 18:05:59,359 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 18:05:59] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-03 18:58:35,453 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 18:58:35] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-03 18:59:01,338 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 18:59:01] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-03 19:11:56,067 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 19:11:56] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-03 19:14:17,092 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 19:14:17] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-03 19:30:44,190 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 19:30:44] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-03 20:02:15,677 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 20:02:15] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-03 20:04:38,447 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 20:04:38] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-03 20:04:38,644 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 20:04:38] "GET /login HTTP/1.0" 200 -
+2025-07-03 20:04:39,253 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 20:04:39] "[33mGET /favicon.ico HTTP/1.0[0m" 404 -
+2025-07-03 20:20:41,935 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 20:20:41] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-03 20:22:48,397 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 20:22:48] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-03 20:51:18,857 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 20:51:18] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-03 20:51:18,914 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 20:51:18] "GET /login HTTP/1.0" 200 -
+2025-07-03 20:52:27,811 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 20:52:27] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-03 21:07:48,415 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 21:07:48] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-03 21:10:14,832 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 21:10:14] "[33mGET /locales/locale.json?locale=../../config/&namespace=database HTTP/1.0[0m" 404 -
+2025-07-03 21:17:55,953 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 21:17:55] "[33mGET /aaa9 HTTP/1.0[0m" 404 -
+2025-07-03 21:18:01,786 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 21:18:01] "[33mGET /aab8 HTTP/1.0[0m" 404 -
+2025-07-03 21:18:06,260 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 21:18:06] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-03 21:26:22,246 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 21:26:22] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-03 21:26:41,298 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 21:26:41] "GET /login HTTP/1.0" 200 -
+2025-07-03 21:26:44,809 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 21:26:44] "[33mGET /favicon.ico HTTP/1.0[0m" 404 -
+2025-07-03 21:27:06,420 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 21:27:06] "[33mGET /sitemap.xml HTTP/1.0[0m" 404 -
+2025-07-03 21:44:28,906 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 21:44:28] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-03 21:44:28,931 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 21:44:28] "GET /login HTTP/1.0" 200 -
+2025-07-03 21:52:26,890 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 21:52:26] "[33mGET /locales/locale.json?locale=../../config/&namespace=database HTTP/1.0[0m" 404 -
+2025-07-03 21:55:31,209 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 21:55:31] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-03 21:55:31,445 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 21:55:31] "GET /login HTTP/1.0" 200 -
+2025-07-03 22:05:04,018 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 22:05:04] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-03 22:24:00,507 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 22:24:00] "[33mGET /locales/locale.json?locale=../../config/&namespace=database HTTP/1.0[0m" 404 -
+2025-07-03 22:24:31,402 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 22:24:31] "[33mGET /get.php HTTP/1.0[0m" 404 -
+2025-07-03 22:51:50,542 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 22:51:50] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-03 22:52:20,836 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 22:52:20] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-03 22:52:25,984 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 22:52:25] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-03 22:52:26,327 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 22:52:26] "GET /login HTTP/1.0" 200 -
+2025-07-03 22:52:26,527 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 22:52:26] "[33mGET /favicon.ico HTTP/1.0[0m" 404 -
+2025-07-03 22:52:46,196 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 22:52:46] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-03 22:52:46,290 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 22:52:46] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-03 22:57:31,690 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 22:57:31] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-03 23:04:45,962 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 23:04:45] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-03 23:07:19,091 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 23:07:19] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-03 23:10:27,201 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 23:10:27] "[33mGET /locales/locale.json?locale=../../config/&namespace=database HTTP/1.0[0m" 404 -
+2025-07-03 23:39:53,060 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 23:39:53] "[33mGET /locales/locale.json?locale=../../config/&namespace=database HTTP/1.0[0m" 404 -
+2025-07-03 23:56:50,779 - werkzeug - INFO - 127.0.0.1 - - [03/Jul/2025 23:56:50] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-04 00:04:52,283 - werkzeug - INFO - 127.0.0.1 - - [04/Jul/2025 00:04:52] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-04 00:20:37,801 - werkzeug - INFO - 127.0.0.1 - - [04/Jul/2025 00:20:37] "[33mGET /get.php HTTP/1.0[0m" 404 -
+2025-07-04 00:22:32,341 - werkzeug - INFO - 127.0.0.1 - - [04/Jul/2025 00:22:32] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-04 00:29:55,433 - werkzeug - INFO - 127.0.0.1 - - [04/Jul/2025 00:29:55] "[33mGET /locales/locale.json?locale=../../config/&namespace=database HTTP/1.0[0m" 404 -
+2025-07-04 00:56:00,783 - werkzeug - INFO - 127.0.0.1 - - [04/Jul/2025 00:56:00] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-04 01:06:16,562 - werkzeug - INFO - 127.0.0.1 - - [04/Jul/2025 01:06:16] "[33mGET /locales/locale.json?locale=../../config/&namespace=database HTTP/1.0[0m" 404 -
+2025-07-04 01:13:51,196 - werkzeug - INFO - 127.0.0.1 - - [04/Jul/2025 01:13:51] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-04 01:49:39,208 - werkzeug - INFO - 127.0.0.1 - - [04/Jul/2025 01:49:39] "[33mGET /locales/locale.json?locale=../../config/&namespace=database HTTP/1.0[0m" 404 -
+2025-07-04 01:58:04,421 - werkzeug - INFO - 127.0.0.1 - - [04/Jul/2025 01:58:04] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-04 01:58:41,123 - werkzeug - INFO - 127.0.0.1 - - [04/Jul/2025 01:58:41] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-04 02:12:21,448 - werkzeug - INFO - 127.0.0.1 - - [04/Jul/2025 02:12:21] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-04 02:29:10,790 - werkzeug - INFO - 127.0.0.1 - - [04/Jul/2025 02:29:10] "[33mGET /locales/locale.json?locale=../../config/&namespace=database HTTP/1.0[0m" 404 -
+2025-07-04 03:40:08,765 - werkzeug - INFO - 127.0.0.1 - - [04/Jul/2025 03:40:08] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-04 03:40:08,923 - werkzeug - INFO - 127.0.0.1 - - [04/Jul/2025 03:40:08] "GET /login HTTP/1.0" 200 -
+2025-07-04 04:07:20,568 - werkzeug - INFO - 127.0.0.1 - - [04/Jul/2025 04:07:20] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-04 04:12:25,368 - werkzeug - INFO - 127.0.0.1 - - [04/Jul/2025 04:12:25] "[33mGET /aaa9 HTTP/1.0[0m" 404 -
+2025-07-04 04:12:31,321 - werkzeug - INFO - 127.0.0.1 - - [04/Jul/2025 04:12:31] "[33mGET /aab8 HTTP/1.0[0m" 404 -
+2025-07-04 04:12:35,990 - werkzeug - INFO - 127.0.0.1 - - [04/Jul/2025 04:12:35] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-04 04:29:53,963 - werkzeug - INFO - 127.0.0.1 - - [04/Jul/2025 04:29:53] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-04 04:30:17,879 - werkzeug - INFO - 127.0.0.1 - - [04/Jul/2025 04:30:17] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-04 04:30:18,357 - werkzeug - INFO - 127.0.0.1 - - [04/Jul/2025 04:30:18] "GET /login HTTP/1.0" 200 -
+2025-07-04 05:47:55,656 - werkzeug - INFO - 127.0.0.1 - - [04/Jul/2025 05:47:55] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-04 05:58:09,284 - werkzeug - INFO - 127.0.0.1 - - [04/Jul/2025 05:58:09] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-04 05:58:29,021 - werkzeug - INFO - 127.0.0.1 - - [04/Jul/2025 05:58:29] "GET /login HTTP/1.0" 200 -
+2025-07-04 05:58:30,418 - werkzeug - INFO - 127.0.0.1 - - [04/Jul/2025 05:58:30] "[33mGET /favicon.ico HTTP/1.0[0m" 404 -
+2025-07-04 05:59:07,463 - werkzeug - INFO - 127.0.0.1 - - [04/Jul/2025 05:59:07] "[33mGET /.well-known/security.txt HTTP/1.0[0m" 404 -
+2025-07-04 06:07:28,947 - werkzeug - INFO - 127.0.0.1 - - [04/Jul/2025 06:07:28] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-04 06:19:31,715 - werkzeug - INFO - 127.0.0.1 - - [04/Jul/2025 06:19:31] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-04 06:54:16,493 - werkzeug - INFO - 127.0.0.1 - - [04/Jul/2025 06:54:16] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-04 07:21:25,034 - werkzeug - INFO - 127.0.0.1 - - [04/Jul/2025 07:21:25] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-04 08:09:29,613 - werkzeug - INFO - 127.0.0.1 - - [04/Jul/2025 08:09:29] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-04 08:09:49,306 - werkzeug - INFO - 127.0.0.1 - - [04/Jul/2025 08:09:49] "GET /login HTTP/1.0" 200 -
+2025-07-04 08:09:50,409 - werkzeug - INFO - 127.0.0.1 - - [04/Jul/2025 08:09:50] "[33mGET /favicon.ico HTTP/1.0[0m" 404 -
+2025-07-04 08:09:51,291 - werkzeug - INFO - 127.0.0.1 - - [04/Jul/2025 08:09:51] "[33mGET /robots.txt HTTP/1.0[0m" 404 -
+2025-07-04 08:09:52,034 - werkzeug - INFO - 127.0.0.1 - - [04/Jul/2025 08:09:52] "[33mGET /sitemap.xml HTTP/1.0[0m" 404 -
+2025-07-04 08:09:52,820 - werkzeug - INFO - 127.0.0.1 - - [04/Jul/2025 08:09:52] "[33mGET /config.json HTTP/1.0[0m" 404 -
+2025-07-04 08:19:54,560 - werkzeug - INFO - 127.0.0.1 - - [04/Jul/2025 08:19:54] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-04 08:50:41,183 - werkzeug - INFO - 127.0.0.1 - - [04/Jul/2025 08:50:41] "GET /login HTTP/1.0" 200 -
+2025-07-04 08:50:41,646 - werkzeug - INFO - 127.0.0.1 - - [04/Jul/2025 08:50:41] "[33mGET /favicon.ico HTTP/1.0[0m" 404 -
+2025-07-04 08:51:09,439 - werkzeug - INFO - 127.0.0.1 - - [04/Jul/2025 08:51:09] "[32mPOST /login HTTP/1.0[0m" 302 -
+2025-07-04 08:51:09,472 - werkzeug - INFO - 127.0.0.1 - - [04/Jul/2025 08:51:09] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-04 08:51:09,517 - werkzeug - INFO - 127.0.0.1 - - [04/Jul/2025 08:51:09] "GET /select-company HTTP/1.0" 200 -
+2025-07-04 08:51:13,266 - werkzeug - INFO - 127.0.0.1 - - [04/Jul/2025 08:51:13] "[32mGET /select-company HTTP/1.0[0m" 302 -
+2025-07-04 08:51:13,352 - werkzeug - INFO - 127.0.0.1 - - [04/Jul/2025 08:51:13] "GET /login HTTP/1.0" 200 -
+2025-07-04 08:51:14,758 - werkzeug - INFO - 127.0.0.1 - - [04/Jul/2025 08:51:14] "[32mPOST /select-company HTTP/1.0[0m" 302 -
+2025-07-04 08:51:14,779 - werkzeug - INFO - 127.0.0.1 - - [04/Jul/2025 08:51:14] "GET / HTTP/1.0" 200 -
+2025-07-04 08:51:14,877 - werkzeug - INFO - 127.0.0.1 - - [04/Jul/2025 08:51:14] "[36mGET /static/css/custom.css HTTP/1.0[0m" 304 -
+2025-07-04 08:51:14,886 - werkzeug - INFO - 127.0.0.1 - - [04/Jul/2025 08:51:14] "[33mGET /static/css/themes.css HTTP/1.0[0m" 404 -
+2025-07-04 08:51:14,886 - werkzeug - INFO - 127.0.0.1 - - [04/Jul/2025 08:51:14] "[33mGET /uploads/avatar_dsergeod_gmail_com.jpg HTTP/1.0[0m" 404 -
+2025-07-04 08:51:14,888 - werkzeug - INFO - 127.0.0.1 - - [04/Jul/2025 08:51:14] "[36mGET /static/js/dashboard.js HTTP/1.0[0m" 304 -
+2025-07-04 08:51:14,974 - werkzeug - INFO - 127.0.0.1 - - [04/Jul/2025 08:51:14] "GET /requests_data HTTP/1.0" 200 -
+2025-07-04 08:51:14,977 - werkzeug - INFO - 127.0.0.1 - - [04/Jul/2025 08:51:14] "[33mGET /data HTTP/1.0[0m" 404 -
+2025-07-04 08:51:45,031 - werkzeug - INFO - 127.0.0.1 - - [04/Jul/2025 08:51:45] "GET /requests_data HTTP/1.0" 200 -
+2025-07-04 08:51:45,032 - werkzeug - INFO - 127.0.0.1 - - [04/Jul/2025 08:51:45] "[33mGET /data HTTP/1.0[0m" 404 -
+2025-07-04 08:52:05,006 - werkzeug - INFO - 127.0.0.1 - - [04/Jul/2025 08:52:05] "GET / HTTP/1.0" 200 -
+2025-07-04 08:52:05,041 - werkzeug - INFO - 127.0.0.1 - - [04/Jul/2025 08:52:05] "[33mGET /static/css/themes.css HTTP/1.0[0m" 404 -
+2025-07-04 08:52:05,043 - werkzeug - INFO - 127.0.0.1 - - [04/Jul/2025 08:52:05] "[33mGET /uploads/avatar_dsergeod_gmail_com.jpg HTTP/1.0[0m" 404 -
+2025-07-04 08:52:05,044 - werkzeug - INFO - 127.0.0.1 - - [04/Jul/2025 08:52:05] "[36mGET /static/css/custom.css HTTP/1.0[0m" 304 -
+2025-07-04 08:52:05,046 - werkzeug - INFO - 127.0.0.1 - - [04/Jul/2025 08:52:05] "[36mGET /static/js/dashboard.js HTTP/1.0[0m" 304 -
+2025-07-04 08:52:05,064 - werkzeug - INFO - 127.0.0.1 - - [04/Jul/2025 08:52:05] "[33mGET /data HTTP/1.0[0m" 404 -
+2025-07-04 08:52:05,066 - werkzeug - INFO - 127.0.0.1 - - [04/Jul/2025 08:52:05] "GET /requests_data HTTP/1.0" 200 -
+2025-07-04 08:52:29,773 - werkzeug - INFO - 127.0.0.1 - - [04/Jul/2025 08:52:29] "POST /update_status/8/done HTTP/1.0" 200 -
+2025-07-04 08:52:35,086 - werkzeug - INFO - 127.0.0.1 - - [04/Jul/2025 08:52:35] "[33mGET /data HTTP/1.0[0m" 404 -
+2025-07-04 08:52:35,088 - werkzeug - INFO - 127.0.0.1 - - [04/Jul/2025 08:52:35] "GET /requests_data HTTP/1.0" 200 -
+2025-07-04 08:53:06,909 - werkzeug - INFO - 127.0.0.1 - - [04/Jul/2025 08:53:06] "GET /requests_data HTTP/1.0" 200 -
+2025-07-04 08:53:06,922 - werkzeug - INFO - 127.0.0.1 - - [04/Jul/2025 08:53:06] "[33mGET /data HTTP/1.0[0m" 404 -
+2025-07-04 09:41:12,539 - werkzeug - INFO - 127.0.0.1 - - [04/Jul/2025 09:41:12] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-04 09:50:12,388 - werkzeug - INFO - 127.0.0.1 - - [04/Jul/2025 09:50:12] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-04 09:50:12,436 - werkzeug - INFO - 127.0.0.1 - - [04/Jul/2025 09:50:12] "GET /login HTTP/1.0" 200 -
+2025-07-04 09:51:03,565 - werkzeug - INFO - 127.0.0.1 - - [04/Jul/2025 09:51:03] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-04 10:37:38,365 - werkzeug - INFO - 127.0.0.1 - - [04/Jul/2025 10:37:38] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-04 10:37:45,624 - werkzeug - INFO - 127.0.0.1 - - [04/Jul/2025 10:37:45] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-04 10:37:45,762 - werkzeug - INFO - 127.0.0.1 - - [04/Jul/2025 10:37:45] "GET /login HTTP/1.0" 200 -
+2025-07-04 10:54:27,779 - werkzeug - INFO - 127.0.0.1 - - [04/Jul/2025 10:54:27] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-04 10:56:32,639 - werkzeug - INFO - 127.0.0.1 - - [04/Jul/2025 10:56:32] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-04 11:18:29,599 - werkzeug - INFO - 127.0.0.1 - - [04/Jul/2025 11:18:29] "[32mGET / HTTP/1.0[0m" 302 -
+2025-07-04 11:25:30,246 - werkzeug - INFO - 127.0.0.1 - - [04/Jul/2025 11:25:30] "[32mGET / HTTP/1.0[0m" 302 -
