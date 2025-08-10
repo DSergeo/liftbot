@@ -48,10 +48,6 @@ action_rights = {"allow_chat_actions": True}
 # ---------- сгенерировать карту RU→UA при старте ----------
 subprocess.run(["python3", "generate_ru_to_ua.py"], check=True)
 
-with open("addresses.json", encoding="utf-8") as f:
-    address_data = json.load(f)
-with open("map_ru_to_ua.json", encoding="utf-8") as f:
-    map_ru_to_ua = json.load(f)
 
 def clean_currency_format(value):
     """Converts Ukrainian formatted currency (with commas) to float"""
