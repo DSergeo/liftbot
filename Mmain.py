@@ -1,8 +1,11 @@
+
 from dotenv import load_dotenv
+
 load_dotenv()
+from flask import Flask, render_template, jsonify, send_file, request, session, redirect, url_for
 
 import os, json, threading, subprocess, time, schedule, logging
-from flask import Flask, render_template, jsonify, send_file, request, session, redirect, url_for
+from flask import Flask, render_template, jsonify, send_file, request
 import telebot
 from telebot import types
 from geopy.geocoders import Nominatim
@@ -10,11 +13,17 @@ import sqlite3
 from datetime import datetime, timedelta
 import pytz
 
+from app.bot_requests.shared import bot
+
 from app.bot_requests.shared import (
-    bot, init_database, save_requests_to_db, load_requests_from_db,
+    init_database, save_requests_to_db, load_requests_from_db,
     requests_list, match_address, clean_street_name,
-    district_names, district_ids, district_phones, personnel_chats, user_states, chat_action_allowed
+    district_names, district_ids, district_phones, personnel_chats, user_states
 )
+from app.bot_requests import handlers
+from app.bot_requests.shared import chat_action_allowed
+
+
 
 logging.basicConfig(level=logging.INFO,
                    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
@@ -22,26 +31,25 @@ logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
 app.secret_key = os.environ.get('SECRET_KEY', 'dev-secret-key-for-sessions-123456789')
-
 BOT_TOKEN = os.getenv("BOT_TOKEN_REQUESTS")
+#bot = telebot.TeleBot(BOT_TOKEN, parse_mode="HTML")
+
 
 RIGHTS_FILE = "chat_rights.json"
 
-# ====== ИНИЦИАЛИЗАЦИЯ ======
 init_database()
 load_requests_from_db()
-
-# Подключаем хендлеры бота ПОСЛЕ инициализации базы
-from app.bot_requests import handlers
 
 AUTHORIZED_USERS_FILE = "authorized_users.json"
 authorized_users = {}
 
-# ====== Blueprints ======
+
+# Импортируем Blueprints
 from app.contacts.routes import contacts_html, contacts_api
 from app.counterparties.routes import counterparty_html, counterparties_api
 from app.contracts.routes import contract_html, contract_api
 
+# Регистрируем Blueprints
 app.register_blueprint(contacts_html)
 app.register_blueprint(contacts_api)
 app.register_blueprint(counterparty_html)
@@ -49,8 +57,41 @@ app.register_blueprint(counterparties_api)
 app.register_blueprint(contract_html)
 app.register_blueprint(contract_api)
 
+
+@app.route("/vapid_public_key")
+def get_vapid_key():
+    return jsonify({"key": VAPID_PUBLIC_KEY})
+
+
+@app.route("/subscribe_push", methods=["POST"])
+def subscribe_push():
+    sub = request.get_json()
+    if sub and sub not in subscriptions:
+        subscriptions.append(sub)
+        save_subscriptions()
+    return jsonify({"success": True})
+
+@app.route("/stats_data")
+def stats_data():
+    pending = sum(1 for r in requests_list if not r["completed"])
+    done = sum(1 for r in requests_list if r["completed"] and r.get("status") == "done")
+    error = sum(1 for r in requests_list if r["completed"] and r.get("status") == "error")
+    return jsonify({"pending": pending, "done": done, "error": error})
+
+def load_action_rights():
+    global chat_action_allowed
+    if os.path.exists(RIGHTS_FILE):
+        with open(RIGHTS_FILE, encoding="utf-8") as f:
+            chat_action_allowed = json.load(f)
+
+def save_action_rights():
+    with open(RIGHTS_FILE, "w", encoding="utf-8") as f:
+        json.dump(chat_action_allowed, f, ensure_ascii=False)
+
+kyiv_tz = pytz.timezone("Europe/Kyiv")
+
 # Права нажатия
-#action_rights = {"allow_chat_actions": True}
+action_rights = {"allow_chat_actions": True}
 
          # ========== Flask ==========
 @app.route("/get_action_rights")
@@ -684,6 +725,7 @@ def complete_request(idx):
         return jsonify({"success": True})
     return jsonify({"success": False})
 
+
 @app.route("/not_working_request/<int:idx>", methods=["POST"])
 def not_working_request(idx):
     if 0 <= idx < len(requests_list):
@@ -715,6 +757,7 @@ def not_working_request(idx):
         except: pass
         return jsonify({"success": True})
     return jsonify({"success": False})
+
 
 @app.route("/delete_request/<int:idx>", methods=["POST"])
 def delete_request(idx):
@@ -759,8 +802,9 @@ def requests_data():
         print(f"Error in requests_data: {e}")
         return jsonify({"error": "Failed to load requests", "requests": []})
 
+
 # Состояние включения кнопок (по умолчанию — True)
-#chat_action_allowed = {"участок№1": True, "участок№2": True}
+chat_action_allowed = {"участок№1": True, "участок№2": True}
 @app.route("/get_chat_rights")
 def get_chat_rights():
     return jsonify(chat_action_allowed)
@@ -775,6 +819,7 @@ def toggle_chat_actions():
         save_action_rights()
         return jsonify({"success": True})
     return jsonify({"success": False})
+
 
 @app.route("/update_status/<int:idx>/<action>", methods=["POST"])
 def update_status(idx, action):
@@ -824,39 +869,7 @@ def update_status(idx, action):
 
     return jsonify({"success": False})
 
-# ====== VAPID ключи для Web Push ======
-@app.route("/vapid_public_key")
-def get_vapid_key():
-    return jsonify({"key": VAPID_PUBLIC_KEY})
-
-@app.route("/subscribe_push", methods=["POST"])
-def subscribe_push():
-    sub = request.get_json()
-    if sub and sub not in subscriptions:
-        subscriptions.append(sub)
-        save_subscriptions()
-    return jsonify({"success": True})
-
-@app.route("/stats_data")
-def stats_data():
-    pending = sum(1 for r in requests_list if not r["completed"])
-    done = sum(1 for r in requests_list if r["completed"] and r.get("status") == "done")
-    error = sum(1 for r in requests_list if r["completed"] and r.get("status") == "error")
-    return jsonify({"pending": pending, "done": done, "error": error})
-
-def load_action_rights():
-    global chat_action_allowed
-    if os.path.exists(RIGHTS_FILE):
-        with open(RIGHTS_FILE, encoding="utf-8") as f:
-            chat_action_allowed = json.load(f)
-
-def save_action_rights():
-    with open(RIGHTS_FILE, "w", encoding="utf-8") as f:
-        json.dump(chat_action_allowed, f, ensure_ascii=False)
-
-kyiv_tz = pytz.timezone("Europe/Kyiv")
-
-# ====== Планировщик ======
+# ========== щоденний звіт ==========
 def send_daily():
     summary = {}
     for i, r in enumerate(requests_list):
@@ -869,29 +882,23 @@ def send_daily():
     for chat, lines in summary.items():
         bot.send_message(chat, "📋 <b>Невиконані заявки:</b>\n" + " \n".join(lines))
 
+
 def sched_loop():
     schedule.every().day.at("08:30").do(send_daily)
     while True:
         schedule.run_pending()
         time.sleep(60)
 
-# ====== Запуск ======
+
+# ========== run ==========
 if __name__ == "__main__":
+    app.secret_key = "дуже_секретний_рядок_тут"
+    
     threading.Thread(target=sched_loop, daemon=True).start()
-
     def start_bot():
-        logger.info("Запуск Telegram-бота...")
-        while True:
-            try:
-                bot.infinity_polling(
-                    timeout=60,
-                    long_polling_timeout=30,
-                    allowed_updates=["message", "callback_query", "chat_member", "my_chat_member"]
-                )
-            except Exception as e:
-                logger.error(f"Polling упал: {e}", exc_info=True)
-                time.sleep(5)  # Пауза перед перезапуском
+        bot.polling(none_stop=True, allowed_updates=["message", "callback_query", "chat_member", "my_chat_member"])
 
+    # Запускаємо бота у потоці
     threading.Thread(target=start_bot, daemon=True).start()
 
     load_action_rights()

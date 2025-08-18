@@ -1,9 +1,11 @@
+import json, os, tempfile
 import logging
 from datetime import datetime, timedelta
 from pytz import timezone
-
+from pathlib import Path
 from geopy.geocoders import Nominatim
 import telebot
+import unicodedata
 from telebot import types
 from app.bot_requests.shared import user_states, address_data, chat_action_allowed
 
@@ -20,7 +22,7 @@ from app.bot_requests.shared import (
     save_authorized_users,
     log_action,
     bot,
-    send_push,   
+    send_push,
 )
 
 logger = logging.getLogger(__name__)
@@ -30,7 +32,7 @@ kyiv_tz = timezone("Europe/Kyiv")
 # и если нужно, user_states объяви в shared и импортируй сюда
 #from app.bot_requests.shared import user_states, address_data
 #from app.bot_requests.shared import chat_action_allowed
-
+ADDRESSES_FILE = "addresses.json"
 
 
 @bot.message_handler(commands=["start"])
@@ -40,7 +42,7 @@ def cmd_start(msg):
     user_states[msg.chat.id] = {"step": "name", "user_id": msg.chat.id}
     bot.send_message(msg.chat.id, "👋 <b>Вітаю!</b>\nЯ бот для прийома заявок з ремонту ліфтів.\n\nВведіть ваше ім’я будь ласка:")
 
-@bot.message_handler(commands=["заявки"])
+@bot.message_handler(commands=["requests"])
 def cmd_requests(msg):
     kb = types.InlineKeyboardMarkup()
     kb.add(
@@ -85,10 +87,20 @@ def handle_text(msg):
         parts = msg.text.split()
         if len(parts) < 2:
             return bot.send_message(msg.chat.id, "❌ Формат: назва вулиці + номер будинку")
-        street, b = " ".join(parts[:-1]), parts[-1]
+        street, b_raw = " ".join(parts[:-1]), parts[-1]
+        b = b_raw.upper()  # нормализация буквы в доме
         found = match_address(street, b, st["district"])
         if not found:
             return bot.send_message(msg.chat.id, "❌ Адреса не знайдена, спробуйте ще.")
+
+        houses = address_data.get(st["district"], {}).get(found, {})
+        entrances = houses.get(b, {}) 
+        if not entrances:
+            return bot.send_message(msg.chat.id, "❌ Такого будинку немає в базі.")
+
+        if all(not v.get("active", True) for v in entrances.values()):
+            return bot.send_message(msg.chat.id, "⛔️ Цей адрес не обслуговується компанією Елестек.")
+    
         st["address"] = f"{found}, {b}"
         st["step"] = "enter_entrance"
         return bot.send_message(msg.chat.id, "Введіть номер під'їзду:", reply_markup=types.ReplyKeyboardRemove())
@@ -101,6 +113,18 @@ def handle_text(msg):
             return bot.send_message(msg.chat.id, "❌ Введіть лише цифри (не більше 2):")
 
         st["entrance"] = msg.text
+        try:
+            street_name, house_num = st["address"].split(", ")
+            entrances = address_data.get(st["district"], {}).get(street_name, {}).get(house_num, {})	
+
+            if st["entrance"] not in entrances:
+                return bot.send_message(msg.chat.id, "❌ Такого під'їзду немає в базі.")
+
+            if not entrances[st["entrance"]].get("active", True):
+                return bot.send_message(msg.chat.id, "⛔️ Цей під'їзд не обслуговується компанією Елестек.")
+        except Exception as e:
+            print("⛔️ Помилка перевірки під'їзду:", e)
+            return bot.send_message(msg.chat.id, "❌ Помилка перевірки адреси, спробуйте ще.")
 
         # ➡️ Перевірка на блокування адреси після ❌
         print(f"➡️ Введено під'їзд: {st['entrance']}")
@@ -231,7 +255,8 @@ def handle_location(msg):
             raise ValueError("No road in address")
 
         road_raw = location.raw["address"]["road"]
-        house_number = location.raw["address"].get("house_number", "").lower()
+        house_number_raw = location.raw["address"].get("house_number", "")
+        house_number = house_number_raw.upper()  # нормализация буквы дома
         road_cleaned = clean_street_name(road_raw)
 
         found_district = None
@@ -247,6 +272,12 @@ def handle_location(msg):
 
         if not matched_street or not house_number:
             return bot.send_message(chat_id, "❌ Не вдалося визначити адресу або номер будинку.\nСпробуйте ввести адресу вручну.")
+        
+        entrances = address_data.get(found_district, {}).get(matched_street, {}).get(house_number, {})
+        if not entrances:
+            return bot.send_message(chat_id, "❌ Цей будинок відсутній у базі.")
+        if all(not v.get("active", True) for v in entrances.values()):
+            return bot.send_message(chat_id, "⛔️ Цей адрес не обслуговується компанією Елестек.")
 
         state["district"] = found_district
         state["address"] = f"{matched_street}, {house_number}"
@@ -361,7 +392,7 @@ def cb_auth(call):
     bot.answer_callback_query(call.id, "✅ Ви авторизовані.")
     bot.edit_message_text("✅ Ви авторизовані для цього району.", call.message.chat.id, call.message.message_id)
 
-@bot.message_handler(commands=["призначити"])
+@bot.message_handler(commands=["assign"])
 def cmd_assign(msg):
     if msg.chat.id not in personnel_chats.values():
         return bot.reply_to(msg, "❌ Лише в чаті району.")
@@ -397,7 +428,7 @@ def cmd_assign(msg):
         kb.add(btn)
     bot.send_message(msg.chat.id, "Оберіть представника:", reply_markup=kb)
 
-@bot.message_handler(commands=["скасувати"])
+@bot.message_handler(commands=["unassign"])
 def cmd_unassign(msg):
     if msg.chat.id not in personnel_chats.values():
         return bot.reply_to(msg, "❌ Лише в чаті району.")
@@ -570,4 +601,140 @@ def cb(call):
     save_requests_to_db()
     bot.answer_callback_query(call.id)
 
-    
+@bot.message_handler(commands=["help"])
+def cmd_help(msg):
+    commands_list = [
+        "/start – почати роботу з ботом",
+        "/requests – перегляд заявок (🕐 очікують, ✅ виконані, ❌ не працює)",
+        "/assign – призначити представника району (адмін)",
+        "/unassign – скасувати представника району (адмін)",
+        "/disable – вимкнути будинок або під'їзд",
+        "/enable – увімкнути будинок або під'їзд",
+    ]
+    bot.send_message(msg.chat.id, "📋 <b>Список команд:</b>\n\n" + "\n".join(commands_list), parse_mode="HTML")
+
+
+# ADDRESSES_FILE і address_data у тебе вже є (імпорт із shared)
+# from app.bot_requests.shared import address_data, ADDRESSES_FILE, clean_street_name, personnel_chats, user_states, bot
+# ↑ переконайся, що clean_street_name імпортовано
+
+def _save_atomic(data, path):
+    """Безпечний запис JSON: спочатку у tmp-файл, потім атомарна заміна."""
+    dirpath = os.path.dirname(path) or "."
+    fd, tmp_path = tempfile.mkstemp(prefix=".addresses.", dir=dirpath)
+    try:
+        with os.fdopen(fd, "w", encoding="utf-8") as f:
+            json.dump(data, f, ensure_ascii=False, indent=2)
+            f.flush()
+            os.fsync(f.fileno())
+        os.replace(tmp_path, path)  # атомарна заміна
+    except Exception:
+        try:
+            os.remove(tmp_path)
+        except Exception:
+            pass
+        raise
+
+def refresh_addresses():
+    """Підтягнути актуальні адреси з файлу в address_data без створення нового об'єкта."""
+    try:
+        with open(ADDRESSES_FILE, "r", encoding="utf-8") as f:
+            data = json.load(f)
+        address_data.clear()
+        address_data.update(data)
+    except FileNotFoundError:
+        logger.warning("ADDRESSES_FILE not found, using in-memory address_data")
+    except Exception as e:
+        logger.exception(f"Failed to refresh addresses: {e}")
+
+def save_addresses():
+    """Зберегти оновлені адреси без втрати структури."""
+    _save_atomic(address_data, ADDRESSES_FILE)
+
+@bot.message_handler(commands=["disable", "enable"])
+def cmd_disable_enable(msg):
+    # ✅ лише в районних групових чатах
+    if msg.chat.type == "private":
+        return bot.reply_to(msg, "⛔️ Ця команда доступна лише у чаті району.")
+    if msg.chat.id not in personnel_chats.values():
+        return bot.reply_to(msg, "⛔️ Це не чат району.")
+
+    step = "enable" if msg.text.startswith("/enable") else "disable"
+    user_states[msg.chat.id] = {"step": step}
+    bot.send_message(
+        msg.chat.id,
+        "✏️ Введіть адресу (наприклад: Лазурна 32 або Лазурна 32 п.1):"
+    )
+
+@bot.message_handler(func=lambda m: user_states.get(m.chat.id, {}).get("step") in ("disable", "enable"))
+def handle_disable_enable(msg):
+    step = user_states[msg.chat.id]["step"]
+    enable = (step == "enable")
+
+    text = msg.text.strip()
+    parts = text.split()
+    if len(parts) < 2:
+        return bot.send_message(msg.chat.id, "❌ Формат: Вулиця + Номер (і за бажанням п.Х)")
+
+    # Розбір "вулиця будинок [п.X]"
+    entrance = None
+    if parts[-1].lower().startswith("п."):
+        entrance = parts[-1][2:]
+        house = parts[-2]
+        street_q = " ".join(parts[:-2])
+    else:
+        house = parts[-1]
+        street_q = " ".join(parts[:-1])
+
+    # Нормалізація для пошуку
+    try:
+        street_q_norm = clean_street_name(street_q)
+    except Exception:
+        street_q_norm = street_q.lower()
+
+    # Підтягнемо актуальні дані з диска (щоб не перетерти чужі паралельні зміни)
+    refresh_addresses()
+
+    found = False
+    for district, streets in address_data.items():
+        for street_name, houses in streets.items():
+            # м'яке порівняння по нормалізованій назві
+            try:
+                name_norm = clean_street_name(street_name)
+            except Exception:
+                name_norm = street_name.lower()
+
+            if street_q_norm in name_norm:
+                if house in houses:
+                    if entrance:  # конкретний під'їзд
+                        if entrance in houses[house]:
+                            # змінюємо лише прапорець active
+                            houses[house][entrance]["active"] = enable
+                            bot.send_message(
+                                msg.chat.id,
+                                f"✅ {street_name} {house} п.{entrance} {'увімкнено' if enable else 'вимкнено'}"
+                            )
+                            found = True
+                        else:
+                            return bot.send_message(msg.chat.id, "❌ Такого під'їзду немає.")
+                    else:  # увесь будинок
+                        for ent_key, ent_val in houses[house].items():
+                            # ent_val — це словник під'їзду; чіпаємо тільки active
+                            if isinstance(ent_val, dict):
+                                ent_val["active"] = enable
+                        bot.send_message(
+                            msg.chat.id,
+                            f"✅ Усі під'їзди {street_name} {house} {'увімкнено' if enable else 'вимкнено'}"
+                        )
+                        found = True
+    if not found:
+        return bot.send_message(msg.chat.id, "❌ Такої адреси не знайдено.")
+
+    try:
+        save_addresses()
+    except Exception as e:
+        logger.exception("save_addresses failed")
+        return bot.send_message(msg.chat.id, f"⛔️ Помилка збереження: {e}")
+
+    # очищаємо state тільки після успішного сейву
+    user_states.pop(msg.chat.id, None)
