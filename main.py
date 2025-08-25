@@ -10,34 +10,54 @@ import sqlite3
 from datetime import datetime, timedelta
 import pytz
 
-from app.bot_requests.shared import (
-    bot, init_database, save_requests_to_db, load_requests_from_db,
-    requests_list, match_address, clean_street_name,
-    district_names, district_ids, district_phones, personnel_chats, user_states, chat_action_allowed
-)
+# ====== Бот ТО (Maintenance) ======
+from app.bot_maintenance.shared import bot as maintenance_bot, init_database as init_maintenance_db
+import app.bot_maintenance.handlers  # подключаем хендлеры бота ТО
 
+# ====== Бот заявок (Requests) ======
+from app.bot_requests.shared import (
+    bot as requests_bot,
+    init_database as init_requests_db,
+    save_requests_to_db,
+    load_requests_from_db,
+    requests_list,
+    match_address,
+    clean_street_name,
+    district_names,
+    district_ids,
+    district_phones,
+    personnel_chats,
+    user_states,
+    chat_action_allowed
+)
+from app.bot_requests import handlers  # подключаем хендлеры бота заявок
+
+# ====== Логирование ======
 logging.basicConfig(level=logging.INFO,
                    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+# ====== Flask ======
 app = Flask(__name__)
 app.secret_key = os.environ.get('SECRET_KEY', 'dev-secret-key-for-sessions-123456789')
 
-BOT_TOKEN = os.getenv("BOT_TOKEN_REQUESTS")
+# ====== Путь к токенам ======
+BOT_TOKEN_REQUESTS = os.getenv("BOT_TOKEN_REQUESTS")
+BOT_TOKEN_MAINTENANCE = os.getenv("BOT_TOKEN_MAINTENANCE")
 
 RIGHTS_FILE = "chat_rights.json"
-
-# ====== ИНИЦИАЛИЗАЦИЯ ======
-init_database()
-load_requests_from_db()
-
-# Подключаем хендлеры бота ПОСЛЕ инициализации базы
-from app.bot_requests import handlers
-
 AUTHORIZED_USERS_FILE = "authorized_users.json"
 authorized_users = {}
 
+# ====== ИНИЦИАЛИЗАЦИЯ БАЗ ======
+init_maintenance_db()  # создаёт maintenance.db для бота ТО
+logger.info("maintenance.db created.")
+
+init_requests_db()      # создаёт requests.db для бота заявок
+load_requests_from_db() # загружаем заявки в память
+
 # ====== Blueprints ======
+
 from app.contacts.routes import contacts_html, contacts_api
 from app.counterparties.routes import counterparty_html, counterparties_api
 from app.contracts.routes import contract_html, contract_api
@@ -49,8 +69,9 @@ app.register_blueprint(counterparties_api)
 app.register_blueprint(contract_html)
 app.register_blueprint(contract_api)
 
-# Права нажатия
-#action_rights = {"allow_chat_actions": True}
+# Права нажатия (если нужно)
+# action_rights = {"allow_chat_actions": True}
+
 
          # ========== Flask ==========
 @app.route("/get_action_rights")
@@ -879,20 +900,26 @@ def sched_loop():
 if __name__ == "__main__":
     threading.Thread(target=sched_loop, daemon=True).start()
 
-    def start_bot():
-        logger.info("Запуск Telegram-бота...")
+    def start_requests_bot():
+        logger.info("Запускается бот заявок...")
         while True:
             try:
-                bot.infinity_polling(
-                    timeout=60,
-                    long_polling_timeout=30,
-                    allowed_updates=["message", "callback_query", "chat_member", "my_chat_member"]
-                )
+                requests_bot.infinity_polling(timeout=60, long_polling_timeout=60, allowed_updates=True)
             except Exception as e:
-                logger.error(f"Polling упал: {e}", exc_info=True)
-                time.sleep(5)  # Пауза перед перезапуском
+                logger.error(f"Polling заявок упал: {e}", exc_info=True)
+                time.sleep(5)
 
-    threading.Thread(target=start_bot, daemon=True).start()
+    def start_maintenance_bot():
+        logger.info("Запускается бот ТО...")
+        while True:
+            try:
+                maintenance_bot.infinity_polling(timeout=60, long_polling_timeout=60, allowed_updates=True)
+            except Exception as e:
+                logger.error(f"Polling ТО упал: {e}", exc_info=True)
+                time.sleep(5)
+
+    threading.Thread(target=start_requests_bot, daemon=True).start()
+    threading.Thread(target=start_maintenance_bot, daemon=True).start()
 
     load_action_rights()
     app.run(host="0.0.0.0", port=5000)

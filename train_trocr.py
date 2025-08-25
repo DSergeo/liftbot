@@ -1,101 +1,107 @@
 import os
 import pandas as pd
-from datasets import Dataset
+from torch.utils.data import Dataset, DataLoader
 from transformers import (
     TrOCRProcessor,
     VisionEncoderDecoderModel,
-    Seq2SeqTrainer,
     Seq2SeqTrainingArguments,
-    default_data_collator
+    Seq2SeqTrainer
 )
 from PIL import Image
 import torch
 import numpy as np
 
 # === 0. Настройки ===
-images_folder = "data/images"        # папка с картинками
-dataset_csv = "data/dataset.csv"     # CSV файл
+images_folder = "data/images"
+dataset_csv = "data/dataset.csv"
 output_dir = "data/trocr-finetuned-journal"
-num_epochs = 10
-batch_size = 2
+num_epochs = 3
+batch_size = 1
 learning_rate = 5e-5
-max_target_length = 128  # Добавим максимальную длину текста
+max_target_length = 128
 
-# === 1. Создаём dataset.csv, если его нет ===
-if not os.path.exists(dataset_csv):
-    os.makedirs(os.path.dirname(dataset_csv), exist_ok=True)
-    data = []
+# === 1. Загрузка данных ===
+df = pd.read_csv(dataset_csv)
+print(f"[INFO] dataset.csv найден, загружено {len(df)} записей.")
 
-    for img_file in os.listdir(images_folder):
-        if img_file.lower().endswith((".png", ".jpg", ".jpeg")):
-            name = os.path.splitext(img_file)[0]
-            txt_file = os.path.join(images_folder, name + ".txt")
-            if os.path.exists(txt_file):
-                with open(txt_file, "r", encoding="utf-8") as f:
-                    text = f.read().strip()
-                data.append([os.path.join(images_folder, img_file), text])
-            else:
-                print(f"[WARNING] Нет текста для изображения {img_file}, пропускаем.")
-
-    if not data:
-        raise ValueError("Нет изображений с текстовыми файлами! Добавьте хотя бы одну пару .png/.txt")
-
-    df = pd.DataFrame(data, columns=["file", "text"])
-    df.to_csv(dataset_csv, index=False, quoting=1)  # quoting=1 для QUOTE_ALL
-    print(f"[INFO] dataset.csv создан с {len(df)} записями.")
-else:
-    df = pd.read_csv(dataset_csv)
-    print(f"[INFO] dataset.csv найден, загружено {len(df)} записей.")
-
-# Переименуем колонку для удобства
-df = df.rename(columns={"file": "image_path"})
-
-# === 2. Загружаем процессор и модель ===
+# === 2. Загрузка процессора и модели ===
 processor = TrOCRProcessor.from_pretrained("microsoft/trocr-base-handwritten")
 model = VisionEncoderDecoderModel.from_pretrained("microsoft/trocr-base-handwritten")
 
-# === 3. Создаём Dataset для HuggingFace ===
-def process_example(example):
-    # Загружаем изображение
-    image = Image.open(example["image_path"]).convert("RGB")
+# === 3. УСТАНАВЛИВАЕМ decoder_start_token_id ===
+# Это критически важно для encoder-decoder моделей
+model.config.decoder_start_token_id = processor.tokenizer.cls_token_id
+model.config.pad_token_id = processor.tokenizer.pad_token_id
+print(f"[INFO] decoder_start_token_id установлен: {model.config.decoder_start_token_id}")
+print(f"[INFO] pad_token_id установлен: {model.config.pad_token_id}")
+
+# === 4. Создаем собственный Dataset ===
+class CustomOCRDataset(Dataset):
+    def __init__(self, dataframe, processor, max_target_length=128):
+        self.dataframe = dataframe
+        self.processor = processor
+        self.max_target_length = max_target_length
+        
+    def __len__(self):
+        return len(self.dataframe)
     
-    # Подготавливаем текст для токенизации
-    text = example["text"]
-    
-    # Обрабатываем изображение и текст вместе
-    model_inputs = processor(
-        images=image, 
-        text=text, 
-        padding="max_length",
-        max_length=max_target_length,
-        truncation=True,
-        return_tensors="pt"
-    )
-    
-    # Подготовка labels
-    labels = model_inputs["labels"]
-    pixel_values = model_inputs["pixel_values"].squeeze(0)  # Убираем batch dimension
-    
-    return {
-        "pixel_values": pixel_values,
-        "labels": labels
-    }
+    def __getitem__(self, idx):
+        row = self.dataframe.iloc[idx]
+        image_path = row["image_path"]
+        text = row["text"]
+        
+        # Загрузка и обработка изображения
+        image = Image.open(image_path).convert("RGB")
+        
+        # Обработка изображения через processor
+        encoding = self.processor(images=image, return_tensors="pt")
+        
+        # Извлекаем pixel_values
+        pixel_values = encoding.pixel_values
+        if isinstance(pixel_values, list):
+            pixel_values = pixel_values[0]
+        pixel_values = pixel_values.squeeze(0)
+        
+        # Токенизация текста
+        labels = self.processor.tokenizer(
+            text,
+            padding="max_length",
+            max_length=self.max_target_length,
+            truncation=True,
+            return_tensors="pt"
+        ).input_ids.squeeze(0)
+        
+        return {
+            "pixel_values": pixel_values,
+            "labels": labels
+        }
 
 # Создаем dataset
-dataset = Dataset.from_pandas(df)
-dataset = dataset.map(process_example, remove_columns=dataset.column_names)
+train_dataset = CustomOCRDataset(df, processor, max_target_length)
 
-# === 4. Data collator (УПРОЩЕННАЯ ВЕРСИЯ) ===
+# === 5. Data collator ===
 def collate_fn(batch):
-    pixel_values = torch.stack([item["pixel_values"] for item in batch])
-    labels = torch.stack([item["labels"] for item in batch])
+    pixel_values = [item["pixel_values"] for item in batch]
+    labels = [item["labels"] for item in batch]
+    
+    pixel_values = torch.stack(pixel_values)
+    labels = torch.stack(labels)
     
     return {
         "pixel_values": pixel_values,
         "labels": labels
     }
 
-# === 5. Аргументы обучения ===
+# === 6. Проверка данных ===
+print("=== ПРОВЕРКА ДАННЫХ ===")
+if len(train_dataset) > 0:
+    sample = train_dataset[0]
+    print(f"Тип pixel_values: {type(sample['pixel_values'])}")
+    print(f"Форма pixel_values: {sample['pixel_values'].shape}")
+    print(f"Тип labels: {type(sample['labels'])}")
+    print(f"Форма labels: {sample['labels'].shape}")
+
+# === 7. Аргументы обучения ===
 training_args = Seq2SeqTrainingArguments(
     output_dir=output_dir,
     per_device_train_batch_size=batch_size,
@@ -104,25 +110,44 @@ training_args = Seq2SeqTrainingArguments(
     logging_dir="./logs",
     save_strategy="epoch",
     predict_with_generate=True,
-    fp16=torch.cuda.is_available(),
-    logging_steps=10,
-    save_total_limit=2,
+    logging_steps=1,
+    save_total_limit=1,
+    remove_unused_columns=False,
+    report_to="none",  # Отключаем отчеты
 )
 
-# === 6. Trainer ===
+# === 8. Trainer ===
 trainer = Seq2SeqTrainer(
     model=model,
     args=training_args,
-    train_dataset=dataset,
+    train_dataset=train_dataset,
     data_collator=collate_fn,
     tokenizer=processor.tokenizer,
 )
 
-# === 7. Запуск обучения ===
+# === 9. Запуск обучения ===
 print("[INFO] Запуск обучения...")
-trainer.train()
-
-# === 8. Сохраняем модель ===
-trainer.save_model()
-processor.save_pretrained(output_dir)
-print(f"[INFO] Модель сохранена в {output_dir}")
+try:
+    train_result = trainer.train()
+    print("[INFO] Обучение завершено успешно!")
+    
+    # Сохранение модели
+    trainer.save_model()
+    processor.save_pretrained(output_dir)
+    print(f"[INFO] Модель сохранена в {output_dir}")
+    
+    # Тестирование модели
+    print("[INFO] Тестирование модели...")
+    test_image = Image.open(df.iloc[0]["image_path"]).convert("RGB")
+    pixel_values = processor(test_image, return_tensors="pt").pixel_values
+    
+    generated_ids = model.generate(pixel_values)
+    generated_text = processor.batch_decode(generated_ids, skip_special_tokens=True)[0]
+    
+    print(f"Оригинальный текст: {df.iloc[0]['text']}")
+    print(f"Распознанный текст: {generated_text}")
+    
+except Exception as e:
+    print(f"[ERROR] Ошибка при обучении: {e}")
+    import traceback
+    traceback.print_exc()

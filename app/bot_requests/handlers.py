@@ -52,6 +52,22 @@ def cmd_requests(msg):
     )
     bot.send_message(msg.chat.id, "Оберіть тип заявок для перегляду:", reply_markup=kb)
 
+def make_entrance_keyboard(entrances_dict: dict):
+    """
+    entrances_dict: словарь подъездов по дому из address_data[...][...][house]
+    """
+    available = sorted({int(k) for k in entrances_dict.keys() if str(k).isdigit()})
+    kb = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=5)
+
+    # Кнопки 1..10 (если такие подъезды есть). Теперь 10 показываем как "10", а не "0".
+    nums_1_10 = [types.KeyboardButton(str(i)) for i in range(1, 11) if i in available]
+    if nums_1_10:
+        kb.add(*nums_1_10)
+
+    # Кнопка для ручного ввода (например, если подъездов >10 или нестандартная нумерация)
+    kb.add(types.KeyboardButton("Інший"))
+    return kb
+
 @bot.message_handler(func=lambda m: m.chat.type == "private", content_types=["text"])
 def handle_text(msg):
     st = user_states.get(msg.chat.id)
@@ -94,31 +110,44 @@ def handle_text(msg):
             return bot.send_message(msg.chat.id, "❌ Адреса не знайдена, спробуйте ще.")
 
         houses = address_data.get(st["district"], {}).get(found, {})
-        entrances = houses.get(b, {}) 
+        entrances = houses.get(b, {})
         if not entrances:
             return bot.send_message(msg.chat.id, "❌ Такого будинку немає в базі.")
-
         if all(not v.get("active", True) for v in entrances.values()):
             return bot.send_message(msg.chat.id, "⛔️ Цей адрес не обслуговується компанією Елестек.")
-    
+
         st["address"] = f"{found}, {b}"
         st["step"] = "enter_entrance"
-        return bot.send_message(msg.chat.id, "Введіть номер під'їзду:", reply_markup=types.ReplyKeyboardRemove())
+
+        # >>> ПОДСУНУТА КЛАВИАТУРА ПОДЪЕЗДОВ <<<
+        kb = make_entrance_keyboard(entrances)
+        return bot.send_message(msg.chat.id, "Виберіть під'їзд або натисніть «Інший»:", reply_markup=kb)
 
     if step == "enter_entrance":
         print("➡️ Введено під'їзд:", msg.text)
         print("➡️ Адреса:", st.get("address"))
         print("➡️ Район:", st.get("district"))
-        if not msg.text.isdigit() or len(msg.text) > 2:
+
+        # Кнопка "Інший" — даём ввести цифрами без клавиатуры
+        if msg.text.strip().lower() == "інший" or msg.text.strip().lower() == "инший":
+            return bot.send_message(msg.chat.id, "Введіть номер під'їзду цифрами:", reply_markup=types.ReplyKeyboardRemove())
+
+        # "0" означает 10-й подъезд
+        entered_entrance = "10" if msg.text == "0" else msg.text
+
+        if not entered_entrance.isdigit() or len(entered_entrance) > 2:
             return bot.send_message(msg.chat.id, "❌ Введіть лише цифри (не більше 2):")
 
-        st["entrance"] = msg.text
+        st["entrance"] = entered_entrance
         try:
             street_name, house_num = st["address"].split(", ")
-            entrances = address_data.get(st["district"], {}).get(street_name, {}).get(house_num, {})	
+            entrances = address_data.get(st["district"], {}).get(street_name, {}).get(house_num, {})
 
             if st["entrance"] not in entrances:
-                return bot.send_message(msg.chat.id, "❌ Такого під'їзду немає в базі.")
+                # если промахнулись — снова показать клавиатуру с доступными вариантами
+                kb = make_entrance_keyboard(entrances)
+                bot.send_message(msg.chat.id, "❌ Такого під'їзду немає в базі. Оберіть із клавіатури або введіть вручну:", reply_markup=kb)
+                return
 
             if not entrances[st["entrance"]].get("active", True):
                 return bot.send_message(msg.chat.id, "⛔️ Цей під'їзд не обслуговується компанією Елестек.")
@@ -126,7 +155,7 @@ def handle_text(msg):
             print("⛔️ Помилка перевірки під'їзду:", e)
             return bot.send_message(msg.chat.id, "❌ Помилка перевірки адреси, спробуйте ще.")
 
-        # ➡️ Перевірка на блокування адреси після ❌
+        # ➡️ Перевірка на блокування адреси після ❌ (ОСТАВЛЕНО БЕЗ ИЗМЕНЕНИЙ)
         print(f"➡️ Введено під'їзд: {st['entrance']}")
         print(f"➡️ Адреса: {st['address']}")
         print(f"➡️ Район: {st['district']}")
@@ -151,7 +180,6 @@ def handle_text(msg):
                 weekday = created_time.weekday()  # Пн=0, Нд=6
                 deadline = created_time + timedelta(hours=24)
 
-                # Якщо Пт/Сб/Нд — продовжити блокування до понеділка 13:25
                 if weekday in (4, 5, 6):
                     monday = created_time + timedelta(days=(7 - weekday))
                     deadline = monday.replace(hour=13, minute=25, second=0, microsecond=0)
@@ -173,8 +201,8 @@ def handle_text(msg):
                 return
 
         st["step"] = "enter_issue"
-        return bot.send_message(msg.chat.id, "✍️ Опишіть проблему:")
-
+        # убираем клавиатуру перед текстовым вводом проблемы
+        return bot.send_message(msg.chat.id, "✍️ Опишіть проблему:", reply_markup=types.ReplyKeyboardRemove())
 
     if step == "enter_issue":
         st["issue"] = msg.text
@@ -185,7 +213,7 @@ def handle_text(msg):
         if not msg.text.isdigit() or len(msg.text) != 10:
             return bot.send_message(msg.chat.id, "❌ Має бути 10 цифр.")
         st["phone"] = "+38" + msg.text
-        st["timestamp"] = datetime.now(kyiv_tz).strftime("%Y-%m-%d %H:%M:%S")        
+        st["timestamp"] = datetime.now(kyiv_tz).strftime("%Y-%m-%d %H:%M:%S")
         st.update(
             completed=False,
             completed_time="",
@@ -195,7 +223,6 @@ def handle_text(msg):
         idx = len(requests_list)
         requests_list.append(st.copy())
 
-        # Формування повідомлення для клієнта
         client_msg = (
             "✅ <b>Заявку прийнято!</b>\n\n"
             "📋 <b>Дані заявки:</b>\n"
@@ -206,12 +233,10 @@ def handle_text(msg):
             f"📱 Телефон: {st['phone']}"
         )
 
-        # Надсилання клієнту
         kb = types.InlineKeyboardMarkup().add(
             types.InlineKeyboardButton("📨 Створити нову заявку", callback_data="start"))
         bot.send_message(msg.chat.id, client_msg, reply_markup=kb)
 
-        # Надсилання у чат персоналу
         group = personnel_chats[district_ids[st["district"]]]
         group_kb = types.InlineKeyboardMarkup()
         group_kb.add(
@@ -222,20 +247,15 @@ def handle_text(msg):
         requests_list[idx]["chat_msg_id"] = sent.message_id
         requests_list[idx]["user_id"] = msg.chat.id
 
-        # Зберігаємо вже з повною інформацією
         save_requests_to_db()
-
-        # 🔔 Веб-пуш
         send_push("Нова заявка", f"{st['address']} — {st['issue']}")
 
-        # Повідомлення про аварійну службу
         phone_msg = "🔴🚨 <b>АВАРІЙНА СЛУЖБА</b> 🚨🔴\n\n"
         for n in district_phones[st["district"]]:
             phone_msg += f"📞 <a href='tel:{n}'>{n}</a>\n"
         phone_msg += "\u0336".join("⏱️ Працюємо цілодобово!")
         bot.send_message(msg.chat.id, phone_msg)
 
-        # Очистити стан
         user_states.pop(msg.chat.id)
 
 
@@ -272,7 +292,7 @@ def handle_location(msg):
 
         if not matched_street or not house_number:
             return bot.send_message(chat_id, "❌ Не вдалося визначити адресу або номер будинку.\nСпробуйте ввести адресу вручну.")
-        
+
         entrances = address_data.get(found_district, {}).get(matched_street, {}).get(house_number, {})
         if not entrances:
             return bot.send_message(chat_id, "❌ Цей будинок відсутній у базі.")
@@ -283,8 +303,10 @@ def handle_location(msg):
         state["address"] = f"{matched_street}, {house_number}"
         state["step"] = "enter_entrance"
 
+        # >>> ПОДСУНУТА КЛАВИАТУРА ПОДЪЕЗДОВ <<<
+        kb = make_entrance_keyboard(entrances)
         bot.send_message(chat_id, f"📍 Адреса: <b>{state['address']}</b>\n🏙️ Район: <b>{state['district']}</b>", parse_mode="HTML")
-        bot.send_message(chat_id, "Введіть номер під'їзду:", reply_markup=types.ReplyKeyboardRemove())
+        bot.send_message(chat_id, "Виберіть під'їзд або натисніть «Інший»:", reply_markup=kb)
 
     except Exception as e:
         logger.warning(f"Geolocation error: {e}")
@@ -294,7 +316,7 @@ def handle_location(msg):
         for d in district_names:
             kb.add(d)
         bot.send_message(chat_id, "Оберіть район:", reply_markup=kb)
-
+        
 @bot.chat_member_handler()
 def handle_new_member(msg):
     # Додано нового користувача в чат
@@ -671,70 +693,88 @@ def handle_disable_enable(msg):
     step = user_states[msg.chat.id]["step"]
     enable = (step == "enable")
 
-    text = msg.text.strip()
-    parts = text.split()
-    if len(parts) < 2:
-        return bot.send_message(msg.chat.id, "❌ Формат: Вулиця + Номер (і за бажанням п.Х)")
-
-    # Розбір "вулиця будинок [п.X]"
-    entrance = None
-    if parts[-1].lower().startswith("п."):
-        entrance = parts[-1][2:]
-        house = parts[-2]
-        street_q = " ".join(parts[:-2])
-    else:
-        house = parts[-1]
-        street_q = " ".join(parts[:-1])
-
-    # Нормалізація для пошуку
-    try:
-        street_q_norm = clean_street_name(street_q)
-    except Exception:
-        street_q_norm = street_q.lower()
-
-    # Підтягнемо актуальні дані з диска (щоб не перетерти чужі паралельні зміни)
+    results = []
     refresh_addresses()
 
-    found = False
-    for district, streets in address_data.items():
+    # определяем район по чату
+    chat_id = msg.chat.id
+    district_for_chat = None
+    for d, site in district_ids.items():
+        if personnel_chats.get(site) == chat_id:
+            district_for_chat = d
+            break
+
+    if not district_for_chat:
+        return bot.send_message(chat_id, "❌ Цей чат не прив'язаний до жодного району.")
+
+    # Разбиваем сообщение по строкам (каждая строка = адрес)
+    lines = msg.text.strip().splitlines()
+    for line in lines:
+        text = line.strip()
+        if not text:
+            continue
+
+        parts = text.split()
+        if len(parts) < 2:
+            results.append(f"❌ [{text}] Формат: Вулиця + Номер (і за бажанням п.Х)")
+            continue
+
+        entrance = None
+        if parts[-1].lower().startswith("п."):
+            entrance = parts[-1][2:]
+            house_raw = parts[-2]
+            street_q = " ".join(parts[:-2])
+        else:
+            house_raw = parts[-1]
+            street_q = " ".join(parts[:-1])
+
+        house = house_raw.upper().strip()  # игнор регистра
+        try:
+            street_q_norm = clean_street_name(street_q)
+        except Exception:
+            street_q_norm = street_q.lower()
+
+        found = False
+        # ищем только по районам, соответствующим чату
+        streets = address_data.get(district_for_chat, {})
         for street_name, houses in streets.items():
-            # м'яке порівняння по нормалізованій назві
             try:
                 name_norm = clean_street_name(street_name)
             except Exception:
                 name_norm = street_name.lower()
 
-            if street_q_norm in name_norm:
-                if house in houses:
-                    if entrance:  # конкретний під'їзд
-                        if entrance in houses[house]:
-                            # змінюємо лише прапорець active
-                            houses[house][entrance]["active"] = enable
-                            bot.send_message(
-                                msg.chat.id,
-                                f"✅ {street_name} {house} п.{entrance} {'увімкнено' if enable else 'вимкнено'}"
+            if street_q_norm in name_norm:  # улица совпала
+                for real_house in houses.keys():
+                    if real_house.upper() == house:  # дом совпал
+                        if entrance:  # конкретный подъезд
+                            if entrance in houses[real_house]:
+                                houses[real_house][entrance]["active"] = enable
+                                results.append(
+                                    f"✅ {street_name} {real_house} п.{entrance} {'увімкнено' if enable else 'вимкнено'}"
+                                )
+                                found = True
+                            else:
+                                results.append(f"❌ {street_name} {real_house}: немає під'їзду {entrance}")
+                        else:  # весь дом
+                            for ent_key, ent_val in houses[real_house].items():
+                                if isinstance(ent_val, dict):
+                                    ent_val["active"] = enable
+                            results.append(
+                                f"✅ Усі під'їзди {street_name} {real_house} {'увімкнено' if enable else 'вимкнено'}"
                             )
                             found = True
-                        else:
-                            return bot.send_message(msg.chat.id, "❌ Такого під'їзду немає.")
-                    else:  # увесь будинок
-                        for ent_key, ent_val in houses[house].items():
-                            # ent_val — це словник під'їзду; чіпаємо тільки active
-                            if isinstance(ent_val, dict):
-                                ent_val["active"] = enable
-                        bot.send_message(
-                            msg.chat.id,
-                            f"✅ Усі під'їзди {street_name} {house} {'увімкнено' if enable else 'вимкнено'}"
-                        )
-                        found = True
-    if not found:
-        return bot.send_message(msg.chat.id, "❌ Такої адреси не знайдено.")
+
+        if not found:
+            results.append(f"❌ [{text}] Такої адреси не знайдено у районі {district_for_chat}")
 
     try:
         save_addresses()
     except Exception as e:
         logger.exception("save_addresses failed")
-        return bot.send_message(msg.chat.id, f"⛔️ Помилка збереження: {e}")
+        return bot.send_message(chat_id, f"⛔️ Помилка збереження: {e}")
 
-    # очищаємо state тільки після успішного сейву
-    user_states.pop(msg.chat.id, None)
+    # очищаем state только после успешного сейва
+    user_states.pop(chat_id, None)
+
+    # Отправляем сводку по всем строкам
+    bot.send_message(chat_id, "\n".join(results))
