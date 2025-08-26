@@ -12,8 +12,9 @@ import pytz
 
 # ====== Бот ТО (Maintenance) ======
 from app.bot_maintenance.shared import bot as maintenance_bot, init_database as init_maintenance_db
-import app.bot_maintenance.handlers  # подключаем хендлеры бота ТО
-
+#import app.bot_maintenance.handlers  # подключаем хендлеры бота ТО
+from app.bot_maintenance import handlers   # просто импорт, чтобы зарегистрировались хендлеры
+#from app.bot_maintenance.shared import bot, init_database
 # ====== Бот заявок (Requests) ======
 from app.bot_requests.shared import (
     bot as requests_bot,
@@ -888,9 +889,15 @@ def send_daily():
         url = f"https://t.me/c/{str(chat)[4:]}/{r['chat_msg_id']}"
         summary[chat].append(f"#{i + 1} <a href='{url}'>{r['address']} п.{r['entrance']}</a>")
     for chat, lines in summary.items():
-        bot.send_message(chat, "📋 <b>Невиконані заявки:</b>\n" + " \n".join(lines))
+        requests_bot.send_message(chat, "📋 <b>Невиконані заявки:</b>\n" + " \n".join(lines))
 
 def sched_loop():
+    #====== через 5 минут от текущего момента ==========
+    #run_time = (datetime.now() + timedelta(minutes=1)).strftime("%H:%M")
+    #print(f"⏰ Тестовое время запуска: {run_time}")
+    #schedule.every().day.at(run_time).do(send_daily)
+
+    #======= каждый день в 08:30 ===========
     schedule.every().day.at("08:30").do(send_daily)
     while True:
         schedule.run_pending()
