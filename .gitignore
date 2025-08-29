@@ -1,0 +1,48 @@
+# Virtual environment
+venv/
+.env/
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Log files
+*.log
+logs/
+nohup.out
+
+# Machine learning models and data
+data/trocr-finetuned-journal/
+*.model
+*.weights
+*.h5
+*.pth
+*.pt
+
+# Large data files
+*.csv
+*.xlsx
+*.xls
+*.json
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Temporary files
+tmp/
+temp/
