@@ -10,7 +10,8 @@ from transformers import (
 from PIL import Image
 import torch
 import numpy as np
-
+ 
+ 
 # === 0. Настройки ===
 images_folder = "data/images"
 dataset_csv = "data/dataset.csv"
