@@ -1,22 +1,41 @@
-import os
-import json
-from flask import Flask, render_template, jsonify, send_file, request, session, redirect, url_for
 from dotenv import load_dotenv
-
 load_dotenv()
 
-# ====== Логирование ======
-import logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-logger = logging.getLogger(__name__)
+import os, json, threading, subprocess, time, schedule, logging
+from flask import Flask, render_template, jsonify, send_file, request, session, redirect, url_for
+import telebot
+from telebot import types
+from geopy.geocoders import Nominatim
+import sqlite3
+from datetime import datetime, timedelta
+import pytz
+
+# ====== Бот ТО (Maintenance) ======
+from app.bot_maintenance.shared import bot as maintenance_bot, init_database as init_maintenance_db
+import app.bot_maintenance.handlers  # подключаем хендлеры бота ТО
+
+# ====== Бот заявок (Requests) ======
+from app.bot_requests.shared import (
+    bot as requests_bot,
+    init_database as init_requests_db,
+    save_requests_to_db,
+    load_requests_from_db,
+    requests_list,
+    match_address,
+    clean_street_name,
+    district_names,
+    district_ids,
+    district_phones,
+    personnel_chats,
+    user_states,
+    chat_action_allowed
+)
+from app.bot_requests import handlers  # подключаем хендлеры бота заявок
 
 # ====== Логирование ======
 logging.basicConfig(level=logging.INFO,
                    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
-
-# ====== Импорт из бота для работы с БД ======
-from app.bot_requests.shared import init_database as init_requests_db, load_requests_from_db, requests_list
 
 # ====== Flask ======
 app = Flask(__name__)
@@ -29,6 +48,13 @@ BOT_TOKEN_MAINTENANCE = os.getenv("BOT_TOKEN_MAINTENANCE")
 RIGHTS_FILE = "chat_rights.json"
 AUTHORIZED_USERS_FILE = "authorized_users.json"
 authorized_users = {}
+
+# ====== ИНИЦИАЛИЗАЦИЯ БАЗ ======
+init_maintenance_db()  # создаёт maintenance.db для бота ТО
+logger.info("maintenance.db created.")
+
+init_requests_db()      # создаёт requests.db для бота заявок
+load_requests_from_db() # загружаем заявки в память
 
 # ====== Blueprints ======
 
@@ -654,7 +680,105 @@ def export_from_db():
         mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     )
 
+@app.route("/complete_request/<int:idx>", methods=["POST"])
+def complete_request(idx):
+    if 0 <= idx < len(requests_list):
+        r = requests_list[idx]
+        r.update(
+            completed=True,
+            completed_time=datetime.now(kyiv_tz).strftime("%Y-%m-%d %H:%M:%S"),
+            processed_by="Оператор з веб"
+        )
+        save_requests_to_db()
 
+        try:
+            requests_bot.edit_message_reply_markup(
+                chat_id=personnel_chats[district_ids[r["district"]]],
+                message_id=int(r["chat_msg_id"]),
+                reply_markup=None
+            )
+        except: pass
+
+        try:
+            requests_bot.send_message(r["user_id"], "✅ Ваша заявка виконана.")
+        except: pass
+        return jsonify({"success": True})
+    return jsonify({"success": False})
+
+@app.route("/not_working_request/<int:idx>", methods=["POST"])
+def not_working_request(idx):
+    if 0 <= idx < len(requests_list):
+        r = requests_list[idx]
+        r.update(
+            completed=True,
+            completed_time=datetime.now(kyiv_tz).strftime("%Y-%m-%d %H:%M:%S"),
+            processed_by="Оператор з веб"
+        )
+        save_requests_to_db()
+
+        try:
+            from telebot import types  # убедитесь, что импорт есть наверху
+
+            new_kb = types.InlineKeyboardMarkup()
+            new_kb.add(types.InlineKeyboardButton("✅ Виконано", callback_data=f"status:done:{idx}"))
+            requests_bot.edit_message_reply_markup(
+                chat_id=personnel_chats[district_ids[r["district"]]],
+                message_id=int(r["chat_msg_id"]),
+                reply_markup=new_kb
+            )
+
+        except: pass
+
+        try:
+            phones = "\n".join(f"📞 {n}" for n in district_phones[r["district"]])
+            requests_bot.send_message(r["user_id"],
+                             "⚠️ Заявку відпрацьовано, але ліфт не працює.\n" + phones)
+        except: pass
+        return jsonify({"success": True})
+    return jsonify({"success": False})
+
+@app.route("/delete_request/<int:idx>", methods=["POST"])
+def delete_request(idx):
+    if 0 <= idx < len(requests_list):
+        try:
+            del requests_list[idx]
+            save_requests_to_db()
+            return jsonify({"success": True})
+        except:
+            return jsonify({"success": False})
+    return jsonify({"success": False})
+
+@app.route("/requests_data")
+def requests_data():
+    """API endpoint for fetching requests data for the dashboard"""
+    try:
+        # Ensure we have the latest data from database
+        load_requests_from_db()
+        
+        # Format requests for frontend from the same list the bot uses
+        formatted_requests = []
+        for i, req in enumerate(requests_list):
+            formatted_req = {
+                "id": i + 1,
+                "timestamp": req.get("timestamp", ""),
+                "name": req.get("name", ""),
+                "phone": req.get("phone", ""),
+                "address": req.get("address", ""),
+                "entrance": req.get("entrance", ""),
+                "district": req.get("district", ""),
+                "issue": req.get("issue", ""),
+                "status": req.get("status", "pending"),
+                "completed": req.get("completed", False),
+                "processed_by": req.get("processed_by", ""),
+                "completed_time": req.get("completed_time", ""),
+                "user_id": req.get("user_id", "")
+            }
+            formatted_requests.append(formatted_req)
+        
+        return jsonify({"requests": formatted_requests})
+    except Exception as e:
+        print(f"Error in requests_data: {e}")
+        return jsonify({"error": "Failed to load requests", "requests": []})
 
 # Состояние включения кнопок (по умолчанию — True)
 #chat_action_allowed = {"участок№1": True, "участок№2": True}
@@ -673,8 +797,66 @@ def toggle_chat_actions():
         return jsonify({"success": True})
     return jsonify({"success": False})
 
+@app.route("/update_status/<int:idx>/<action>", methods=["POST"])
+def update_status(idx, action):
+    if 0 <= idx < len(requests_list):
+        r = requests_list[idx]
+        r.update(
+            completed=True,
+            completed_time=datetime.now(kyiv_tz).strftime("%Y-%m-%d %H:%M:%S"),
+            processed_by="Оператор з веб"
+        )
+        if action == "done":
+            r["status"] = "done"
+        elif action == "not_working":
+            r["status"] = "error"
+        save_requests_to_db()
+        try:
+            if action == "not_working":
+                # залишити тільки кнопку "✅ Виконано"
+                new_kb = types.InlineKeyboardMarkup()
+                new_kb.add(
+                    types.InlineKeyboardButton("✅ Виконано", callback_data=f"status:done:{idx}")
+                )
+                requests_bot.edit_message_reply_markup(
+                    chat_id=personnel_chats[district_ids[r["district"]]],
+                    message_id=int(r["chat_msg_id"]),
+                    reply_markup=new_kb
+                )
+            else:
+                # якщо "✅ Виконано" — видаляємо всі кнопки
+                requests_bot.edit_message_reply_markup(
+                    chat_id=personnel_chats[district_ids[r["district"]]],
+                    message_id=int(r["chat_msg_id"]),
+                    reply_markup=None
+                )
+        except Exception as e:
+            print(f"⚠️ Не вдалося оновити кнопки: {e}")
 
+        try:
+            if action == "done":
+                requests_bot.send_message(r["user_id"], "✅ Ваша заявка виконана.")
+            elif action == "not_working":
+                phones = "\n".join(f"📞 {n}" for n in district_phones[r["district"]])
+                requests_bot.send_message(r["user_id"], f"⚠️ Заявку відпрацьовано, але ліфт не працює.\n{phones}")
+        except: pass
 
+        return jsonify({"success": True})
+
+    return jsonify({"success": False})
+
+# ====== VAPID ключи для Web Push ======
+@app.route("/vapid_public_key")
+def get_vapid_key():
+    return jsonify({"key": VAPID_PUBLIC_KEY})
+
+@app.route("/subscribe_push", methods=["POST"])
+def subscribe_push():
+    sub = request.get_json()
+    if sub and sub not in subscriptions:
+        subscriptions.append(sub)
+        save_subscriptions()
+    return jsonify({"success": True})
 
 @app.route("/stats_data")
 def stats_data():
@@ -693,6 +875,61 @@ def save_action_rights():
     with open(RIGHTS_FILE, "w", encoding="utf-8") as f:
         json.dump(chat_action_allowed, f, ensure_ascii=False)
 
+kyiv_tz = pytz.timezone("Europe/Kyiv")
+
+# ====== Планировщик ======
+def send_daily():
+    summary = {}
+    for i, r in enumerate(requests_list):
+        if r["completed"]:
+            continue
+        chat = personnel_chats[district_ids[r["district"]]]
+        summary.setdefault(chat, [])
+        url = f"https://t.me/c/{str(chat)[4:]}/{r['chat_msg_id']}"
+        summary[chat].append(f"#{i + 1} <a href='{url}'>{r['address']} п.{r['entrance']}</a>")
+    for chat, lines in summary.items():
+        requests_bot.send_message(chat, "📋 <b>Невиконані заявки:</b>\n" + " \n".join(lines))
+
+
+def sched_loop():
+    test_delay_minutes = 0  # 🔹 меняй только эту цифру
+
+    if test_delay_minutes > 0:
+        run_time = (datetime.now() + timedelta(minutes=test_delay_minutes)).strftime("%H:%M")
+        print(f"⏰ Тестовый запуск через {test_delay_minutes} мин, в {run_time}")
+        schedule.every().day.at(run_time).do(send_daily)
+    else:
+        print("⏰ Боевой режим: каждый день в 08:30")
+        schedule.every().day.at("08:30").do(send_daily)
+
+    while True:
+        schedule.run_pending()
+        time.sleep(60)
+
 # ====== Запуск ======
 if __name__ == "__main__":
+    threading.Thread(target=sched_loop, daemon=True).start()
+
+    def start_requests_bot():
+        logger.info("Запускается бот заявок...")
+        while True:
+            try:
+                requests_bot.infinity_polling(timeout=60, long_polling_timeout=60, allowed_updates=True)
+            except Exception as e:
+                logger.error(f"Polling заявок упал: {e}", exc_info=True)
+                time.sleep(5)
+
+    def start_maintenance_bot():
+        logger.info("Запускается бот ТО...")
+        while True:
+            try:
+                maintenance_bot.infinity_polling(timeout=60, long_polling_timeout=60, allowed_updates=True)
+            except Exception as e:
+                logger.error(f"Polling ТО упал: {e}", exc_info=True)
+                time.sleep(5)
+
+    threading.Thread(target=start_requests_bot, daemon=True).start()
+    threading.Thread(target=start_maintenance_bot, daemon=True).start()
+
+    load_action_rights()
     app.run(host="0.0.0.0", port=5000)

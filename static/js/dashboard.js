@@ -5,7 +5,7 @@ document.addEventListener("DOMContentLoaded", function() {
   var searchTerm = "";
 
   function fetchRequests() {
-    fetch("http://127.0.0.1:5001/requests_data")
+    fetch("/requests_data")
       .then(function(res) {
         if (!res.ok) {
           throw new Error("HTTP error! status: " + res.status);
@@ -139,7 +139,7 @@ document.addEventListener("DOMContentLoaded", function() {
       // Complete/Not working buttons
       if (btn && btn.classList.contains("complete-btn")) {
         var action = btn.getAttribute("data-action");
-        fetch("http://127.0.0.1:5001/update_status/" + index + "/" + action, { method: "POST" })
+        fetch("/update_status/" + index + "/" + action, { method: "POST" })
           .then(function(res) { return res.json(); })
           .then(function(data) {
             if (data.success) {
@@ -161,7 +161,7 @@ document.addEventListener("DOMContentLoaded", function() {
       // Delete button
       if (btn && btn.classList.contains("delete-btn")) {
         if (confirm("Видалити цю заявку?")) {
-          fetch("http://127.0.0.1:5001/delete_request/" + index, { method: "POST" })
+          fetch("/delete_request/" + index, { method: "POST" })
             .then(function(res) { return res.json(); })
             .then(function(data) {
               if (data.success) {
